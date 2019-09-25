@@ -179,5 +179,3 @@ If a recording is already running, the command will be ignored.
 
 <stoprec>
 STOP the current recording.
-
-

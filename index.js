@@ -394,7 +394,7 @@ instance.prototype.actions = function(system) {
 				}
 			]
 		},
-		'unmyteaudio': {
+		'unmuteaudio': {
 			label: 'Unmute Audio',
 			options: [
 				{
@@ -806,44 +806,48 @@ instance.prototype.action = function(action) {
 			cmd = '<stopalloverlays|' + action.options.playlist + '>';
 			break;
 
-		case 'plaoverlay':
-			cmd = '<playoverlay|' + action.options.playlist + '|' + actions.options.id + '>';
+		case 'playoverlay':
+			cmd = '<playoverlay|' + action.options.playlist + '|' + action.options.id + '>';
 			break;
 
-		case 'stopverlay':
-			cmd = '<stopoverlay|' + action.options.playlist + '|' + actions.options.id + '>';
+		case 'stopoverlay':
+			cmd = '<stopoverlay|' + action.options.playlist + '|' + action.options.id + '>';
 			break;
 			
 		case 'playaction':
-			cmd = '<playaction|' + action.options.playlist + '|' + actions.options.id + '>';
+			cmd = '<playaction|' + action.options.playlist + '|' + action.options.id + '>';
 			break;
 			
 		case 'selectblock':
-			cmd = '<selectblock|' + action.options.playlist + '|' + actions.options.id + '>';
+			cmd = '<selectblock|' + action.options.playlist + '|' + action.options.id + '>';
 			break;
 			
 		case 'activateblock':
-			cmd = '<activateblock|' + action.options.playlist + '|' + actions.options.id + '>';
+			cmd = '<activateblock|' + action.options.playlist + '|' + action.options.id + '>';
 			break;
 
+		case 'deactivateblock':
+			cmd = '<deactivateblock|' + action.options.playlist + '|' + action.options.id + '>';
+			break;
+	
 		case 'selectclip':
-			cmd = '<selectclip|' + action.options.playlist + '|' + actions.options.id + '|' + actions.config.clip_id + '>';
+			cmd = '<selectclip|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
 			break;
 					
 		case 'activateclip':
-			cmd = '<activateclip|' + action.options.playlist + '|' + actions.options.id + '|' + actions.config.clip_id + '>';
+			cmd = '<activateclip|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
 			break;
 					
 		case 'deactivateclip':
-			cmd = '<deactivateclip|' + action.options.playlist + '|' + actions.options.id + '|' + actions.config.clip_id + '>';
+			cmd = '<deactivateclip|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
 			break;
 					
 		case 'cue':
-			cmd = '<cue|' + action.options.playlist + '|' + actions.options.id + '|' + actions.config.clip_id + '>';
+			cmd = '<cue|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
 			break;
 					
 		case 'cueandplay':
-			cmd = '<cueandplay|' + action.options.playlist + '|' + actions.options.id + '|' + actions.config.clip_id + '>';
+			cmd = '<cueandplay|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
 			break;
 
 		case 'startrec':
