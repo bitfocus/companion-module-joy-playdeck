@@ -500,7 +500,7 @@ class PlaydeckActions {
     const connection = this.instance.connection.actions;
 
     if (cmd !== undefined) {
-      this.log('debug', `Sending ${cmd} to ${this.instance.config.host}}`);
+      this.log('debug', `Sending ${cmd} to ${this.instance.config.host}`);
 
       if (connection !== undefined) {
         connection.send(cmd);
