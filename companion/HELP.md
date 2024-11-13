@@ -1,7 +1,6 @@
-Playdeck (Video Playout Software) by JOY event & media
 A generic module for performing simple actions in Playdeck (Video Playout Software)
 
-Available commands for Playdeck
+#### Available commands for Playdeck:
 
 - **Play** - PLAY the selected Clip in the Playlist.
 - **Pause** - PAUSE the Playback of the Playlist.
@@ -29,3 +28,18 @@ Available commands for Playdeck
 - **Cue And Play** - CUE AND PLAY a certain Clip in the Playlist.
 - **Start Recording** - START a new recording.
 - **Stop Recording** - STOP the current recording.
+- **Custom command** - sends a custom command (shold be formatted like `<{command}|{playlidID}|{blockID}|{clipID}>`)
+
+#### Available feedbacks (become active after some actions):
+
+- **Current state of playlist** with options:
+  - _Playlist_: Left or Rigth
+  - _State_: _**STOP**_, _**PAUSE**_, _**PLAY**_, _**CUE**_
+  - _Block ID_: 0 for any
+  - _Clip ID_: 0 for any
+
+#### Available variables (_null_ if no feedbacks):
+
+- `playlist_{n}_state` - State of **_n_** (1 for Left, 2 for Right) playlist
+- `playlist_{n}_block` - Current block of **_n_** playlist
+- `playlist_{n}_clip` - Current clip of **_n_** playlist (number in block)

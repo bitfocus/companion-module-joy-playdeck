@@ -1,3 +1,5 @@
+const { PORT_REGEX } = require('./PlaydeckConstants');
+
 module.exports = {
   getConfigFields: function () {
     return [
@@ -6,7 +8,7 @@ module.exports = {
         id: 'info',
         label: 'Information',
         width: 12,
-        value: 'To enable remote control in Playdeck, go to: Settings -> All Settings -> Remote Connection. And enable "Remote control via TCP"',
+        value: 'To enable remote control in Playdeck, go to: Settings -> All Settings -> Remote Control -> Incoming. And enable "Remote control via TCP"',
       },
 
       {
@@ -14,7 +16,6 @@ module.exports = {
         label: 'Target IP',
         id: 'host',
         width: 6,
-        regex: this.REGEX_IP,
         default: '127.0.0.1',
         required: true,
       },
@@ -26,11 +27,10 @@ module.exports = {
         value: '',
       },
       {
-        type: 'textinput',
+        type: 'number',
         label: 'TCP Port (Default: 11375)',
         id: 'port',
         width: 6,
-        regex: this.REGEX_IP,
         default: '11375',
         required: true,
       },
@@ -42,11 +42,10 @@ module.exports = {
         value: 'To enable feedback in Playdeck, go to: Settings -> All Settings -> Remote Control -> Outgoing. And enable "TCP Events"',
       },
       {
-        type: 'textinput',
+        type: 'number',
         label: 'TCP Port (Default: 11376)',
         id: 'eventsPort',
         width: 6,
-        regex: this.REGEX_IP,
         default: '11376',
         required: false,
       },

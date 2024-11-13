@@ -11,6 +11,7 @@ CHOICES_STATE = [
 ];
 
 COMMAND_REGEX = /<([^>]+)>/;
+PORT_REGEX = /^d+$/;
 
 dropdownPlaylists = {
   type: 'dropdown',
@@ -27,4 +28,4 @@ playlistState = {
   cue: 'cue',
 };
 
-module.exports = { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, dropdownPlaylists, playlistState };
+module.exports = { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, PORT_REGEX, dropdownPlaylists, playlistState };

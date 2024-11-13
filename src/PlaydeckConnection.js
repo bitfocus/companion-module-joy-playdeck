@@ -14,7 +14,7 @@ class PlayDeckConnection extends EventEmitter {
     this.actions = new TCPHelper(this.instance.config.host, this.instance.config.port);
 
     this.actions.on('status_change', (status, message) => {
-      this.instance.log('debug', `Function socket - Status: ${status}${message ? ' - Message: ' + message : ''}`);
+      this.instance.log('debug', `Commands socket - Status: ${status}${message ? ' - Message: ' + message : ''}`);
 
       if (status === 'ok') {
         this.log('info', `Connected to Playdeck Commands!`);
@@ -28,7 +28,10 @@ class PlayDeckConnection extends EventEmitter {
       }
       this.actions.on('error', (err) => {
         this.instance.updateStatus(InstanceStatus.UnknownError);
-        this.instance.log(this.instance.config.connectionErrorLog ? 'error' : 'debug', 'Function Socket err: ' + err.message);
+        if (err.message != this.actions.errMessage) {
+          this.instance.log(this.instance.config.connectionErrorLog ? 'error' : 'debug', 'Commands Socket err: ' + err.message);
+        }
+        this.actions.errMessage = err.message;
       });
 
       this.instance.variables?.updateVariables();
@@ -42,7 +45,10 @@ class PlayDeckConnection extends EventEmitter {
       });
       this.events.on('error', (err) => {
         this.updateStatus(InstanceStatus.Connecting);
-        this.instance.log(this.instance.config.connectionErrorLog ? 'error' : 'debug', 'Function Socket err: ' + err.message);
+        if (err.message != this.events.errMessage) {
+          this.instance.log(this.instance.config.connectionErrorLog ? 'error' : 'debug', 'Events Socket err: ' + err.message);
+        }
+        this.events.errMessage = err.message;
       });
       this.events.on('status_change', (status, message) => {
         this.instance.log('debug', `Events socket - Status: ${status}${message ? ' - Message: ' + message : ''}`);
@@ -55,7 +61,7 @@ class PlayDeckConnection extends EventEmitter {
     }
   }
   log(level, message) {
-    return this.instance.log(level, message);
+    this.instance.log(level, message);
   }
   updateStatus(status) {
     this.instance.updateStatus(status);

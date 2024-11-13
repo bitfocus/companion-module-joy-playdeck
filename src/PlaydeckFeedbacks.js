@@ -132,7 +132,7 @@ class PlaydeckFeedbacks {
     this.instance.setVariableValues(changes);
   }
   log(level, message) {
-    return this.instance.log(level, message);
+    this.instance.log(level, message);
   }
 
   updateStatus(status) {

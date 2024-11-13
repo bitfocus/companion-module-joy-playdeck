@@ -510,7 +510,7 @@ class PlaydeckActions {
     }
   }
   log(level, message) {
-    return this.instance.log(level, message);
+    this.instance.log(level, message);
   }
 
   updateStatus(status) {
