@@ -16,8 +16,7 @@ class PlaydeckModuleInstance extends InstanceBase {
       // ...feedbacks,
       // ...variables,
       // ...connection,
-
-      //...presets, //TODO: convert to companion 3
+      //...presets,
     });
   }
 
