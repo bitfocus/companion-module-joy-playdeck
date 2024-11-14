@@ -2,7 +2,7 @@
 
 Now it converted to Companion 3.0 format
 
-See [HELP.md](https://github.com/semenovnick/companion-module-joy-playdeck/blob/master/companion/HELP.md) and LICENSE
+See [HELP.md](https://github.com/bitfocus/companion-module-joy-playdeck/blob/master/companion/HELP.md), [README.md](https://github.com/bitfocus/companion-module-joy-playdeck/blob/master/README.md) and LICENSE
 
 **V1.0.0**
 
