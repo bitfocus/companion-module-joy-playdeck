@@ -1,6 +1,6 @@
 {
-	"id": "joy-playdeck-feedbacks",
-	"name": "Playdeck (Video Playout Software) (fork)",
+	"id": "joy-playdeck",
+	"name": "Playdeck (Video Playout Software)",
 	"shortname": "Playdeck",
 	"description": "Playdeck (Video Playout Software)",
 	"version": "0.0.0",
