@@ -1,5 +1,5 @@
 const { playlistState } = require('./PlaydeckConstants');
-
+const { InstanceStatus, TCPHelper, LogLevel } = require('@companion-module/base');
 const { combineRgb } = require('@companion-module/base');
 
 class PlaydeckPresets {
@@ -103,6 +103,12 @@ class PlaydeckPresets {
     };
     Object.assign(this.presetDefinitions, newPreset);
   }
+  /**
+   *
+   * @param {LogLevel} level
+   * @param  {string} message
+   * @returns
+   */
   log(level, message) {
     this.instance.log(level, message);
   }

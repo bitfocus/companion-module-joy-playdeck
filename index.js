@@ -1,44 +1,61 @@
-const { InstanceBase, Regex, runEntrypoint, InstanceStatus } = require('@companion-module/base');
-const configs = require('./src/configs');
+const { InstanceBase, Regex, runEntrypoint, InstanceStatus, CompanionVariableDefinition, CompanionActionDefinition } = require('@companion-module/base');
+const { getPlaydeckConfigFields } = require('./src/PlaydeckConfig');
+const { PlaydeckConfig } = require('./src/PlaydeckTypes');
 const UpgradeScripts = require('./src/upgrades');
-const { PlayDeckConnection } = require('./src/PlaydeckConnection');
-const { PlaydeckFeedbacks } = require('./src/PlaydeckFeedbacks');
-const { PlaydeckActions } = require('./src/PlaydeckActions');
-const { PlaydeckPresets } = require('./src/PlaydeckPresets');
-class PlaydeckModuleInstance extends InstanceBase {
+// const { PlaydeckConnections } = require('./src/PlaydeckConnections');
+// const { PlaydeckFeedbacks } = require('./src/PlaydeckFeedbacks');
+// const { PlaydeckActions } = require('./src/PlaydeckActions');
+// const { PlaydeckPresets } = require('./src/PlaydeckPresets');
+const { PlaydeckState } = require('./src/PlaydeckState');
+const { PlaydeckWSConnection } = require('./src/PlaydeckWSConnection');
+
+class PlaydeckInstance extends InstanceBase {
   constructor(internal) {
     super(internal);
-
-    // Assign the methods from the listed files to this class
-    Object.assign(this, {
-      ...configs,
-      // ...actions,
-      // ...feedbacks,
-      // ...variables,
-      // ...connection,
-      //...presets,
-    });
   }
 
   async init(config) {
+    /**
+     * @type { PlaydeckConfig }
+     */
     this.config = config;
+    /**
+     * @type { PlaydeckState }
+     */
+    this.state = new PlaydeckState(this);
+    /**
+     * @type { CompanionVariableDefinition[] }
+     */
+    this.variableDefinitions = [];
+    /**
+     * @type { CompanionActionDefinition[] }
+     */
+    this.actionDefinitions = [];
+
     this.updateStatus(InstanceStatus.Connecting);
-    this.connection = new PlayDeckConnection(this);
-    this.feedbacks = new PlaydeckFeedbacks(this);
-    this.actions = new PlaydeckActions(this);
-    this.presets = new PlaydeckPresets(this);
+    this.ws = new PlaydeckWSConnection(this);
+
+    // this.connections = new PlaydeckConnections(this);
+    // this.feedbacks = new PlaydeckFeedbacks(this);
+    // this.actions = new PlaydeckActions(this);
+    // this.presets = new PlaydeckPresets(this);
   }
   // When module gets deleted
   async destroy() {
-    this.connection.destroy();
+    // this.connections.destroy();
     this.log('debug', 'destroy');
   }
 
   async configUpdated(config) {
     this.config = config;
-    this.connection.destroy();
+    // this.connections.destroy();
     this.init(config);
+  }
+  getConfigFields() {
+    return getPlaydeckConfigFields();
   }
 }
 
-runEntrypoint(PlaydeckModuleInstance, UpgradeScripts);
+runEntrypoint(PlaydeckInstance, UpgradeScripts);
+
+module.exports = PlaydeckInstance;

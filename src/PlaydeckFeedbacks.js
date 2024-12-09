@@ -1,5 +1,6 @@
 const { combineRgb } = require('@companion-module/base');
 const { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, dropdownPlaylists, playlistState } = require('./PlaydeckConstants');
+const { InstanceStatus, TCPHelper, LogLevel } = require('@companion-module/base');
 
 class PlaydeckFeedbacks {
   constructor(instance) {
@@ -67,8 +68,8 @@ class PlaydeckFeedbacks {
     this.init();
   }
   init() {
-    if (this.instance.connection.events) {
-      this.instance.connection.events.on('data', (data) => {
+    if (this.instance.connections.events) {
+      this.instance.connections.events.on('data', (data) => {
         this.eventHandler(data);
       });
       this.instance.setVariableDefinitions(this.variableDefinitions);
@@ -131,6 +132,13 @@ class PlaydeckFeedbacks {
     };
     this.instance.setVariableValues(changes);
   }
+
+  /**
+   *
+   * @param {LogLevel} level
+   * @param  {string} message
+   * @returns
+   */
   log(level, message) {
     this.instance.log(level, message);
   }

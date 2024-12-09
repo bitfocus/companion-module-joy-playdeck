@@ -20,12 +20,28 @@ dropdownPlaylists = {
   default: '1',
   choices: CHOICES_PLAYLIST,
 };
-
-playlistState = {
+/**
+ * @enum { string }
+ */
+const PlaybackState = {
   stop: 'stop',
   pause: 'pause',
   play: 'play',
   cue: 'cue',
 };
 
-module.exports = { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, PORT_REGEX, dropdownPlaylists, playlistState };
+/**
+ * @enum
+ */
+const ClipType = {
+  Clock: 'Clock',
+  Video: 'Video',
+  Image: 'Image',
+  Audio: 'Audio',
+  Input: 'Input',
+  Tube: 'Youtube',
+  Action: 'Action',
+  Highlight: 'Highlight',
+};
+
+module.exports = { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, PORT_REGEX, dropdownPlaylists, PlaybackState, ClipType };

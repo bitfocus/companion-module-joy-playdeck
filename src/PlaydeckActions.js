@@ -1,9 +1,11 @@
 const { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, dropdownPlaylists, playlistState } = require('./PlaydeckConstants');
-const { InstanceStatus } = require('@companion-module/base');
+const { InstanceStatus, LogLevel, CompanionActionDefinition } = require('@companion-module/base');
 class PlaydeckActions {
   constructor(instance) {
     this.instance = instance;
-
+    /**
+     * @type { CompanionActionDefinition}
+     */
     this.actionDefinitions = {
       play: {
         name: 'Play',
@@ -497,7 +499,7 @@ class PlaydeckActions {
     }
   }
   sendCommand(cmd) {
-    const connection = this.instance.connection.actions;
+    const connection = this.instance.connections.actions;
 
     if (cmd !== undefined) {
       this.log('debug', `Sending ${cmd} to ${this.instance.config.host}`);
@@ -509,6 +511,12 @@ class PlaydeckActions {
       }
     }
   }
+  /**
+   *
+   * @param {LogLevel} level
+   * @param  {string} message
+   * @returns
+   */
   log(level, message) {
     this.instance.log(level, message);
   }
