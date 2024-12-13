@@ -23,9 +23,7 @@
 		"apiVersion": "0.0.0",
 		"entrypoint": "../index.js"
 	},
-	"legacyIds": [
-		"joy-playdeck-feedbacks"
-	],
+	"legacyIds": [],
 	"manufacturer": "JOY event & media",
 	"products": [
 		"Playdeck with Feedbacks"

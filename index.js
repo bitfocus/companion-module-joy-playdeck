@@ -34,7 +34,6 @@ class PlaydeckInstance extends InstanceBase {
 
     this.updateStatus(InstanceStatus.Connecting);
     this.ws = new PlaydeckWSConnection(this);
-
     // this.connections = new PlaydeckConnections(this);
     // this.feedbacks = new PlaydeckFeedbacks(this);
     // this.actions = new PlaydeckActions(this);

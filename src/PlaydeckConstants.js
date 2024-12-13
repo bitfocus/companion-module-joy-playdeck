@@ -20,19 +20,16 @@ dropdownPlaylists = {
   default: '1',
   choices: CHOICES_PLAYLIST,
 };
-/**
- * @enum { string }
- */
+
+/** @enum { string } */
 const PlaybackState = {
-  stop: 'stop',
-  pause: 'pause',
-  play: 'play',
-  cue: 'cue',
+  Stop: 'stop',
+  Pause: 'pause',
+  Play: 'play',
+  Cue: 'cue',
 };
 
-/**
- * @enum
- */
+/** @enum { string }} */
 const ClipType = {
   Clock: 'Clock',
   Video: 'Video',

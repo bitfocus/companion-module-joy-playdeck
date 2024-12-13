@@ -28,7 +28,7 @@ function getPlaydeckConfigFields() {
       label: 'WebSocket Port (Default: 11411)',
       id: 'wsPort',
       width: 6,
-      default: '11411',
+      default: 11411,
       required: false,
     },
     {
@@ -52,7 +52,7 @@ function getPlaydeckConfigFields() {
       label: 'TCP Port (Default: 11375)',
       id: 'tcpPortCom',
       width: 6,
-      default: '11375',
+      default: 11375,
       required: true,
     },
     {
@@ -75,7 +75,7 @@ function getPlaydeckConfigFields() {
       label: 'TCP Port (Default: 11376)',
       id: 'tcpPortEv',
       width: 6,
-      default: '11376',
+      default: 11376,
       required: false,
     },
     {

@@ -6,35 +6,56 @@ const { PlaydeckConnection } = require('./PlaydeckConnection');
 const { PlaydeckStateParameter } = require('./PlaydeckTypes');
 const PlaydeckInstance = require('../index');
 const { PlaybackState, ClipType } = require('./PlaydeckConstants');
-const { PlaydeckLegacyMessage } = require(`./PlaydeckLegacyMessage`);
+const { PlaydeckRCEventMessage } = require(`./PlaydeckRCEventMessage`);
 
 class PlaydeckWSConnection extends PlaydeckConnection {
+  /** @type { PlaydeckStateValues | null } */
+  #stateValues = null;
+  /** @type { NodeJS.Timeout | null} */
+  #reconnectInterval = null;
+  /** @type { number | null }  */
+  #reconnectTimeout = 5000;
+  /** @type { string | null } */
+  #lastErrorMessage = null;
+  /** @type { WebSocket | null} */
+  #webSocket = null;
   /**
    * @param { PlaydeckInstance } instance
    */
   constructor(instance) {
     super(instance);
-    this.stateValues = null;
-    this.init();
+    this.#init();
   }
-
-  init() {
-    this.log(`debug`, `Hello from WS Part`);
-    this.webSocket = new WebSocket(`ws://${this.instance.config.host}:${this.instance.config.wsPort}`);
-    this.webSocket.on('open', () => {
-      this.log(`info`, `WS Connected`);
+  #init() {
+    this.updateStatus(InstanceStatus.Connecting);
+    this.log(`info`, `Playdeck WebSocket connection started. IP/HOST: ${this._instance.config.host}. PORT: ${this._instance.config.wsPort}`);
+    this.#webSocket = new WebSocket(`ws://${this._instance.config.host}:${this._instance.config.wsPort}`);
+    this.#webSocket.on('open', () => {
+      this.log(`info`, `Playdeck connected via WebSocket.`);
+      clearInterval(this.#reconnectInterval);
+      this.updateStatus(InstanceStatus.Ok);
+      this.#lastErrorMessage = null;
     });
-    this.webSocket.on('message', (rawData, isBinary) => {
+    this.#webSocket.on('message', (rawData, isBinary) => {
       if (!isBinary) {
-        this.dataHandler(rawData.toString());
+        this.#dataHandler(rawData.toString());
       }
+    });
+    this.#webSocket.on('error', (err) => {
+      this.log('error', `Websocket Connection Error: ${err.message}`);
+      this.#lastErrorMessage = err.message;
+      this.updateStatus(InstanceStatus.ConnectionFailure, this.#lastErrorMessage);
+    });
+    this.#webSocket.on('close', (code, reason) => {
+      this.log('debug', `Websocket Connection closed with code: ${code}, with reason: ${reason.toString()}`);
+      this.#reconnect();
     });
   }
   /**
    *
    * @param {string} data
    */
-  dataHandler(data) {
+  #dataHandler(data) {
     if (data.indexOf(`|`) == -1) {
       this.log(`debug`, `Recieved non properly formatted message: ${data}`);
       return;
@@ -48,10 +69,10 @@ class PlaydeckWSConnection extends PlaydeckConnection {
     const sData = dataArray.join('|');
     switch (sType) {
       case 'event':
-        this.log(`debug`, `Recieved event: ${sData}`);
+        const newEvent = new PlaydeckRCEventMessage(this._instance, `<${sData}>`);
         break;
       case 'status':
-        this.handleStatus(JSON.parse(sData));
+        this.#handleStatus(JSON.parse(sData));
         break;
       case 'permanent':
         this.log(`debug`, `Recieved permanent: ${sData}`); // don't know what it means it returns {"AnyVariableName":"1"}
@@ -62,38 +83,50 @@ class PlaydeckWSConnection extends PlaydeckConnection {
    *
    * @param { StatusMessage } sMessage
    */
-  handleStatus(sMessage) {
-    if (this.stateValues === null) {
-      this.stateValues = new PlaydeckStateValues(sMessage);
+  #handleStatus(sMessage) {
+    if (this.#stateValues === null) {
+      this.#stateValues = new PlaydeckStateValues(sMessage);
     } else {
-      this.stateValues.update(sMessage);
+      this.#stateValues.update(sMessage);
     }
-
-    this.instance.state.updateValues({
-      general: this.stateValues.generalStateValues,
+    this._instance.state.updateValues({
+      general: this.#stateValues.generalStateValues,
       playlist: {
-        left: this.stateValues.playlistStateValues.left,
-        right: this.stateValues.playlistStateValues.right,
+        left: this.#stateValues.playlistStateValues.left,
+        right: this.#stateValues.playlistStateValues.right,
       },
     });
   }
-  handleEvent(eMessage) {
-    let a = PlaydeckLegacyMessage.REGEX;
-    const mess = new PlaydeckLegacyMessage();
+  #reconnect() {
+    if (this.status === InstanceStatus.Connecting) return;
+    this.updateStatus(InstanceStatus.Connecting, this.#lastErrorMessage ? `Last error: ${this.#lastErrorMessage}` : null);
+    this.#reconnectInterval = setTimeout(() => {
+      this.destroy();
+      this.log('info', `Websocket Connection. Trying to #reconnect...`);
+      this.#init();
+    }, this.#reconnectTimeout);
   }
+  /**
+   * @param { string } command
+   * @override
+   */
   send(command) {
-    this.webSocket.send(command);
+    this.#webSocket.send(command);
   }
+  /**
+   * @override
+   */
   destroy() {
-    this.webSocket.close(1000);
-    this.log(`debug`, `Playdeck WebSocket connection destroyed.`);
+    this.#webSocket.close(1000);
+    clearInterval(this.clearInterval);
+    this.log(`debug`, `Playdeck WebSocket Connection destroyed.`);
   }
 }
 
 class PlaydeckStateValues {
   /**
    *
-   * @param {StatusMessage} sMessage
+   * @param { StatusMessage } sMessage
    */
   constructor(sMessage) {
     this.update(sMessage);
@@ -169,10 +202,10 @@ class PlaydeckStateValues {
 
   getStateForPlaylist(plstNum) {
     const playlistState = this.sMessage.Playlist[plstNum];
-    if (playlistState.StatusPlaying && !playlistState.StatusPaused) return PlaybackState.play;
-    if (playlistState.StatusPaused && !playlistState.StatusCued) return PlaybackState.pause;
-    if (playlistState.StatusCued) return PlaybackState.cue;
-    if (!playlistState.StatusPlaying && !playlistState.StatusPaused) return PlaybackState.stop;
+    if (playlistState.StatusPlaying && !playlistState.StatusPaused) return PlaybackState.Play;
+    if (playlistState.StatusPaused && !playlistState.StatusCued) return PlaybackState.Pause;
+    if (playlistState.StatusCued) return PlaybackState.Cue;
+    if (!playlistState.StatusPlaying && !playlistState.StatusPaused) return PlaybackState.Stop;
     return null;
   }
   getClipType(plstNum) {

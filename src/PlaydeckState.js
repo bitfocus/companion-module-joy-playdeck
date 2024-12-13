@@ -3,7 +3,7 @@ const PlaydeckInstance = require('../index');
 const { PlaybackState, ClipType } = require('./PlaydeckConstants');
 const { PlaydeckStateParameter } = require('./PlaydeckTypes');
 const { CompanionVariableDefinition, Regex } = require('@companion-module/base');
-const { forEach } = require('./upgrades');
+
 /**
  * @class
  */
@@ -65,7 +65,6 @@ class PlaydeckState extends EventEmitter {
      */
     let newVariableDefinitions = [];
     let changes = [];
-    // TODO: check if new variableDefinition already exists
     newVariableDefinitions = paramsToUpdate.map((item) => item.variableDefinition).filter((varDef) => !this.isVariableDefinitionExists(varDef));
     changes = paramsToUpdate.reduce((acc, item) => {
       acc[item.variableDefinition.variableId] = item.value;
