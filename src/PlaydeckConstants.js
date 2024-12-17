@@ -21,16 +21,16 @@ dropdownPlaylists = {
   choices: CHOICES_PLAYLIST,
 };
 
-/** @enum { string } */
-const PlaybackState = {
+/** @enum {typeof PlaybackState[keyof typeof PlaybackState]} */
+const PlaybackState = /** @type {const} */ ({
   Stop: 'stop',
   Pause: 'pause',
   Play: 'play',
   Cue: 'cue',
-};
+});
 
-/** @enum { string }} */
-const ClipType = {
+/** @enum {typeof ClipType[keyof typeof ClipType]} */
+const ClipType = /** @type {const} */ ({
   Clock: 'Clock',
   Video: 'Video',
   Image: 'Image',
@@ -39,6 +39,19 @@ const ClipType = {
   Tube: 'Youtube',
   Action: 'Action',
   Highlight: 'Highlight',
-};
+});
+/** @enum {typeof ConnectionType[keyof typeof ConnectionType]} */
+const ConnectionType = /** @type {const} */ ({
+  TCP: 'TCP',
+  WS: 'WebSocket',
+});
 
-module.exports = { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, PORT_REGEX, dropdownPlaylists, PlaybackState, ClipType };
+/** @enum {typeof ConnectionDirection[keyof typeof ConnectionDirection]} */
+const ConnectionDirection = /** @type {const} */ ({
+  Incoming: 'incoming',
+  Outgoing: 'outgoing',
+  BiDirectional: 'bidirectional',
+});
+
+/** @type { ConnectionType } */
+let cp = (module.exports = { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, PORT_REGEX, dropdownPlaylists, PlaybackState, ClipType, ConnectionType, ConnectionDirection });

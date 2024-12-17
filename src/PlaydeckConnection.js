@@ -1,7 +1,7 @@
 const { InstanceBase, Regex, runEntrypoint, InstanceStatus, LogLevel } = require('@companion-module/base');
 const EventEmitter = require('events');
 const PlaydeckInstance = require('../index');
-
+const { PlaybackState, ClipType, ConnectionType, ConnectionDirection } = require('./PlaydeckConstants');
 /**
  * PlaydeckConnection class
  *
@@ -13,12 +13,20 @@ class PlaydeckConnection extends EventEmitter {
    * @type { PlaydeckInstance }
    */
   _instance;
+  /** @type { ConnectionDirection } */
+  direction;
+  /** @type { ConnectionType } */
+  type;
   /** @type { InstanceStatus } */
   status;
-  /** @param {PlaydeckInstance} instance */
-  constructor(instance) {
+  /**
+   * @param {PlaydeckInstance} instance
+   * @param {ConnectionDirection} direction
+   * */
+  constructor(instance, direction) {
     super();
     this._instance = instance;
+    this.direction = direction;
     this.status = InstanceStatus.Disconnected;
   }
   /**
@@ -52,7 +60,7 @@ class PlaydeckConnection extends EventEmitter {
    * @param  {string} message
    */
   log(level, message) {
-    this._instance.log(level, message);
+    this._instance.log(level, `Playdeck ${this.type} (${this.direction}): ${message}`);
   }
   /**
    *

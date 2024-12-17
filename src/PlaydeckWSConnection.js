@@ -5,11 +5,11 @@ const { isBigInt64Array } = require('util/types');
 const { PlaydeckConnection } = require('./PlaydeckConnection');
 const { PlaydeckStateParameter } = require('./PlaydeckTypes');
 const PlaydeckInstance = require('../index');
-const { PlaybackState, ClipType } = require('./PlaydeckConstants');
+const { PlaybackState, ClipType, ConnectionType, ConnectionDirection } = require('./PlaydeckConstants');
 const { PlaydeckRCEventMessage } = require(`./PlaydeckRCEventMessage`);
 
 class PlaydeckWSConnection extends PlaydeckConnection {
-  /** @type { PlaydeckStateValues | null } */
+  /** @type { PlaydeckWSStateValues | null } */
   #stateValues = null;
   /** @type { NodeJS.Timeout | null} */
   #reconnectInterval = null;
@@ -21,17 +21,20 @@ class PlaydeckWSConnection extends PlaydeckConnection {
   #webSocket = null;
   /**
    * @param { PlaydeckInstance } instance
+   * @param { ConnectionDirection } direction
+   *
    */
-  constructor(instance) {
-    super(instance);
+  constructor(instance, direction) {
+    super(instance, direction);
+    this.type = ConnectionType.WS;
+    this.log(`info`, `Starting connection. IP/HOST: ${this._instance.config.host}. PORT: ${this._instance.config.wsPort}`);
     this.#init();
   }
   #init() {
     this.updateStatus(InstanceStatus.Connecting);
-    this.log(`info`, `Playdeck WebSocket connection started. IP/HOST: ${this._instance.config.host}. PORT: ${this._instance.config.wsPort}`);
     this.#webSocket = new WebSocket(`ws://${this._instance.config.host}:${this._instance.config.wsPort}`);
     this.#webSocket.on('open', () => {
-      this.log(`info`, `Playdeck connected via WebSocket.`);
+      this.log(`info`, `Connected.`);
       clearInterval(this.#reconnectInterval);
       this.updateStatus(InstanceStatus.Ok);
       this.#lastErrorMessage = null;
@@ -42,12 +45,12 @@ class PlaydeckWSConnection extends PlaydeckConnection {
       }
     });
     this.#webSocket.on('error', (err) => {
-      this.log('error', `Websocket Connection Error: ${err.message}`);
+      this.log('error', `Error: ${err.message}`);
       this.#lastErrorMessage = err.message;
       this.updateStatus(InstanceStatus.ConnectionFailure, this.#lastErrorMessage);
     });
     this.#webSocket.on('close', (code, reason) => {
-      this.log('debug', `Websocket Connection closed with code: ${code}, with reason: ${reason.toString()}`);
+      this.log('debug', `Closed with code: ${code}, with reason: ${reason.toString()}`);
       this.#reconnect();
     });
   }
@@ -85,15 +88,15 @@ class PlaydeckWSConnection extends PlaydeckConnection {
    */
   #handleStatus(sMessage) {
     if (this.#stateValues === null) {
-      this.#stateValues = new PlaydeckStateValues(sMessage);
+      this.#stateValues = new PlaydeckWSStateValues(sMessage);
     } else {
       this.#stateValues.update(sMessage);
     }
     this._instance.state.updateValues({
-      general: this.#stateValues.generalStateValues,
+      general: this.#stateValues.general,
       playlist: {
-        left: this.#stateValues.playlistStateValues.left,
-        right: this.#stateValues.playlistStateValues.right,
+        left: this.#stateValues.playlist.left,
+        right: this.#stateValues.playlist.right,
       },
     });
   }
@@ -102,7 +105,7 @@ class PlaydeckWSConnection extends PlaydeckConnection {
     this.updateStatus(InstanceStatus.Connecting, this.#lastErrorMessage ? `Last error: ${this.#lastErrorMessage}` : null);
     this.#reconnectInterval = setTimeout(() => {
       this.destroy();
-      this.log('info', `Websocket Connection. Trying to #reconnect...`);
+      this.log('info', `Trying to reconnect...`);
       this.#init();
     }, this.#reconnectTimeout);
   }
@@ -119,11 +122,11 @@ class PlaydeckWSConnection extends PlaydeckConnection {
   destroy() {
     this.#webSocket.close(1000);
     clearInterval(this.clearInterval);
-    this.log(`debug`, `Playdeck WebSocket Connection destroyed.`);
+    this.log(`debug`, `Destroyed.`);
   }
 }
 
-class PlaydeckStateValues {
+class PlaydeckWSStateValues {
   /**
    *
    * @param { StatusMessage } sMessage
@@ -141,7 +144,7 @@ class PlaydeckStateValues {
      */
     this.sMessage = sMessage;
     const generalState = this.sMessage.General;
-    this.generalStateValues = {
+    this.general = {
       playlistFile: generalState.PlaylistFile,
       activeChannels: generalState.ActiveChannels,
       productionMode: generalState.ProductionMode,
@@ -149,7 +152,7 @@ class PlaydeckStateValues {
       recordingDuration: this.convertFloat(generalState.RecordingDuration),
       recordingTimeStart: this.convertTimestamp(generalState.RecordingTimeStart),
     };
-    this.playlistStateValues = {
+    this.playlist = {
       left: this.convertPlaylistStatusMessage(0),
       right: this.convertPlaylistStatusMessage(1),
     };
@@ -199,7 +202,11 @@ class PlaydeckStateValues {
     };
     return playlistStateValues;
   }
-
+  /**
+   *
+   * @param { number } plstNum
+   * @returns { PlaybackState }
+   */
   getStateForPlaylist(plstNum) {
     const playlistState = this.sMessage.Playlist[plstNum];
     if (playlistState.StatusPlaying && !playlistState.StatusPaused) return PlaybackState.Play;
@@ -208,6 +215,11 @@ class PlaydeckStateValues {
     if (!playlistState.StatusPlaying && !playlistState.StatusPaused) return PlaybackState.Stop;
     return null;
   }
+  /**
+   *
+   * @param { number } plstNum
+   * @returns  { ClipType }
+   */
   getClipType(plstNum) {
     const playlistState = this.sMessage.Playlist[plstNum];
     if (playlistState.ClipIsAction) return ClipType.Action;

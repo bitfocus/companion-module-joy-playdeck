@@ -26,7 +26,7 @@ class PlaydeckRCEventMessage extends PlaydeckRCMessage {
    */
   //static
   static parseEvent(eventMessage) {
-    const rcMessage = PlaydeckRCMessage.parseMessage(eventMessage);
+    const rcMessage = this.parseMessage(eventMessage);
     const sourceAction = rcMessage.message.split('-');
     /** @type { EventSource } */
     const evSource = sourceAction[0];

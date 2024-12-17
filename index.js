@@ -8,7 +8,7 @@ const UpgradeScripts = require('./src/upgrades');
 // const { PlaydeckPresets } = require('./src/PlaydeckPresets');
 const { PlaydeckState } = require('./src/PlaydeckState');
 const { PlaydeckWSConnection } = require('./src/PlaydeckWSConnection');
-
+const { PlaydeckConnectionManager } = require('./src/PlaydeckConnectionManager');
 class PlaydeckInstance extends InstanceBase {
   constructor(internal) {
     super(internal);
@@ -33,11 +33,14 @@ class PlaydeckInstance extends InstanceBase {
     this.actionDefinitions = [];
 
     this.updateStatus(InstanceStatus.Connecting);
-    this.ws = new PlaydeckWSConnection(this);
+    this.connectionManager = new PlaydeckConnectionManager(this);
+    // this.ws = new PlaydeckWSConnection(this);
     // this.connections = new PlaydeckConnections(this);
     // this.feedbacks = new PlaydeckFeedbacks(this);
     // this.actions = new PlaydeckActions(this);
     // this.presets = new PlaydeckPresets(this);
+
+    this.CO;
   }
   // When module gets deleted
   async destroy() {

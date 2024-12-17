@@ -4,33 +4,20 @@ const { PlaybackState, ClipType } = require('./PlaydeckConstants');
  * @class
  */
 class PlaydeckConfig {
-  constructor() {
-    /**
-     * @type { string | null }
-     */
-    this.host = null;
-    /**
-     * @type { string | null }
-     */
-    this.wsPort = null;
-    /**
-     * @type { string | null }
-     */
-    this.tcpPortCom = null;
-    /**
-     * @type { boolean }
-     */
-    this.isTCPCom = false;
-    /**
-     * @type { string | null }
-     */
-    this.tcpPortEv = null;
-    /**
-     * @type { boolean }
-     */
-    this.isTCPEv = false;
-  }
+  /** @type { string | null }  */
+  host;
+  /** @type { string | null }  */
+  wsPort;
+  /**  @type { string | null } */
+  tcpPortCom;
+  /** @type { boolean } */
+  isTCPCom;
+  /** @type { string | null } */
+  tcpPortEv;
+  /** @type { boolean }  */
+  isTCPEv;
 }
+
 /**
  * @typedef { ('PLAYLIST' | 'BLOCK' | 'CLIP' | 'PATTERN' | 'OVERLAY' | 'ACTION' | 'FILENAME' | 'RESET' | 'TARGET') } argName
  */
@@ -39,36 +26,20 @@ class PlaydeckConfig {
  * @class
  */
 class PlaydeckCommand {
-  constructor() {
-    /**
-     * @type { number | null }
-     */
-    this.version = null;
-    /**
-     * @type { string }
-     */
-    this.commandName = ``;
-    /**
-     * @type { string }
-     */
-    this.command = ``;
-    /**
-     * @type { string }
-     */
-    this.description = ``;
-    /**
-     * @type { argName | undefined }
-     */
-    this.arg1 = undefined;
-    /**
-     * @type { argName | undefined }
-     */
-    this.arg2 = undefined;
-    /**
-     * @type { argName | undefined }
-     */
-    this.arg3 = undefined;
-  }
+  /** @type { number | null } */
+  version = null;
+  /** @type { string } */
+  commandName = ``;
+  /** @type { string } */
+  command = ``;
+  /** @type { string } */
+  description = ``;
+  /** @type { argName | undefined } */
+  arg1 = undefined;
+  /** @type { argName | undefined } */
+  arg2 = undefined;
+  /** @type { argName | undefined } */
+  arg3 = undefined;
 }
 
 class PlaydeckStateParameter {
