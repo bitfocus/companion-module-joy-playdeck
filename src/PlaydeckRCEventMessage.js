@@ -12,11 +12,11 @@ class PlaydeckRCEventMessage extends PlaydeckRCMessage {
    */
   constructor(instance, message) {
     super(instance, message);
-    this.#handleEvent();
+
     try {
-      // this.#handleEvent();
+      this.#handleEvent();
     } catch (e) {
-      this.log('warn', `RC Event Message Error: ${e.message}`);
+      this.log('warn', `Error: ${e.message}`);
     }
   }
   /**
@@ -53,11 +53,11 @@ class PlaydeckRCEventMessage extends PlaydeckRCMessage {
    * @returns { RCStateValues }
    */
   #handleEvent() {
-    this.log('debug', `New RC Event message: ${this._message}`);
-    if (!PlaydeckRCMessage.isCorrect(this._message)) throw new Error(`Not RC Message`);
+    this.log('debug', `New message: ${this._message}`);
+    if (!PlaydeckRCMessage.isCorrect(this._message)) throw new Error(`Not RC Event formatted message.`);
     if (!this._instance) throw new Error(`Instance ERROR`);
     const rcEvent = PlaydeckRCEventMessage.parseEvent(this._message);
-    if (!rcEvent) throw new Error(`Parse RC Event ERROR`);
+    if (!rcEvent) throw new Error(`Parsing RC Event ERROR`);
     const sides = {
       1: 'left',
       2: 'right',

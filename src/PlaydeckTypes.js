@@ -9,13 +9,13 @@ class PlaydeckConfig {
   /** @type { string | null }  */
   wsPort;
   /**  @type { string | null } */
-  tcpPortCom;
+  tcpPortCommands;
   /** @type { boolean } */
-  isTCPCom;
+  isTCPCommands;
   /** @type { string | null } */
-  tcpPortEv;
+  tcpPortEvents;
   /** @type { boolean }  */
-  isTCPEv;
+  isTCPEvents;
 }
 
 /**

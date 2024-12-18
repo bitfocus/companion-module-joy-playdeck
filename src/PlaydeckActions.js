@@ -1,10 +1,16 @@
 const { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, dropdownPlaylists, playlistState } = require('./PlaydeckConstants');
-const { InstanceStatus, LogLevel, CompanionActionDefinition } = require('@companion-module/base');
+const { InstanceStatus, LogLevel, CompanionActionDefinitions, CompanionActionInfo } = require('@companion-module/base');
+const PlaydeckInstance = require('../index');
 class PlaydeckActions {
+  /**
+   *
+   * @param { PlaydeckInstance } instance
+   */
   constructor(instance) {
+    /** @type { PlaydeckInstance } */
     this.instance = instance;
     /**
-     * @type { CompanionActionDefinition}
+     * @type { CompanionActionDefinitions}
      */
     this.actionDefinitions = {
       play: {
@@ -414,6 +420,11 @@ class PlaydeckActions {
     this.log('info', JSON.stringify(command));
     this.sendCommand(command);
   }
+  /**
+   *
+   * @param { CompanionActionInfo } action
+   * @returns
+   */
   async getCommand(action) {
     switch (action.actionId) {
       case 'play':

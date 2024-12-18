@@ -1,5 +1,6 @@
 const { InstanceBase, Regex, runEntrypoint, InstanceStatus, LogLevel } = require('@companion-module/base');
 const EventEmitter = require('events');
+const dns = require('dns');
 const PlaydeckInstance = require('../index');
 const { PlaybackState, ClipType, ConnectionType, ConnectionDirection } = require('./PlaydeckConstants');
 /**
@@ -8,11 +9,28 @@ const { PlaybackState, ClipType, ConnectionType, ConnectionDirection } = require
  * @extends EventEmitter
  */
 class PlaydeckConnection extends EventEmitter {
+  /** @type { number } */
+  #reconnectTimeout = 5000;
   /**
    * @protected
    * @type { PlaydeckInstance }
    */
   _instance;
+  /**
+   * @protected
+   * @type { number }
+   */
+  _port;
+  /**
+   * @protected
+   * @type { string }
+   */
+  _host;
+  /**
+   * @protected
+   *  @type { string }
+   */
+  _lastErrorMessage;
   /** @type { ConnectionDirection } */
   direction;
   /** @type { ConnectionType } */
@@ -28,6 +46,26 @@ class PlaydeckConnection extends EventEmitter {
     this._instance = instance;
     this.direction = direction;
     this.status = InstanceStatus.Disconnected;
+  }
+  /** @protected */
+  _init() {}
+  /**
+   * Returns promise with IPv4 adress of host: `{ address: string, family: 4 }`
+   * @protected
+   * @param { string } host
+   * @returns { Promise<dns.LookupAddress> }
+   */
+  _resolveHost(host) {
+    return dns.promises.lookup(host, 4);
+  }
+  /** @protected */
+  _reconnect() {
+    this.updateStatus(InstanceStatus.Connecting, this._lastErrorMessage ? `Last error: ${this._lastErrorMessage}` : null);
+    setTimeout(() => {
+      this.destroy();
+      this.log('info', `Trying to reconnect...`);
+      this._init();
+    }, this.#reconnectTimeout);
   }
   /**
    * @type {{

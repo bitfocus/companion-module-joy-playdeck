@@ -26,8 +26,8 @@ class PlaydeckConnectionManager {
     let incomingType = null;
     /** @type { ConnectionType } */
     let outgoingType = null;
-    outgoingType = this.#instance.config.isTCPCom ? ConnectionType.TCP : ConnectionType.WS;
-    incomingType = this.#instance.config.isTCPEv ? ConnectionType.TCP : ConnectionType.WS;
+    outgoingType = this.#instance.config.isTCPCommands ? ConnectionType.TCP : ConnectionType.WS;
+    incomingType = this.#instance.config.isTCPEvents ? ConnectionType.TCP : ConnectionType.WS;
     if (outgoingType === ConnectionType.WS && outgoingType === incomingType) {
       this.outgoing = this.#startConnection(outgoingType, ConnectionDirection.BiDirectional);
       this.incoming = this.outgoing;
@@ -35,7 +35,6 @@ class PlaydeckConnectionManager {
       this.outgoing = this.#startConnection(outgoingType, ConnectionDirection.Outgoing);
       this.incoming = this.#startConnection(incomingType, ConnectionDirection.Incoming);
     }
-
     this.log(`info`, `Incoming = ${this.incoming.type}, Outgoing = ${this.outgoing.type}`);
   }
   /**
@@ -51,7 +50,6 @@ class PlaydeckConnectionManager {
       case ConnectionType.TCP:
         return new PlaydeckTCPConnection(this.#instance, direction);
     }
-    return new PlaydeckConnection();
   }
 
   /**
@@ -59,7 +57,7 @@ class PlaydeckConnectionManager {
    * @param  {string} message
    */
   log(level, message) {
-    this.#instance.log(level, message);
+    this.#instance.log(level, `Playdeck Connection Manager: ${message}`);
   }
 }
 

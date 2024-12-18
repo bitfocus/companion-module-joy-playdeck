@@ -11,14 +11,10 @@ const { PlaydeckRCEventMessage } = require(`./PlaydeckRCEventMessage`);
 class PlaydeckWSConnection extends PlaydeckConnection {
   /** @type { PlaydeckWSStateValues | null } */
   #stateValues = null;
-  /** @type { NodeJS.Timeout | null} */
-  #reconnectInterval = null;
-  /** @type { number | null }  */
-  #reconnectTimeout = 5000;
-  /** @type { string | null } */
-  #lastErrorMessage = null;
+
   /** @type { WebSocket | null} */
   #webSocket = null;
+
   /**
    * @param { PlaydeckInstance } instance
    * @param { ConnectionDirection } direction
@@ -27,17 +23,18 @@ class PlaydeckWSConnection extends PlaydeckConnection {
   constructor(instance, direction) {
     super(instance, direction);
     this.type = ConnectionType.WS;
-    this.log(`info`, `Starting connection. IP/HOST: ${this._instance.config.host}. PORT: ${this._instance.config.wsPort}`);
-    this.#init();
+    this._port = this._instance.config.wsPort;
+    this._host = this._instance.config.host;
+    this.log(`info`, `Starting connection. IP/HOST: ${this._host}. PORT: ${this._port}`);
+    this._init();
   }
-  #init() {
+  _init() {
     this.updateStatus(InstanceStatus.Connecting);
-    this.#webSocket = new WebSocket(`ws://${this._instance.config.host}:${this._instance.config.wsPort}`);
+    this.#webSocket = new WebSocket(`ws://${this._host}:${this._port}`);
     this.#webSocket.on('open', () => {
       this.log(`info`, `Connected.`);
-      clearInterval(this.#reconnectInterval);
       this.updateStatus(InstanceStatus.Ok);
-      this.#lastErrorMessage = null;
+      this._lastErrorMessage = null;
     });
     this.#webSocket.on('message', (rawData, isBinary) => {
       if (!isBinary) {
@@ -46,12 +43,12 @@ class PlaydeckWSConnection extends PlaydeckConnection {
     });
     this.#webSocket.on('error', (err) => {
       this.log('error', `Error: ${err.message}`);
-      this.#lastErrorMessage = err.message;
-      this.updateStatus(InstanceStatus.ConnectionFailure, this.#lastErrorMessage);
+      this._lastErrorMessage = err.message;
+      this.updateStatus(InstanceStatus.ConnectionFailure, this._lastErrorMessage);
     });
     this.#webSocket.on('close', (code, reason) => {
       this.log('debug', `Closed with code: ${code}, with reason: ${reason.toString()}`);
-      this.#reconnect();
+      this._reconnect();
     });
   }
   /**
@@ -100,15 +97,7 @@ class PlaydeckWSConnection extends PlaydeckConnection {
       },
     });
   }
-  #reconnect() {
-    if (this.status === InstanceStatus.Connecting) return;
-    this.updateStatus(InstanceStatus.Connecting, this.#lastErrorMessage ? `Last error: ${this.#lastErrorMessage}` : null);
-    this.#reconnectInterval = setTimeout(() => {
-      this.destroy();
-      this.log('info', `Trying to reconnect...`);
-      this.#init();
-    }, this.#reconnectTimeout);
-  }
+
   /**
    * @param { string } command
    * @override
@@ -121,7 +110,6 @@ class PlaydeckWSConnection extends PlaydeckConnection {
    */
   destroy() {
     this.#webSocket.close(1000);
-    clearInterval(this.clearInterval);
     this.log(`debug`, `Destroyed.`);
   }
 }

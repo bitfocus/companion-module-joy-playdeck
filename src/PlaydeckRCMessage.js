@@ -66,7 +66,7 @@ class PlaydeckRCMessage {
    * @param  {string} message
    */
   log(level, message) {
-    this._instance.log(level, message);
+    this._instance.log(level, `Playdeck RC: ${message}`);
   }
 }
 

@@ -50,7 +50,7 @@ function getPlaydeckConfigFields() {
     {
       type: 'number',
       label: 'TCP Port (Default: 11375)',
-      id: 'tcpPortCom',
+      id: 'tcpPortCommands',
       width: 6,
       default: 11375,
       required: true,
@@ -58,7 +58,7 @@ function getPlaydeckConfigFields() {
     {
       type: 'checkbox',
       label: 'Enable TCP Commands',
-      id: 'isTCPCom',
+      id: 'isTCPCommands',
       width: 6,
       default: true,
       required: true,
@@ -73,7 +73,7 @@ function getPlaydeckConfigFields() {
     {
       type: 'number',
       label: 'TCP Port (Default: 11376)',
-      id: 'tcpPortEv',
+      id: 'tcpPortEvents',
       width: 6,
       default: 11376,
       required: false,
@@ -81,7 +81,7 @@ function getPlaydeckConfigFields() {
     {
       type: 'checkbox',
       label: 'Enable TCP Events',
-      id: 'isTCPEv',
+      id: 'isTCPEvents',
       width: 6,
       default: true,
       required: true,
