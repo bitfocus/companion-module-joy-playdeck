@@ -1,8 +1,7 @@
 const { PlaydeckCommand } = require('./PlaydeckCommands');
-const { Regex, LogLevel, CompanionActionDefinitions, SomeCompanionActionInputField } = require('@companion-module/base');
+const { LogLevel, CompanionActionDefinitions } = require('@companion-module/base');
 const PlaydeckInstance = require('../index');
 const { PlaydeckCommands } = require('./PlaydeckCommands');
-const { PlaydeckRCMessage } = require('./PlaydeckRCMessages/PlaydeckRCMessage');
 const { PlaydeckConnection } = require('./PlaydeckConnections/PlaydeckConnection');
 
 class PlaydeckActions {

@@ -1,8 +1,6 @@
-const { InstanceStatus, TCPHelper, InstanceBase, LogLevel } = require('@companion-module/base');
-const { PlaydeckConnection, ConnectionType, ConnectionDirection } = require('./PlaydeckConnection');
-
 const PlaydeckInstance = require('../../index');
-const { PlaybackState, ClipType } = require('../PlaydeckState');
+const { InstanceStatus, TCPHelper } = require('@companion-module/base');
+const { PlaydeckConnection, ConnectionType, ConnectionDirection } = require('./PlaydeckConnection');
 const { PlaydeckRCEventMessage } = require(`../PlaydeckRCMessages/PlaydeckRCEventMessage`);
 const { PlaydeckVersion } = require('../PlaydeckVersion');
 

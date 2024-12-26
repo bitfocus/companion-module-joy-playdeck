@@ -1,6 +1,6 @@
 const EventEmitter = require('events');
 const PlaydeckInstance = require('../index');
-const { CompanionVariableDefinition, Regex } = require('@companion-module/base');
+const { CompanionVariableDefinition } = require('@companion-module/base');
 
 class PlaydeckState extends EventEmitter {
   /** @param { PlaydeckInstance } instance */

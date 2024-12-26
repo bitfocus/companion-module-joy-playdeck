@@ -1,8 +1,8 @@
-const { InstanceBase, Regex, runEntrypoint, InstanceStatus, LogLevel } = require('@companion-module/base');
+const PlaydeckInstance = require('../../index');
+const { InstanceStatus, LogLevel } = require('@companion-module/base');
 const EventEmitter = require('events');
 const dns = require('dns');
-const PlaydeckInstance = require('../../index');
-const { PlaybackState, ClipType } = require('../PlaydeckState');
+
 /**
  * PlaydeckConnection class
  *

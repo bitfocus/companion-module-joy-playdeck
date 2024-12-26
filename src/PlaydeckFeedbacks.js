@@ -1,14 +1,5 @@
 const PlaydeckInstance = require('../index');
-const {
-  Regex,
-  LogLevel,
-  CompanionFeedbackDefinition,
-  CompanionFeedbackDefinitionBase,
-  CompanionFeedbackDefinitions,
-  combineRgb,
-  SomeCompanionFeedbackInputField,
-  CompanionFeedbackInfo,
-} = require('@companion-module/base');
+const { LogLevel, CompanionFeedbackDefinition, CompanionFeedbackDefinitions, combineRgb, SomeCompanionFeedbackInputField } = require('@companion-module/base');
 const { PlaybackState } = require('./PlaydeckState');
 class PlaydeckFeedbacks {
   /** @type { PlaydeckInstance } */

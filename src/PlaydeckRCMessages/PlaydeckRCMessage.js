@@ -1,6 +1,5 @@
 const PlaydeckInstance = require('../../index');
-const { PlaybackState, ClipType } = require('../PlaydeckState');
-const { CompanionVariableDefinition, Regex, LogLevel } = require('@companion-module/base');
+const { LogLevel } = require('@companion-module/base');
 class PlaydeckRCMessage {
   /**
    * @protected

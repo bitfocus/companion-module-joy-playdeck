@@ -1,5 +1,5 @@
 const { PlaydeckRCMessage } = require('./PlaydeckRCMessages/PlaydeckRCMessage');
-const { Regex, LogLevel, CompanionActionDefinitions, SomeCompanionActionInputField } = require('@companion-module/base');
+const { Regex, SomeCompanionActionInputField } = require('@companion-module/base');
 const { PlaydeckVersion } = require('./PlaydeckVersion');
 /**
  * @typedef { ('PLAYLIST' | 'BLOCK' | 'CLIP' | 'PATTERN' | 'OVERLAY' | 'ACTION' | 'FILENAME' | 'RESET' | 'TARGET' | 'AUTOPLAY' | 'METHOD' | 'COMMAND') } argName

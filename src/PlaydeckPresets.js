@@ -1,14 +1,14 @@
 const PlaydeckInstance = require('../index');
 const { PlaydeckCommand, PlaydeckCommands } = require('./PlaydeckCommands');
 const { PlaybackState } = require('./PlaydeckState');
-const { InstanceStatus, TCPHelper, LogLevel, CompanionPresetDefinitions } = require('@companion-module/base');
+const { LogLevel, CompanionPresetDefinitions } = require('@companion-module/base');
 const { combineRgb } = require('@companion-module/base');
 
 class PlaydeckPresets {
   /** @type { PlaydeckInstance } */
   #instance;
   /** @type { number } */
-  #fontSize = 14;
+  #fontSize = 10;
   /** @type { CompanionPresetDefinitions } */
   #presetDefinitions = {};
   constructor(instance) {
@@ -24,53 +24,82 @@ class PlaydeckPresets {
    * @param { PlaydeckCommands } commands
    */
   #updatePresetDefinitions(commands) {
-    this.#log('warn', commands.length);
-  }
-  #updatePresets() {
-    for (let i = 1; i <= 2; i++) {
-      for (const command in CHOICES_COMMANDS) {
-        const isRec = CHOICES_COMMANDS[command].id.includes('rec');
-        let PlayOrRec = isRec ? `record` : i == 1 ? `left` : `right`;
-        if (!(isRec && i == 2)) {
-          this.makePreset({
-            id: `preset_${PlayOrRec}_${CHOICES_COMMANDS[command].id}`,
-            category: `${this.#capitalizeFirstLetter(PlayOrRec)}${!isRec ? ` Playlist` : ``}`,
-            text: CHOICES_COMMANDS[command].label,
-            action: {
-              actionId: CHOICES_COMMANDS[command].id,
-              options: {
-                playlist: i,
-                id: 1,
-                clip_id: 1,
-              },
-            },
-            feedback: this.isStateCommand(CHOICES_COMMANDS[command].id)
-              ? {
-                  state: CHOICES_COMMANDS[command].id,
-                  playlist: i,
-                  block: 0,
-                  clip: 0,
-                }
-              : undefined,
-          });
-        }
-      }
+    for (let playlistNum = 1; playlistNum <= 2; playlistNum++) {
+      commands.forEach((command) => {
+        this.#addPresetForCommand(command, playlistNum);
+      });
     }
   }
+  /**
+   *
+   * @param {PlaydeckCommand} command
+   * @param { number } playlistNum
+   */
+  #addPresetForCommand(command, playlistNum) {
+    const category = this.#getCategory(command);
+    const playlistSide = playlistNum === 1 ? 'left' : 'right';
+    const isPlayList = category === 'playlist';
+    const presetCategory = isPlayList ? `${playlistSide}_${category}` : category;
+
+    const commandOptions = PlaydeckCommands.getOptions(command);
+    const arg1Default = commandOptions[0] ? (commandOptions[0].choices ? commandOptions[0].choices[0].id : ``) : ``;
+    this.#makePreset({
+      id: `preset_${presetCategory}_${command.command}`,
+      category: `${this.#capitalizeFirstLetter(presetCategory.replace('_', ' '))}`,
+      text: `${isPlayList ? `${this.#capitalizeFirstLetter(playlistSide)} ` : ``}${command.commandName.replace(' - ', ' ')}`,
+      action: {
+        actionId: command.command,
+        options: {
+          arg1: isPlayList ? playlistNum : arg1Default,
+          arg2: isPlayList ? 1 : ``,
+          arg3: 1,
+        },
+      },
+      feedback: this.#isStateCommand(command.command)
+        ? {
+            state: command.command,
+            playlist: playlistSide,
+            block: 0,
+            clip: 0,
+          }
+        : undefined,
+    });
+  }
+  /**
+   *
+   * @param {PlaydeckCommand} command
+   * @return { PresetCategory }
+   */
+  #getCategory(command) {
+    const isRec = command.command.includes('rec');
+    const isSync = command.command.includes('sync');
+    const isPlayList = command.arg1 === 'PLAYLIST';
+    if (isRec) return 'record';
+    if (isSync) return 'sync';
+    if (isPlayList) return 'playlist';
+    return 'common';
+  }
+  /**
+   *
+   * @param { string } word
+   * @returns { string }
+   */
   #capitalizeFirstLetter(word) {
     const firstLetter = word.charAt(0);
     const firstLetterCap = firstLetter.toUpperCase();
     const remainingLetters = word.slice(1);
     return firstLetterCap + remainingLetters;
   }
+
   #isStateCommand(command) {
     for (const prop in PlaybackState) {
-      if (command === prop) {
+      if (command === PlaybackState[prop]) {
         return true;
       }
     }
     return false;
   }
+
   #makePreset(preset) {
     const newPreset = {
       [`${preset.id}`]: {
@@ -78,7 +107,7 @@ class PlaydeckPresets {
         type: 'button',
         style: {
           text: preset.text,
-          size: this.fontSize,
+          size: this.#fontSize,
           color: combineRgb(255, 255, 255),
           bgcolor: combineRgb(0, 0, 0),
         },
@@ -124,35 +153,8 @@ class PlaydeckPresets {
   }
 }
 
+/** @typedef { ('common' | 'playlist' | 'record' | 'sync') } PresetCategory */
+
 module.exports = {
   PlaydeckPresets,
 };
-
-CHOICES_COMMANDS = [
-  { id: 'play', label: 'Play' },
-  { id: 'pause', label: 'Pause' },
-  { id: 'stop', label: 'Stop' },
-  { id: 'nextclip', label: 'Next Clip' },
-  { id: 'previousclip', label: 'Previous Clip' },
-  { id: 'restartclip', label: 'Restart Clip' },
-  { id: 'jump', label: 'Jump' },
-  { id: 'fadein', label: 'Fade In' },
-  { id: 'fadeout', label: 'Fade Out' },
-  { id: 'muteaudio', label: 'Mute Audio' },
-  { id: 'unmuteaudio', label: 'Unmute Audio' },
-  { id: 'activateall', label: 'Activate All' },
-  { id: 'stopalloverlays', label: 'Stop All Overlays' },
-  { id: 'playoverlay', label: 'Play Overlay' },
-  { id: 'stopoverlay', label: 'Stop Overlay' },
-  { id: 'playaction', label: 'Play Action' },
-  { id: 'selectblock', label: 'Select Block' },
-  { id: 'activateblock', label: 'Activate Block' },
-  { id: 'deactivateblock', label: 'Deactivate Block' },
-  { id: 'selectclip', label: 'Select Clip' },
-  { id: 'activateclip', label: 'Activate Clip' },
-  { id: 'deactivateclip', label: 'Deactivate Clip' },
-  { id: 'cue', label: 'Cue' },
-  { id: 'cueandplay', label: 'Cue And Play' },
-  { id: 'startrec', label: 'Start Recording' },
-  { id: 'stoprec', label: 'Stop Recording' },
-];

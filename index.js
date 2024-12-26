@@ -1,12 +1,4 @@
-const {
-  InstanceBase,
-  Regex,
-  runEntrypoint,
-  InstanceStatus,
-  CompanionActionDefinitions,
-  CompanionVariableDefinition,
-  CompanionActionDefinition,
-} = require('@companion-module/base');
+const { InstanceBase, runEntrypoint, InstanceStatus, CompanionActionDefinitions, CompanionVariableDefinition } = require('@companion-module/base');
 const { getPlaydeckConfigFields, PlaydeckConfig } = require('./src/PlaydeckConfig');
 const UpgradeScripts = require('./src/upgrades');
 const { PlaydeckFeedbacks } = require('./src/PlaydeckFeedbacks');
@@ -38,16 +30,15 @@ class PlaydeckInstance extends InstanceBase {
     this.state = new PlaydeckState(this);
     this.updateStatus(InstanceStatus.Connecting);
     this.connectionManager = new PlaydeckConnectionManager(this);
-
     this.actions = new PlaydeckActions(this);
     this.feedbacks = new PlaydeckFeedbacks(this);
-
     this.presets = new PlaydeckPresets(this);
   }
+
   // When module gets deleted
   async destroy() {
+    this.log('debug', 'Playdeck Instance: destroying...');
     this.connectionManager.destroy();
-    this.log('debug', 'destroy');
   }
 
   async configUpdated(config) {

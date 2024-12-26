@@ -1,11 +1,6 @@
-const EventEmitter = require('events');
-const { InstanceStatus, TCPHelper, InstanceBase, LogLevel } = require('@companion-module/base');
-const WebSocket = require('ws');
-const { isBigInt64Array } = require('util/types');
-const { PlaydeckConnection, ConnectionType, ConnectionDirection } = require('./PlaydeckConnection');
 const PlaydeckInstance = require('../../index');
-const { PlaybackState, ClipType } = require('../PlaydeckState');
-const { PlaydeckRCEventMessage } = require(`../PlaydeckRCMessages/PlaydeckRCEventMessage`);
+const { InstanceStatus, LogLevel } = require('@companion-module/base');
+const { PlaydeckConnection, ConnectionType, ConnectionDirection } = require('./PlaydeckConnection');
 const { PlaydeckWSConnection } = require('./PlaydeckWSConnection');
 const { PlaydeckTCPConnection } = require('./PlaydeckTCPConnection');
 class PlaydeckConnectionManager {
