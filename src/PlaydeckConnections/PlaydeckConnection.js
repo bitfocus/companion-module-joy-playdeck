@@ -1,8 +1,8 @@
 const { InstanceBase, Regex, runEntrypoint, InstanceStatus, LogLevel } = require('@companion-module/base');
 const EventEmitter = require('events');
 const dns = require('dns');
-const PlaydeckInstance = require('../index');
-const { PlaybackState, ClipType, ConnectionType, ConnectionDirection } = require('./PlaydeckConstants');
+const PlaydeckInstance = require('../../index');
+const { PlaybackState, ClipType } = require('../PlaydeckState');
 /**
  * PlaydeckConnection class
  *
@@ -91,7 +91,7 @@ class PlaydeckConnection extends EventEmitter {
    * @param { string } command Command like <{command}|{playlistID}|{blockID}|{clipID}>
    */
   send(command) {}
-
+  destroy() {}
   /**
    *
    * @param {LogLevel} level
@@ -114,6 +114,21 @@ class PlaydeckConnection extends EventEmitter {
   }
 }
 
+/** @enum {typeof ConnectionType[keyof typeof ConnectionType]} */
+const ConnectionType = /** @type {const} */ ({
+  TCP: 'TCP',
+  WS: 'WebSocket',
+});
+
+/** @enum {typeof ConnectionDirection[keyof typeof ConnectionDirection]} */
+const ConnectionDirection = /** @type {const} */ ({
+  Incoming: 'incoming',
+  Outgoing: 'outgoing',
+  BiDirectional: 'bidirectional',
+});
+
 module.exports = {
   PlaydeckConnection,
+  ConnectionType,
+  ConnectionDirection,
 };

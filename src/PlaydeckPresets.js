@@ -1,21 +1,32 @@
-const { playlistState } = require('./PlaydeckConstants');
-const { InstanceStatus, TCPHelper, LogLevel } = require('@companion-module/base');
+const PlaydeckInstance = require('../index');
+const { PlaydeckCommand, PlaydeckCommands } = require('./PlaydeckCommands');
+const { PlaybackState } = require('./PlaydeckState');
+const { InstanceStatus, TCPHelper, LogLevel, CompanionPresetDefinitions } = require('@companion-module/base');
 const { combineRgb } = require('@companion-module/base');
 
 class PlaydeckPresets {
+  /** @type { PlaydeckInstance } */
+  #instance;
+  /** @type { number } */
+  #fontSize = 14;
+  /** @type { CompanionPresetDefinitions } */
+  #presetDefinitions = {};
   constructor(instance) {
-    this.instance = instance;
-    this.fontSize = 14;
-    this.presetDefinitions = {};
-
-    this.init();
+    this.#instance = instance;
+    this.#init();
   }
-  init() {
-    this.updatePresets();
-    this.instance.setPresetDefinitions(this.presetDefinitions);
+  #init() {
+    this.#updatePresetDefinitions(new PlaydeckCommands(this.#instance.version));
+    this.#instance.setPresetDefinitions(this.#presetDefinitions);
   }
-
-  updatePresets() {
+  /**
+   *
+   * @param { PlaydeckCommands } commands
+   */
+  #updatePresetDefinitions(commands) {
+    this.#log('warn', commands.length);
+  }
+  #updatePresets() {
     for (let i = 1; i <= 2; i++) {
       for (const command in CHOICES_COMMANDS) {
         const isRec = CHOICES_COMMANDS[command].id.includes('rec');
@@ -23,7 +34,7 @@ class PlaydeckPresets {
         if (!(isRec && i == 2)) {
           this.makePreset({
             id: `preset_${PlayOrRec}_${CHOICES_COMMANDS[command].id}`,
-            category: `${this.capitalizeFirstLetter(PlayOrRec)}${!isRec ? ` Playlist` : ``}`,
+            category: `${this.#capitalizeFirstLetter(PlayOrRec)}${!isRec ? ` Playlist` : ``}`,
             text: CHOICES_COMMANDS[command].label,
             action: {
               actionId: CHOICES_COMMANDS[command].id,
@@ -46,21 +57,21 @@ class PlaydeckPresets {
       }
     }
   }
-  capitalizeFirstLetter(word) {
+  #capitalizeFirstLetter(word) {
     const firstLetter = word.charAt(0);
     const firstLetterCap = firstLetter.toUpperCase();
     const remainingLetters = word.slice(1);
     return firstLetterCap + remainingLetters;
   }
-  isStateCommand(command) {
-    for (const prop in playlistState) {
+  #isStateCommand(command) {
+    for (const prop in PlaybackState) {
       if (command === prop) {
         return true;
       }
     }
     return false;
   }
-  makePreset(preset) {
+  #makePreset(preset) {
     const newPreset = {
       [`${preset.id}`]: {
         category: preset.category,
@@ -101,20 +112,15 @@ class PlaydeckPresets {
           : [],
       },
     };
-    Object.assign(this.presetDefinitions, newPreset);
+    Object.assign(this.#presetDefinitions, newPreset);
   }
   /**
-   *
-   * @param {LogLevel} level
-   * @param  {string} message
+   * @param { LogLevel } level
+   * @param  { string } message
    * @returns
    */
-  log(level, message) {
-    this.instance.log(level, message);
-  }
-
-  updateStatus(status) {
-    this.instance.updateStatus(status);
+  #log(level, message) {
+    this.#instance.log(level, `Presets: ${message}`);
   }
 }
 

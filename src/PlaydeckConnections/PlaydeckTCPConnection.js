@@ -1,9 +1,10 @@
 const { InstanceStatus, TCPHelper, InstanceBase, LogLevel } = require('@companion-module/base');
-const { PlaydeckConnection } = require('./PlaydeckConnection');
+const { PlaydeckConnection, ConnectionType, ConnectionDirection } = require('./PlaydeckConnection');
 
-const PlaydeckInstance = require('../index');
-const { PlaybackState, ClipType, ConnectionType, ConnectionDirection } = require('./PlaydeckConstants');
-const { PlaydeckRCEventMessage } = require(`./PlaydeckRCEventMessage`);
+const PlaydeckInstance = require('../../index');
+const { PlaybackState, ClipType } = require('../PlaydeckState');
+const { PlaydeckRCEventMessage } = require(`../PlaydeckRCMessages/PlaydeckRCEventMessage`);
+const { PlaydeckVersion } = require('../PlaydeckVersion');
 
 class PlaydeckTCPConnection extends PlaydeckConnection {
   #stateValues = null;
@@ -65,7 +66,20 @@ class PlaydeckTCPConnection extends PlaydeckConnection {
   /** @param {string} data */
   #dataHandler(data) {
     this.log('debug', `Recieved data: ${data}`);
-    const newEvent = new PlaydeckRCEventMessage(this._instance, data);
+    const dataLowCase = data.toLocaleLowerCase();
+    if (dataLowCase.startsWith('playdeck')) {
+      const recivedVersion = dataLowCase.split('playdeck ')[1];
+      if (PlaydeckVersion.isVersion(recivedVersion)) {
+        this.log('debug', `Recieved version info: ${recivedVersion}`);
+        if (recivedVersion !== this._instance.version.getCurrent()) {
+          this.log('warn', `Connected to different version of Playdeck (${recivedVersion}). Check settings (${this._instance.version.getCurrent()})!`);
+        }
+      }
+
+      this.log();
+    } else {
+      const newEvent = new PlaydeckRCEventMessage(this._instance, data);
+    }
   }
 
   /**
@@ -73,11 +87,12 @@ class PlaydeckTCPConnection extends PlaydeckConnection {
    * @override
    */
   send(command) {
+    this.log('debug', `Message sent: ${command}`);
     this.#tcpHelper.send(command);
   }
   /** @override */
   destroy() {
-    this.log(`debug`, `Playdeck TCP (${this.direction}) Connection destroyed.`);
+    this.log(`debug`, `Connection destroyed.`);
     this.#tcpHelper.destroy();
   }
 }

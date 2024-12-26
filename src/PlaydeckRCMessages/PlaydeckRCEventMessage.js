@@ -1,6 +1,6 @@
-const PlaydeckInstance = require('../index');
+const PlaydeckInstance = require('../../index');
 const { PlaydeckRCMessage } = require('./PlaydeckRCMessage');
-const { PlaybackState } = require('./PlaydeckConstants');
+const { PlaybackState } = require('../PlaydeckState');
 class PlaydeckRCEventMessage extends PlaydeckRCMessage {
   /** @type { RCStateValues } */
   #stateValues;

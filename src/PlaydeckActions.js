@@ -1,541 +1,81 @@
-const { CHOICES_PLAYLIST, CHOICES_STATE, COMMAND_REGEX, dropdownPlaylists, playlistState } = require('./PlaydeckConstants');
-const { InstanceStatus, LogLevel, CompanionActionDefinitions, CompanionActionInfo } = require('@companion-module/base');
+const { PlaydeckCommand } = require('./PlaydeckCommands');
+const { Regex, LogLevel, CompanionActionDefinitions, SomeCompanionActionInputField } = require('@companion-module/base');
 const PlaydeckInstance = require('../index');
+const { PlaydeckCommands } = require('./PlaydeckCommands');
+const { PlaydeckRCMessage } = require('./PlaydeckRCMessages/PlaydeckRCMessage');
+const { PlaydeckConnection } = require('./PlaydeckConnections/PlaydeckConnection');
+
 class PlaydeckActions {
-  /**
-   *
-   * @param { PlaydeckInstance } instance
-   */
+  /** @type { PlaydeckInstance } */
+  #instance;
+  /** @type { CompanionActionDefinitions} */
+  #actionDefinitions;
+  /** @param { PlaydeckInstance } instance */
   constructor(instance) {
-    /** @type { PlaydeckInstance } */
-    this.instance = instance;
-    /**
-     * @type { CompanionActionDefinitions}
-     */
-    this.actionDefinitions = {
-      play: {
-        name: 'Play',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      pause: {
-        name: 'Pause',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      stop: {
-        name: 'Stop',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      nextclip: {
-        name: 'Next Clip',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      previousclip: {
-        name: 'Previous Clip',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      restartclip: {
-        name: 'Restart Clip',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      jump: {
-        name: 'Jump',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      fadein: {
-        name: 'Fade In',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      fadeout: {
-        name: 'Fade Out',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      muteaudio: {
-        name: 'Mute Audio',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      unmuteaudio: {
-        name: 'Unmute Audio',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      activateall: {
-        name: 'Activate All',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      stopalloverlays: {
-        name: 'Stop All Overlays',
-        options: [dropdownPlaylists],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      playoverlay: {
-        name: 'Play Overlay',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Overlay ID:',
-            min: 1,
-            max: 30,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      stopoverlay: {
-        name: 'Stop Overlay',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Overlay ID:',
-            min: 1,
-            max: 30,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      playaction: {
-        name: 'Play Action',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Action ID:',
-            min: 1,
-            max: 30,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      selectblock: {
-        name: 'Select Block',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Block ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      activateblock: {
-        name: 'Activate Block',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Block ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      deactivateblock: {
-        name: 'Deactivate Block',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Block ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      selectclip: {
-        name: 'Select Clip',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Block ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-          {
-            type: 'number',
-            id: 'clip_id',
-            label: 'Clip ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      activateclip: {
-        name: 'Activate Clip',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Block ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-          {
-            type: 'number',
-            id: 'clip_id',
-            label: 'Clip ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      deactivateclip: {
-        name: 'Deactivate Clip',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Block ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-          {
-            type: 'number',
-            id: 'clip_id',
-            label: 'Clip ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      cue: {
-        name: 'Cue',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Block ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-          {
-            type: 'number',
-            id: 'clip_id',
-            label: 'Clip ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      cueandplay: {
-        name: 'Cue And Play',
-        options: [
-          dropdownPlaylists,
-          {
-            type: 'number',
-            id: 'id',
-            label: 'Block ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-          {
-            type: 'number',
-            id: 'clip_id',
-            label: 'Clip ID:',
-            min: 1,
-            max: 256,
-            default: 1,
-            required: true,
-            range: false,
-            regex: this.instance.REGEX_NUMBER,
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      startrec: {
-        name: 'Start Recording',
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      stoprec: {
-        name: 'Start Recording',
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-      customcommand: {
-        name: 'Custom Command',
-        options: [
-          {
-            type: 'textinput',
-            id: 'command',
-            label: 'Custom command:',
-            required: true,
-            regex: COMMAND_REGEX,
-            useVariables: true,
-            tooltip: 'Write custom command like <{command}|{playlist_id}|?{block_id}|?{clip_id}>',
-          },
-        ],
-        callback: (action) => {
-          this.doAction(action);
-        },
-      },
-    };
-
-    this.init();
+    this.#instance = instance;
+    this.#actionDefinitions = this.#getActionDefinitions();
+    this.#init();
   }
-  init() {
-    this.instance.setActionDefinitions(this.actionDefinitions);
-  }
-  async doAction(action) {
-    let command = await this.getCommand(action);
-    this.log('info', JSON.stringify(command));
-    this.sendCommand(command);
+  /** @returns { CompanionActionDefinitions } */
+  #getActionDefinitions() {
+    let result = {};
+    // TODO: initialise command via version!
+    const commands = new PlaydeckCommands(this.#instance.version);
+    commands.forEach((/** @type {PlaydeckCommand} */ command) => {
+      /** @type { CompanionActionDefinitions } */
+      result[command.command] = {
+        name: command.commandName,
+        callback: async (action) => {
+          await this.#doAction(action);
+        },
+        options: PlaydeckCommands.getOptions(command),
+        description: command.description,
+      };
+    });
+    return result;
   }
   /**
-   *
-   * @param { CompanionActionInfo } action
-   * @returns
+   * @param { PlaydeckActionInfo } action
    */
-  async getCommand(action) {
-    switch (action.actionId) {
-      case 'play':
-        return '<play|' + action.options.playlist + '>';
-
-      case 'pause':
-        return '<pause|' + action.options.playlist + '>';
-
-      case 'stop':
-        return '<stop|' + action.options.playlist + '>';
-
-      case 'nextclip':
-        return '<nextclip|' + action.options.playlist + '>';
-
-      case 'previousclip':
-        return '<previousclip|' + action.options.playlist + '>';
-
-      case 'restartclip':
-        return '<restartclip|' + action.options.playlist + '>';
-
-      case 'jump':
-        return '<jump|' + action.options.playlist + '>';
-
-      case 'fadein':
-        return '<fadein|' + action.options.playlist + '>';
-
-      case 'fadeout':
-        return '<fadeout|' + action.options.playlist + '>';
-
-      case 'muteaudio':
-        return '<muteaudio|' + action.options.playlist + '>';
-
-      case 'unmuteaudio':
-        return '<unmuteaudio|' + action.options.playlist + '>';
-
-      case 'activateall':
-        return '<activateall|' + action.options.playlist + '>';
-
-      case 'stopalloverlays':
-        return '<stopalloverlays|' + action.options.playlist + '>';
-
-      case 'playoverlay':
-        return '<playoverlay|' + action.options.playlist + '|' + action.options.id + '>';
-
-      case 'stopoverlay':
-        return '<stopoverlay|' + action.options.playlist + '|' + action.options.id + '>';
-
-      case 'playaction':
-        return '<playaction|' + action.options.playlist + '|' + action.options.id + '>';
-
-      case 'selectblock':
-        return '<selectblock|' + action.options.playlist + '|' + action.options.id + '>';
-
-      case 'activateblock':
-        return '<activateblock|' + action.options.playlist + '|' + action.options.id + '>';
-
-      case 'deactivateblock':
-        return '<deactivateblock|' + action.options.playlist + '|' + action.options.id + '>';
-
-      case 'selectclip':
-        return '<selectclip|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
-
-      case 'activateclip':
-        return '<activateclip|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
-
-      case 'deactivateclip':
-        return '<deactivateclip|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
-
-      case 'cue':
-        return '<cue|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
-
-      case 'cueandplay':
-        return '<cueandplay|' + action.options.playlist + '|' + action.options.id + '|' + action.options.clip_id + '>';
-
-      case 'startrec':
-        return '<startrec>';
-
-      case 'stoprec':
-        return '<stoprec>';
-
-      case 'customcommand':
-        return this.instance.parseVariablesInString(action.options.command);
+  async #doAction(action) {
+    /** @type { PlaydeckConnection } */
+    const outgoingConnection = this.#instance.connectionManager.outgoing;
+    const arg1 = await this.#instance.parseVariablesInString(action.options.arg1);
+    const arg2 = await this.#instance.parseVariablesInString(action.options.arg2);
+    const arg3 = await this.#instance.parseVariablesInString(action.options.arg3);
+    const rcCommand = PlaydeckCommands.getRCCommand(action.actionId, [arg1, arg2, arg3]);
+    if (outgoingConnection) {
+      if (action.actionId) this.#instance.connectionManager.outgoing.send(rcCommand);
     }
   }
-  sendCommand(cmd) {
-    const connection = this.instance.connections.actions;
-
-    if (cmd !== undefined) {
-      this.log('debug', `Sending ${cmd} to ${this.instance.config.host}`);
-
-      if (connection !== undefined) {
-        connection.send(cmd);
-      } else {
-        this.log('debug', `Socket not connected...`);
-      }
-    }
+  #init() {
+    this.#log('debug', 'Initializing...');
+    this.#instance.setActionDefinitions(this.#actionDefinitions);
   }
+
   /**
-   *
    * @param {LogLevel} level
    * @param  {string} message
    * @returns
    */
-  log(level, message) {
-    this.instance.log(level, message);
-  }
-
-  updateStatus(status) {
-    this.instance.updateStatus(status);
+  #log(level, message) {
+    this.#instance.log(level, `Playdeck Actions: ${message}`);
   }
 }
+
+/**
+ * @typedef { Object }  PlaydeckActionInfo
+ * @property { string } id
+ * @property  { string } controlId
+ * @property  { string } actionId
+ * @property { PlaydeckActionInfoOptions }  options
+ */
+/**
+ * @typedef { Object }  PlaydeckActionInfoOptions
+ * @property { number= } arg1
+ * @property  { number= } arg2
+ * @property  { number= } arg3
+ */
 
 module.exports = {
   PlaydeckActions,

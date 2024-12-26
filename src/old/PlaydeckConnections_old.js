@@ -1,6 +1,6 @@
 const EventEmitter = require('events');
 const { InstanceStatus, TCPHelper, LogLevel } = require('@companion-module/base');
-const { PlaydeckWSConnection } = require('./PlaydeckWSConnection');
+const { PlaydeckWSConnection } = require('../PlaydeckConnections/PlaydeckWSConnection');
 
 class PlaydeckConnections extends EventEmitter {
   constructor(instance) {

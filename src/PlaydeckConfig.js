@@ -1,5 +1,22 @@
 const { SomeCompanionConfigField, Regex } = require('@companion-module/base');
 
+class PlaydeckConfig {
+  /** @type { string }  */
+  version;
+  /** @type { string }  */
+  host;
+  /** @type { string }  */
+  wsPort;
+  /**  @type { string } */
+  tcpPortCommands;
+  /** @type { boolean } */
+  isTCPCommands;
+  /** @type { string } */
+  tcpPortEvents;
+  /** @type { boolean }  */
+  isTCPEvents;
+}
+
 /**
  *
  * @returns { SomeCompanionConfigField[] }
@@ -10,10 +27,19 @@ function getPlaydeckConfigFields() {
       type: 'static-text',
       id: 'disclaimer',
       label: 'Information',
-      width: 12,
+      width: 9,
       value:
-        'Since version 3.8 module uses bidirectional WebSocket connection with Playdeck (maybe some earlier versions are working with WebSockets too, but it tested with 3.8). If some troubles => you can use TCP connection. You can see WebSockets port in your playdeck installation directory .\\html\\WebSocketSDK\\Version.js ',
+        'Since version 3.6b6 module uses bidirectional WebSocket connection with Playdeck. If some troubles => you can use TCP connection. You can see WebSockets port in your playdeck installation directory .\\html\\WebSocketSDK\\Version.js ',
     },
+    {
+      type: 'dropdown',
+      id: 'version',
+      label: 'Version',
+      width: 3,
+      allowCustom: false,
+      choices: CHOICES_VERSIONS,
+    },
+
     {
       type: 'textinput',
       label: 'Playdeck IP',
@@ -88,4 +114,20 @@ function getPlaydeckConfigFields() {
     },
   ];
 }
-module.exports = { getPlaydeckConfigFields };
+
+const CHOICES_VERSIONS = [
+  { id: '3.8b13', label: '3.8b13' },
+  { id: '3.8b8', label: '3.8b8' },
+  { id: '3.8b4', label: '3.8b4' },
+  { id: '3.7b11', label: '3.7b11' },
+  { id: '3.7b4', label: '3.7b4' },
+  { id: '3.6b18', label: '3.6b18' },
+  { id: '3.5b12', label: '3.5b12 ONLY TCP' },
+  { id: '3.5b3', label: '3.5b3 ONLY TCP' },
+  { id: '3.4b8', label: '3.4b8 ONLY TCP COMMANDS' },
+  { id: '3.2b12', label: '3.2b12 ONLY TCP COMMANDS' },
+  { id: '3.2b11', label: '3.2b11 ONLY TCP COMMANDS' },
+  { id: '3.2b8', label: '3.2b8 ONLY TCP COMMANDS' },
+  { id: '3.2b2', label: '3.2b2 ONLY TCP COMMANDS' },
+];
+module.exports = { getPlaydeckConfigFields, PlaydeckConfig };

@@ -1,16 +1,9 @@
 const EventEmitter = require('events');
 const PlaydeckInstance = require('../index');
-const { PlaybackState, ClipType } = require('./PlaydeckConstants');
-const { PlaydeckStateParameter } = require('./PlaydeckTypes');
 const { CompanionVariableDefinition, Regex } = require('@companion-module/base');
 
-/**
- * @class
- */
 class PlaydeckState extends EventEmitter {
-  /**
-   * @param { PlaydeckInstance } instance
-   */
+  /** @param { PlaydeckInstance } instance */
   constructor(instance) {
     /**
      * @private
@@ -19,7 +12,7 @@ class PlaydeckState extends EventEmitter {
     super();
     this.instance = instance;
     this.isBasic = true;
-    this.generalState = null;
+    this.generalState = new GeneralState();
     this.playlistState = {
       left: new PlaylistState(1),
       right: new PlaylistState(2),
@@ -72,14 +65,13 @@ class PlaydeckState extends EventEmitter {
     }, {});
 
     this.instance.variableDefinitions = currentVariableDefinitions.concat(newVariableDefinitions);
-    // this.instance.log('warn',  newVariableDefinitions.length );
-    // this.instance.log('info', JSON.stringify(changes));
+
     if (newVariableDefinitions.length != 0) {
-      this.instance.log('warn', JSON.stringify(this.instance.variableDefinitions));
       this.instance.setVariableDefinitions(this.instance.variableDefinitions);
     }
 
     this.instance.setVariableValues(changes);
+    this.instance.checkFeedbacks('checkState');
   }
   /**
    *
@@ -92,7 +84,6 @@ class PlaydeckState extends EventEmitter {
       // this.instance.log('info', `${variableDefinition.variableId} == ${instanceVarDef.variableId}`);
       if (variableDefinition.variableId == instanceVarDef.variableId) {
         result = true;
-
         return true;
       }
     });
@@ -111,7 +102,7 @@ class GeneralState {
     this.playlistFile = {
       value: null,
       variableDefinition: {
-        variableId: `general_playlistFile`,
+        variableId: `general_playlist_file`,
         name: `Current playlist file`,
       },
     };
@@ -122,7 +113,7 @@ class GeneralState {
     this.activeChannels = {
       value: null,
       variableDefinition: {
-        variableId: `general_activeChannels`,
+        variableId: `general_active_channels`,
         name: `Number of active channels`,
       },
     };
@@ -132,8 +123,22 @@ class GeneralState {
     this.productionMode = {
       value: null,
       variableDefinition: {
-        variableId: `general_productionMode`,
-        name: `Number of active channels`,
+        variableId: `general_production_mode`,
+        name: `Production Mode state`,
+      },
+    };
+    this.isRecording = {
+      value: null,
+      variableDefinition: {
+        variableId: `general_recording`,
+        name: `Recording state`,
+      },
+    };
+    this.recordingDuration = {
+      value: null,
+      variableDefinition: {
+        variableId: `general_recording_duration`,
+        name: `Recording duration in seconds`,
       },
     };
   }
@@ -149,19 +154,14 @@ class GeneralState {
  * @class
  */
 class PlaylistState {
-  /**
-   *
-   * @param { number } playlistNumber
-   */
+  /** @param { number } playlistNumber  */
   constructor(playlistNumber) {
     const sides = {
       1: 'left',
       2: 'right',
     };
     this.side = sides[playlistNumber];
-    /**
-     * @type { PlaydeckStateParameter}
-     */
+    /** @param { number } playlistNumber  */
     this.state = {
       value: null,
       variableDefinition: {
@@ -169,9 +169,7 @@ class PlaylistState {
         name: `State of ${this.side} playlist`,
       },
     };
-    /**
-     * @type { PlaydeckStateParameter}
-     */
+    /** @param { number } playlistNumber  */
     this.blockID = {
       value: null,
       variableDefinition: {
@@ -179,9 +177,23 @@ class PlaylistState {
         name: `Current block of ${this.side} playlist`,
       },
     };
-    /**
-     * @type { PlaydeckStateParameter}
-     */
+    /** @param { number } playlistNumber  */
+    this.blockName = {
+      value: null,
+      variableDefinition: {
+        variableId: `playlist_${playlistNumber}_block_name`,
+        name: `Current block name of ${this.side} playlist`,
+      },
+    };
+    /** @param { number } playlistNumber  */
+    this.blockTimeEnd = {
+      value: null,
+      variableDefinition: {
+        variableId: `playlist_${playlistNumber}_block_time_end`,
+        name: `Time when block of ${this.side} playlist ends`,
+      },
+    };
+    /** @param { number } playlistNumber  */
     this.clipID = {
       value: null,
       variableDefinition: {
@@ -189,9 +201,7 @@ class PlaylistState {
         name: `Current clip in ${this.side} playlist`,
       },
     };
-    /**
-     * @type { PlaydeckStateParameter}
-     */
+    /** @param { number } playlistNumber  */
     this.clipType = {
       value: null,
       variableDefinition: {
@@ -199,9 +209,7 @@ class PlaylistState {
         name: `Current clip type in ${this.side} playlist`,
       },
     };
-    /**
-     * @type { PlaydeckStateParameter}
-     */
+    /** @param { number } playlistNumber  */
     this.clipName = {
       value: null,
       variableDefinition: {
@@ -209,9 +217,7 @@ class PlaylistState {
         name: `Current clip name in ${this.side} playlist`,
       },
     };
-    /**
-     * @type { PlaydeckStateParameter}
-     */
+    /** @param { number } playlistNumber  */
     this.clipProgress = {
       value: null,
       variableDefinition: {
@@ -219,9 +225,23 @@ class PlaylistState {
         name: `Current clip progress in percents in ${this.side} playlist`,
       },
     };
-    /**
-     * @type { PlaydeckStateParameter}
-     */
+    /** @param { number } playlistNumber  */
+    this.clipDuration = {
+      value: null,
+      variableDefinition: {
+        variableId: `playlist_${playlistNumber}_clip_duration`,
+        name: `Current clip duration in seconds in ${this.side} playlist`,
+      },
+    };
+    /** @param { number } playlistNumber  */
+    this.clipRemaining = {
+      value: null,
+      variableDefinition: {
+        variableId: `playlist_${playlistNumber}_clip_remaining`,
+        name: `Current clip remaining time in seconds in ${this.side} playlist`,
+      },
+    };
+    /** @param { number } playlistNumber  */
     this.clipPosition = {
       value: null,
       variableDefinition: {
@@ -229,9 +249,47 @@ class PlaylistState {
         name: `Current clip elapsed time in seconds in ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
+    this.clipTimeEnd = {
+      value: null,
+      variableDefinition: {
+        variableId: `playlist_${playlistNumber}_clip_time_end`,
+        name: `Time when current clip in ${this.side} playlist ends`,
+      },
+    };
   }
+}
+
+/** @enum {typeof PlaybackState[keyof typeof PlaybackState]} */
+const PlaybackState = /** @type {const} */ ({
+  Stop: 'stop',
+  Pause: 'pause',
+  Play: 'play',
+  Cue: 'cue',
+});
+
+/** @enum {typeof ClipType[keyof typeof ClipType]} */
+const ClipType = /** @type {const} */ ({
+  Clock: 'Clock',
+  Video: 'Video',
+  Image: 'Image',
+  Audio: 'Audio',
+  Input: 'Input',
+  Tube: 'Youtube',
+  Action: 'Action',
+  Highlight: 'Highlight',
+});
+
+class PlaydeckStateParameter {
+  /** @type { PlaybackState| ClipType | string | number| boolean | null } */
+  value;
+  /** @type { CompanionVariableDefinition } */
+  variableDefinition;
 }
 
 module.exports = {
   PlaydeckState,
+  PlaybackState,
+  ClipType,
+  PlaydeckStateParameter,
 };

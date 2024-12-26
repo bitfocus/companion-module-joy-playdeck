@@ -1,6 +1,5 @@
-const PlaydeckInstance = require('../index');
-const { PlaybackState, ClipType } = require('./PlaydeckConstants');
-const { PlaydeckStateParameter } = require('./PlaydeckTypes');
+const PlaydeckInstance = require('../../index');
+const { PlaybackState, ClipType } = require('../PlaydeckState');
 const { CompanionVariableDefinition, Regex, LogLevel } = require('@companion-module/base');
 class PlaydeckRCMessage {
   /**
@@ -23,7 +22,8 @@ class PlaydeckRCMessage {
     this._message = message;
   }
 
-  static REGEX = /^<[\w\-\*\_]+(?:\|[0-9]+){0,3}>$/;
+  static REGEX = /^<[\w\-]+(?:\|[0-9]+){0,3}>$/;
+  static REGEX_WITH_VARS = /^<[\w\-]+(?:\|[\w\-\$\(\:\)]+){0,3}>$/;
   static GLOBAL_REGEX = /\<(.*?)\>/;
   /**
    * Check if string is seems like Playdeck legacy Command/Event
@@ -43,7 +43,7 @@ class PlaydeckRCMessage {
     if (!message) return null;
     if (!Array.isArray(args)) return `<${message}>`;
     for (let i = 0; i < args.length; i++) {
-      if (!args[i]) return `<${result}>`;
+      if (!args[i]) return `<${message}>`;
       message = `${message}|${args[i]}`;
     }
     return `<${message}>`;

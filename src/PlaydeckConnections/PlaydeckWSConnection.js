@@ -2,11 +2,10 @@ const EventEmitter = require('events');
 const { InstanceStatus, TCPHelper, InstanceBase, LogLevel } = require('@companion-module/base');
 const WebSocket = require('ws');
 const { isBigInt64Array } = require('util/types');
-const { PlaydeckConnection } = require('./PlaydeckConnection');
-const { PlaydeckStateParameter } = require('./PlaydeckTypes');
-const PlaydeckInstance = require('../index');
-const { PlaybackState, ClipType, ConnectionType, ConnectionDirection } = require('./PlaydeckConstants');
-const { PlaydeckRCEventMessage } = require(`./PlaydeckRCEventMessage`);
+const { PlaydeckConnection, ConnectionType, ConnectionDirection } = require('./PlaydeckConnection');
+const PlaydeckInstance = require('../../index');
+const { PlaybackState, ClipType } = require('../PlaydeckState');
+const { PlaydeckRCEventMessage } = require(`../PlaydeckRCMessages/PlaydeckRCEventMessage`);
 
 class PlaydeckWSConnection extends PlaydeckConnection {
   /** @type { PlaydeckWSStateValues | null } */
@@ -103,6 +102,7 @@ class PlaydeckWSConnection extends PlaydeckConnection {
    * @override
    */
   send(command) {
+    this.log('debug', `Message sent: ${command}`);
     this.#webSocket.send(command);
   }
   /**
@@ -110,7 +110,7 @@ class PlaydeckWSConnection extends PlaydeckConnection {
    */
   destroy() {
     this.#webSocket.close(1000);
-    this.log(`debug`, `Destroyed.`);
+    this.log(`debug`, `Connection destroyed.`);
   }
 }
 
@@ -135,7 +135,7 @@ class PlaydeckWSStateValues {
     this.general = {
       playlistFile: generalState.PlaylistFile,
       activeChannels: generalState.ActiveChannels,
-      productionMode: generalState.ProductionMode,
+      productionMode: Boolean(generalState.ProductionMode),
       isRecording: generalState.IsRecording,
       recordingDuration: this.convertFloat(generalState.RecordingDuration),
       recordingTimeStart: this.convertTimestamp(generalState.RecordingTimeStart),
@@ -181,7 +181,7 @@ class PlaydeckWSStateValues {
       clipName: playlistState.ClipName,
       clipDuration: this.convertFloat(playlistState.ClipDuration),
       clipProgress: this.convertFloat(playlistState.ClipProgress),
-      clipPosition: this.convertFloat(playlistState.ClipPosition),
+      clipPosition: Math.max(this.convertFloat(playlistState.ClipPosition) - 1, 0), // it equals `0` only if stopped, and on que it is `1`
       clipRemaining: this.convertFloat(playlistState.ClipRemaining),
       clipRemainingAlert: playlistState.ClipRemainingAlert,
       clipTimeStart: this.convertTimestamp(playlistState.ClipTimeStart),
