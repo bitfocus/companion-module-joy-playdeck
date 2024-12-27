@@ -85,11 +85,12 @@ class PlaydeckConnectionManager {
     }
   }
   destroy() {
-    if (this.incoming) {
-      this.incoming.destroy();
-    }
     if (this.outgoing) {
       this.outgoing.destroy();
+      if (this.outgoing.direction === 'bidirectional') return;
+    }
+    if (this.incoming) {
+      this.incoming.destroy();
     }
   }
   /**
