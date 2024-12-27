@@ -16,7 +16,7 @@ class PlaydeckRCEventMessage extends PlaydeckRCMessage {
     try {
       this.#handleEvent();
     } catch (e) {
-      this.log('warn', `Error: ${e.message}`);
+      this._log('warn', `Error: ${e.message}`);
     }
   }
   /**
@@ -53,7 +53,7 @@ class PlaydeckRCEventMessage extends PlaydeckRCMessage {
    * @returns { RCStateValues }
    */
   #handleEvent() {
-    this.log('debug', `New message: ${this._message}`);
+    this._log('debug', `New message: ${this._message}`);
     if (!PlaydeckRCMessage.isCorrect(this._message)) throw new Error(`Not RC Event formatted message.`);
     if (!this._instance) throw new Error(`Instance ERROR`);
     const rcEvent = PlaydeckRCEventMessage.parseEvent(this._message);
@@ -85,10 +85,13 @@ class PlaydeckRCEventMessage extends PlaydeckRCMessage {
         }
         break;
       case EventSources.Block:
+        // events is syncronious with clip events
         break;
       case EventSources.Overlay:
+        // recieve only "start" event... no "end"
         break;
       case EventSources.Action:
+        // TODO: think about how handle action start-end event. How store and variable/feedback etc...
         break;
       case EventSources.Recording:
         switch (rcEvent.event) {

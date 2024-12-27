@@ -42,8 +42,9 @@ class PlaydeckInstance extends InstanceBase {
   }
 
   async configUpdated(config) {
+    this.log('debug', 'Playdeck Instance: Updating config...');
+    this.destroy();
     this.config = config;
-    // this.connections.destroy();
     this.init(config);
   }
   getConfigFields() {

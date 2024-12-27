@@ -25,7 +25,7 @@ class PlaydeckRCMessage {
   static REGEX_WITH_VARS = /^<[\w\-]+(?:\|[\w\-\$\(\:\)]+){0,3}>$/;
   static GLOBAL_REGEX = /\<(.*?)\>/;
   /**
-   * Check if string is seems like Playdeck legacy Command/Event
+   * Check if string is seems like Playdeck Command/Event
    * @param { string } message
    * @returns { boolean }
    */
@@ -61,10 +61,11 @@ class PlaydeckRCMessage {
     };
   }
   /**
+   * @protected
    * @param {LogLevel} level
    * @param  {string} message
    */
-  log(level, message) {
+  _log(level, message) {
     this._instance.log(level, `Playdeck RC: ${message}`);
   }
 }

@@ -575,7 +575,7 @@ const commands = [
   {
     version: '3.2b2',
     deprecated: null,
-    commandName: `AUDIO - MUTE`,
+    commandName: `AUDIO - Un-MUTE`,
     command: `unmuteaudio`,
     description: `Unmute the Audio output of the Playlist. This will also affect Output Devices/Streams.`,
     arg1: 'PLAYLIST',

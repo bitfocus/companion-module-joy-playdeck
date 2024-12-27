@@ -28,19 +28,19 @@ class PlaydeckConnectionManager {
       this.incoming = this.#startConnection(incomingType, ConnectionDirection.Incoming);
     }
 
-    this.log(`info`, `Incoming = ${this.incoming ? this.incoming.type : `EMPTY`}, Outgoing = ${this.outgoing ? this.outgoing.type : `EMPTY`}`);
+    this.#log(`info`, `Incoming = ${this.incoming ? this.incoming.type : `EMPTY`}, Outgoing = ${this.outgoing ? this.outgoing.type : `EMPTY`}`);
   }
   /** @returns {ConnectionType | null}  */
   #getIncomingType() {
     if (!this.#instance.version.isTCPEventsAvailable()) {
-      this.log('error', `Version ${this.#instance.version.getCurrent()} doesn't support ANY incoming connection. No feedbacks and variables will be available.`);
+      this.#log('error', `Version ${this.#instance.version.getCurrent()} doesn't support ANY incoming connection. No feedbacks and variables will be available.`);
       return null;
     }
     const incomingType = this.#instance.config.isTCPEvents ? ConnectionType.TCP : ConnectionType.WS;
     if (incomingType === ConnectionType.TCP) return ConnectionType.TCP;
     if (this.#instance.version.isWebsoketAvailable() && incomingType === ConnectionType.WS) return ConnectionType.WS;
 
-    this.log(
+    this.#log(
       'error',
       `Version ${this.#instance.version.getCurrent()} doesn't support incoming ${incomingType} connection! module will ignore it. No feedbacks and variables will be available.`
     );
@@ -62,7 +62,7 @@ class PlaydeckConnectionManager {
       if (outgoingType === ConnectionType.WS) {
         const errorMessage = `Version ${this.#instance.version.getCurrent()} doesn't support outgoing WebSocket connection, please turn ON and setup TCP Connection!`;
         this.updateStatus(InstanceStatus.ConnectionFailure, errorMessage);
-        this.log('error', errorMessage);
+        this.#log('error', errorMessage);
       }
     }
     return null;
@@ -96,14 +96,13 @@ class PlaydeckConnectionManager {
    * @param {LogLevel} level
    * @param  {string} message
    */
-  log(level, message) {
+  #log(level, message) {
     this.#instance.log(level, `Playdeck Connection Manager: ${message}`);
   }
   /**
    *
    * @param {InstanceStatus} connectionStatus sets status of connection
    * @param { string } message optional message for status
-   * @param {boolean} isGlobal define is status global
    */
   updateStatus(connectionStatus, message) {
     this.#instance.updateStatus(connectionStatus, message ? message : null);

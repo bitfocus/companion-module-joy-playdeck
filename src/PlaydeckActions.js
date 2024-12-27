@@ -44,7 +44,11 @@ class PlaydeckActions {
     const arg3 = await this.#instance.parseVariablesInString(action.options.arg3);
     const rcCommand = PlaydeckCommands.getRCCommand(action.actionId, [arg1, arg2, arg3]);
     if (outgoingConnection) {
-      if (action.actionId) this.#instance.connectionManager.outgoing.send(rcCommand);
+      if (rcCommand !== ``) {
+        if (action.actionId) this.#instance.connectionManager.outgoing.send(rcCommand);
+      } else {
+        this.#log(`warn`, `Empty command!`);
+      }
     }
   }
   #init() {
