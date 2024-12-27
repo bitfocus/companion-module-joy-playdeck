@@ -22,15 +22,15 @@ class PlaydeckWSConnection extends PlaydeckConnection {
     this.type = ConnectionType.WS;
     this._port = this._instance.config.wsPort;
     this._host = this._instance.config.host;
-    this.log(`info`, `Starting connection. IP/HOST: ${this._host}. PORT: ${this._port}`);
+    this._log(`info`, `Starting connection. IP/HOST: ${this._host}. PORT: ${this._port}`);
     this._init();
   }
   _init() {
-    this.updateStatus(InstanceStatus.Connecting);
+    this._updateStatus(InstanceStatus.Connecting);
     this.#webSocket = new WebSocket(`ws://${this._host}:${this._port}`);
     this.#webSocket.on('open', () => {
-      this.log(`info`, `Connected.`);
-      this.updateStatus(InstanceStatus.Ok);
+      this._log(`info`, `Connected.`);
+      this._updateStatus(InstanceStatus.Ok);
       this._lastErrorMessage = null;
     });
     this.#webSocket.on('message', (rawData, isBinary) => {
@@ -39,12 +39,12 @@ class PlaydeckWSConnection extends PlaydeckConnection {
       }
     });
     this.#webSocket.on('error', (err) => {
-      this.log('error', `Error: ${err.message}`);
+      this._log('error', `Error: ${err.message}`);
       this._lastErrorMessage = err.message;
-      this.updateStatus(InstanceStatus.ConnectionFailure, this._lastErrorMessage);
+      this._updateStatus(InstanceStatus.ConnectionFailure, this._lastErrorMessage);
     });
     this.#webSocket.on('close', (code, reason) => {
-      this.log('debug', `Closed with code: ${code}, with reason: ${reason.toString()}`);
+      this._log('debug', `Closed with code: ${code}, with reason: ${reason.toString()}`);
       this._reconnect();
     });
   }
@@ -54,7 +54,7 @@ class PlaydeckWSConnection extends PlaydeckConnection {
    */
   #dataHandler(data) {
     if (data.indexOf(`|`) == -1) {
-      this.log(`debug`, `Recieved non properly formatted message: ${data}`);
+      this._log(`debug`, `Recieved non properly formatted message: ${data}`);
       return;
     }
     const dataArray = data.split(`|`);
@@ -72,7 +72,7 @@ class PlaydeckWSConnection extends PlaydeckConnection {
         this.#handleStatus(JSON.parse(sData));
         break;
       case 'permanent':
-        this.log(`debug`, `Recieved permanent: ${sData}`); // don't know what it means it returns {"AnyVariableName":"1"}
+        this._log(`debug`, `Recieved permanent: ${sData}`); // don't know what it means it returns {"AnyVariableName":"1"}
         break;
     }
   }
@@ -100,7 +100,7 @@ class PlaydeckWSConnection extends PlaydeckConnection {
    * @override
    */
   send(command) {
-    this.log('debug', `Message sent: ${command}`);
+    this._log('debug', `Message sent: ${command}`);
     this.#webSocket.send(command);
   }
   /**
@@ -108,7 +108,7 @@ class PlaydeckWSConnection extends PlaydeckConnection {
    */
   destroy() {
     this.#webSocket.close(1000);
-    this.log(`debug`, `Connection destroyed.`);
+    this._log(`debug`, `Connection destroyed.`);
   }
 }
 

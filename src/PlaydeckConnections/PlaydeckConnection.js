@@ -60,10 +60,10 @@ class PlaydeckConnection extends EventEmitter {
   }
   /** @protected */
   _reconnect() {
-    this.updateStatus(InstanceStatus.Connecting, this._lastErrorMessage ? `Last error: ${this._lastErrorMessage}` : null);
+    this._updateStatus(InstanceStatus.Connecting, this._lastErrorMessage ? `Last error: ${this._lastErrorMessage}` : null);
     setTimeout(() => {
       this.destroy();
-      this.log('info', `Trying to reconnect...`);
+      this._log('info', `Trying to reconnect...`);
       this._init();
     }, this.#reconnectTimeout);
   }
@@ -93,20 +93,20 @@ class PlaydeckConnection extends EventEmitter {
   send(command) {}
   destroy() {}
   /**
-   *
+   * @protected
    * @param {LogLevel} level
    * @param  {string} message
    */
-  log(level, message) {
+  _log(level, message) {
     this._instance.log(level, `Playdeck ${this.type} (${this.direction}): ${message}`);
   }
   /**
-   *
+   * @protected
    * @param {InstanceStatus} connectionStatus sets status of connection
    * @param { string } message optional message for status
    * @param {boolean} isGlobal define is status global
    */
-  updateStatus(connectionStatus, message, isGlobal = true) {
+  _updateStatus(connectionStatus, message, isGlobal = true) {
     this.status = connectionStatus;
     if (isGlobal) {
       this._instance.updateStatus(connectionStatus, message ? message : null);
