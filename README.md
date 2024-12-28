@@ -26,4 +26,4 @@ See [HELP.md](https://github.com/bitfocus/companion-module-joy-playdeck/blob/mas
 - Added support of bidirectional Websocket connection for more feedback functionality
 - Added support of all versions of Playdeck. Now when you choose version in config module automatically adjusts the set of commands in accordance with your chosen version.
 - Made managing of connections more flexible
-- reorganised code to be more typed and classified and easy to update.
+- Reorganised code to be more typed and classified and easy to update.
