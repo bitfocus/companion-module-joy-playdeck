@@ -1,5 +1,5 @@
 {
-	"name": "joy-playdeck-feedbacks",
+	"name": "joy-playdeck",
 	"version": "3.0.0",
 	"description": "Playdeck (Video Playout Software)",
 	"main": "index.js",
