@@ -12,8 +12,11 @@ class PlaydeckState extends EventEmitter {
     super();
     this.instance = instance;
     this.isBasic = true;
-    this.projectState = new ProjectState();
-    this.channelState = Array.from({ length: 8 }, (_, index) => new ChannelState(index + 1));
+    this.generalState = new GeneralState();
+    this.playlistState = {
+      left: new PlaylistState(1),
+      right: new PlaylistState(2),
+    };
   }
   getVariableDefinitions() {}
   /**
@@ -22,14 +25,11 @@ class PlaydeckState extends EventEmitter {
    */
   updateValues(newValues) {
     let paramsToUpdate = [];
-    if (this.projectState !== null && newValues.project != undefined) {
-      this.pushIfNew(paramsToUpdate, this.projectState, newValues.project);
+    if (this.generalState !== null && newValues.general != undefined) {
+      this.pushIfNew(paramsToUpdate, this.generalState, newValues.general);
     }
-    // TODO: make an forEach array of channels and skip if channel state is 0
-    this.channelState.forEach((chState, chIndex) => {
-      this.pushIfNew(paramsToUpdate, chState, newValues.channel[chIndex]);
-    });
-    // this.pushIfNew(paramsToUpdate, this.playlistState.right, newValues.playlist.right);
+    this.pushIfNew(paramsToUpdate, this.playlistState.left, newValues.playlist.left);
+    this.pushIfNew(paramsToUpdate, this.playlistState.right, newValues.playlist.right);
     this.updateState(paramsToUpdate);
   }
   /**
@@ -94,41 +94,51 @@ class PlaydeckState extends EventEmitter {
 /**
  * @class
  */
-class ProjectState {
+class GeneralState {
   constructor() {
     /**
      * @type { PlaydeckStateParameter}
      */
-    this.projectFileName = {
+    this.playlistFile = {
       value: null,
       variableDefinition: {
-        variableId: `project_filename`,
-        name: `Current project filename`,
+        variableId: `general_playlist_file`,
+        name: `Current playlist file`,
       },
     };
 
     /**
      * @type { PlaydeckStateParameter}
      */
-    this.projectName = {
+    this.activeChannels = {
       value: null,
       variableDefinition: {
-        variableId: `project_name`,
-        name: `Current project name`,
+        variableId: `general_active_channels`,
+        name: `Number of active channels`,
       },
     };
-    this.clockTime = {
+    /**
+     * @type { PlaydeckStateParameter}
+     */
+    this.productionMode = {
       value: null,
       variableDefinition: {
-        variableId: `project_clock_time`,
-        name: `Clock time`,
+        variableId: `general_production_mode`,
+        name: `Production Mode state`,
       },
     };
-    this.timestamp = {
+    this.isRecording = {
       value: null,
       variableDefinition: {
-        variableId: `project_timestamp`,
-        name: `Timestamp of current time`,
+        variableId: `general_recording`,
+        name: `Recording state`,
+      },
+    };
+    this.recordingDuration = {
+      value: null,
+      variableDefinition: {
+        variableId: `general_recording_duration`,
+        name: `Recording duration in seconds`,
       },
     };
   }
@@ -136,105 +146,115 @@ class ProjectState {
 
 /**
  * @typedef { Object } PlaydeckValues - Object with [prop]: value objects
- * @property { Object } project
- * @property { ChannelState[] } channel
+ * @property { Object } general
+ * @property { { left: Object, right: Object }}  playlist
  */
 
 /**
  * @class
  */
-class ChannelState {
-  /** @param { number } channelNumber  */
-  constructor(channelNumber) {
-    this.playState = {
+class PlaylistState {
+  /** @param { number } playlistNumber  */
+  constructor(playlistNumber) {
+    const sides = {
+      1: 'left',
+      2: 'right',
+    };
+    this.side = sides[playlistNumber];
+    /** @param { number } playlistNumber  */
+    this.state = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_play_state`,
-        name: `Play state of channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_state`,
+        name: `State of ${this.side} playlist`,
       },
     };
-    this.channelState = {
-      value: null,
-      variableDefinition: {
-        variableId: `channel_${channelNumber}_state`,
-        name: `State of channel #${channelNumber}`,
-      },
-    };
-    this.channelName = {
-      value: null,
-      variableDefinition: {
-        variableId: `channel_${channelNumber}_name`,
-        name: `Name of channel #${channelNumber}`,
-      },
-    };
+    /** @param { number } playlistNumber  */
     this.blockID = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_block_id`,
-        name: `Current block of channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_block_id`,
+        name: `Current block of ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
     this.blockName = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_block_name`,
-        name: `Current block name of channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_block_name`,
+        name: `Current block name of ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
     this.blockTimeEnd = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_block_time_end`,
-        name: `Time when block of channel #${channelNumber} ends`,
+        variableId: `playlist_${playlistNumber}_block_time_end`,
+        name: `Time when block of ${this.side} playlist ends`,
       },
     };
+    /** @param { number } playlistNumber  */
     this.clipID = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_clip_id`,
-        name: `Current clip in channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_clip_id`,
+        name: `Current clip in ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
+    this.clipType = {
+      value: null,
+      variableDefinition: {
+        variableId: `playlist_${playlistNumber}_clip_type`,
+        name: `Current clip type in ${this.side} playlist`,
+      },
+    };
+    /** @param { number } playlistNumber  */
     this.clipName = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_clip_name`,
-        name: `Current clip name in channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_clip_name`,
+        name: `Current clip name in ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
     this.clipProgress = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_clip_progress`,
-        name: `Current clip progress in percents in channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_clip_progress`,
+        name: `Current clip progress in percents in ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
     this.clipDuration = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_clip_duration`,
-        name: `Current clip duration in seconds in channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_clip_duration`,
+        name: `Current clip duration in seconds in ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
     this.clipRemaining = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_clip_remaining`,
-        name: `Current clip remaining time in seconds in channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_clip_remaining`,
+        name: `Current clip remaining time in seconds in ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
     this.clipPosition = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_clip_position`,
-        name: `Current clip elapsed time in seconds in channel #${channelNumber}`,
+        variableId: `playlist_${playlistNumber}_clip_position`,
+        name: `Current clip elapsed time in seconds in ${this.side} playlist`,
       },
     };
+    /** @param { number } playlistNumber  */
     this.clipTimeEnd = {
       value: null,
       variableDefinition: {
-        variableId: `channel_${channelNumber}_clip_time_end`,
-        name: `Time when current clip in channel #${channelNumber} ends`,
+        variableId: `playlist_${playlistNumber}_clip_time_end`,
+        name: `Time when current clip in ${this.side} playlist ends`,
       },
     };
   }

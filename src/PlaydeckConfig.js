@@ -116,6 +116,7 @@ function getPlaydeckConfigFields() {
 }
 
 const CHOICES_VERSIONS = [
+  { id: '4.1b3', label: '4.1b3' },
   { id: '3.8b13', label: '3.8b13' },
   { id: '3.8b8', label: '3.8b8' },
   { id: '3.8b4', label: '3.8b4' },

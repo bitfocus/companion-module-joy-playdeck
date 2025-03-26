@@ -87,11 +87,8 @@ class PlaydeckWSConnection extends PlaydeckConnection {
       this.#stateValues.update(sMessage);
     }
     this._instance.state.updateValues({
-      general: this.#stateValues.general,
-      playlist: {
-        left: this.#stateValues.playlist.left,
-        right: this.#stateValues.playlist.right,
-      },
+      project: this.#stateValues.project,
+      channel: this.#stateValues.channel,
     });
   }
 
@@ -129,77 +126,74 @@ class PlaydeckWSStateValues {
      * @type { StatusMessage }
      */
     this.sMessage = sMessage;
-    const generalState = this.sMessage.General;
-    this.general = {
-      playlistFile: generalState.PlaylistFile,
-      activeChannels: generalState.ActiveChannels,
-      productionMode: Boolean(generalState.ProductionMode),
-      isRecording: generalState.IsRecording,
-      recordingDuration: this.convertFloat(generalState.RecordingDuration),
-      recordingTimeStart: this.convertTimestamp(generalState.RecordingTimeStart),
+    const projectState = this.sMessage.Project;
+    this.project = {
+      projectName: projectState.ProjectName,
+      projectFileName: projectState.ProjectFilename,
+      clockTime: projectState.ClockTime,
+      timestamp: projectState.Timestamp,
+      timestampUnix: this.convertTimestamp(projectState.TimestampUnix),
     };
-    this.playlist = {
-      left: this.convertPlaylistStatusMessage(0),
-      right: this.convertPlaylistStatusMessage(1),
-    };
-  }
-
-  convertPlaylistStatusMessage(plstNum) {
-    const playlistState = this.sMessage.Playlist[plstNum];
-    const playlistStateValues = {
-      channelName: playlistState.ChannelName,
-      tallyStatus: playlistState.TallyStatus,
-      previewNote: playlistState.PreviewNote,
-      stageWidth: playlistState.StageWidth,
-      stageHeight: playlistState.StageHeight,
-      state: this.getStateForPlaylist(plstNum),
-      blockCount: playlistState.BlockCount,
-      blockScheduleActive: playlistState.BlockScheduleActive,
-      blockScheduleMethod: playlistState.BlockScheduleMethod,
-      blockScheduleRemaining: this.convertFloat(playlistState.BlockScheduleRemaining),
-      blockScheduleAlert: this.convertFloat(playlistState.BlockScheduleAlert),
-      blockScheduleOvertime: playlistState.BlockScheduleOvertime,
-      blockAutoplayActive: playlistState.BlockAutoplayActive,
-      blockAutoplayRemaining: this.convertFloat(playlistState.BlockAutoplayRemaining),
-      blockAutoplayAlert: playlistState.BlockAutoplayAlert,
-      blockName: playlistState.BlockName,
-      blockDuration: this.convertFloat(playlistState.BlockDuration),
-      blockProgress: this.convertFloat(playlistState.BlockProgress),
-      blockPosition: this.convertFloat(playlistState.BlockPosition),
-      blockRemaining: this.convertFloat(playlistState.BlockRemaining),
-      blockRemainingAlert: playlistState.BlockRemainingAlert,
-      blockTimeStart: this.convertTimestamp(playlistState.BlockTimeStart),
-      blockTimeEnd: this.convertTimestamp(playlistState.BlockTimeEnd),
-      blockIsClock: playlistState.BlockIsClock,
-      blockID: playlistState.BlockID,
-      clipID: playlistState.ClipID,
-      clipFile: playlistState.ClipFile,
-      clipWidth: playlistState.ClipWidth,
-      clipHeight: playlistState.ClipHeight,
-      clipName: playlistState.ClipName,
-      clipDuration: this.convertFloat(playlistState.ClipDuration),
-      clipProgress: this.convertFloat(playlistState.ClipProgress),
-      clipPosition: Math.max(this.convertFloat(playlistState.ClipPosition) - 1, 0), // it equals `0` only if stopped, and on que it is `1`
-      clipRemaining: this.convertFloat(playlistState.ClipRemaining),
-      clipRemainingAlert: playlistState.ClipRemainingAlert,
-      clipTimeStart: this.convertTimestamp(playlistState.ClipTimeStart),
-      clipTimeEnd: this.convertTimestamp(playlistState.ClipTimeEnd),
-      clipType: this.getClipType(plstNum),
-    };
-    return playlistStateValues;
+    this.channel = Array.from({ length: 8 }, (_, index) => this.convertChannelStatusMessage(index));
   }
   /**
    *
-   * @param { number } plstNum
+   * @param { number } channelNumber
+   */
+  convertChannelStatusMessage(channelNumber) {
+    const channelState = this.sMessage.Channel[channelNumber];
+    const channelStateValues = {
+      channelState: channelState.ChannelState,
+      channelName: channelState.ChannelName,
+      blockCount: channelState.BlockCount,
+      tallyStatus: channelState.TallyStatus,
+      previewNote: channelState.PreviewNote,
+      stageWidth: channelState.StageWidth,
+      stageHeight: channelState.StageHeight,
+      playState: this.getPlaybackState(channelState.PlayState),
+      progressVisible: channelState.ProgressVisible,
+      scheduleVisible: channelState.ScheduleVisible,
+      autoplayVisible: channelState.AutoplayVisible,
+      blockName: channelState.BlockName,
+      blockPosition: channelState.BlockPositionString,
+      blockDuration: channelState.BlockDurationString,
+      blockProgress: this.convertFloat(channelState.BlockProgress),
+      blockRemain: channelState.BlockRemainString,
+      blockEnd: channelState.BlockEndString,
+      blockProgressAlert: channelState.BlockProgressAlert,
+      clipName: channelState.ClipName,
+      clipPosition: channelState.ClipPositionString,
+      clipDuration: channelState.ClipDurationString,
+      clipProgress: this.convertFloat(channelState.ClipProgress),
+      clipProgressAlert: channelState.ClipProgressAlert,
+      clipRemain: channelState.ClipRemainString,
+      clipEnd: channelState.ClipEndString,
+      scheduleBlockName: channelState.ScheduleBlockName,
+      scheduleTime: channelState.ScheduleTimeString,
+      scheduleRemain: channelState.ScheduleRemainString,
+      scheduleIcons: channelState.ScheduleIcons,
+      scheduleAlert: channelState.ScheduleAlert,
+      autoplayBlockName: channelState.AutoplayBlockName,
+      autoplayTime: channelState.AutoplayTimeString,
+      autoplayRemain: channelState.AutoplayRemainString,
+      autoplayAlert: channelState.AutoplayAlert,
+    };
+    return channelStateValues;
+  }
+  /**
+   *
+   * @param { 0| 1 | 2 | 3 | 4 } playState
    * @returns { PlaybackState }
    */
-  getStateForPlaylist(plstNum) {
-    const playlistState = this.sMessage.Playlist[plstNum];
-    if (playlistState.StatusPlaying && !playlistState.StatusPaused) return PlaybackState.Play;
-    if (playlistState.StatusPaused && !playlistState.StatusCued) return PlaybackState.Pause;
-    if (playlistState.StatusCued) return PlaybackState.Cue;
-    if (!playlistState.StatusPlaying && !playlistState.StatusPaused) return PlaybackState.Stop;
-    return null;
+  getPlaybackState(playState) {
+    const playbackState = {
+      0: PlaybackState.Stop,
+      1: PlaybackState.Cue,
+      2: PlaybackState.Play,
+      3: PlaybackState.Pause,
+      4: null,
+    };
+    return playbackState[playState];
   }
   /**
    *
@@ -252,71 +246,91 @@ class PlaydeckWSStateValues {
 /**
  *
  * @typedef { Object } StatusMessage
- * @property { StatusMessageGeneral } General - Contains of general status for both playlists
- * @property { StatusMessagePlaylist[] } Playlist - Indicates status of each playlist
+ * @property { StatusMessageProject } Project - Contains of general status for both playlists
+ * @property { StatusMessageChannel[] } Channel - Indicates status of each playlist
+ * @property { StatusDirectorVeiw[] } DirectorView - Array of 4 DirectorType info
  */
 
 /**
  *
  * @typedef { Object } StatusMessageGeneral
- * @property { string } PlaylistFile - Current playlist file (empty if blanc)
- * @property { number } ActiveChannels - Number of active channels
- * @property { boolyNum } ProductionMode - 0 is `false`, 1 is `true`
- * @property { string } DateTimeLocale - BCP 47 Language Tag for time locale
- * @property { boolean } IsRecording - Status of recording
- * @property { number } RecordingDuration - Duration of recording
- * @property { number } RecordingTimeStart - Time when recording started (UNIX Timestamp)
+ * @property { string } ProjectName - Name of current project
+ * @property { string } ProjectFilename - FileName of current project
+ * @property { string } ClockTime - Clock string of current time
+ * @property { string } Timestamp - Timestamp string of current time
+ * @property { number } TimestampUnix - Timestamp of Current time (UNIX Timestamp)
  */
 
 /**
  *
- * @typedef { Object } StatusMessagePlaylist
- * @property { number } BlockCount - Amount of blocks in playlist
+ * @typedef { Object } StatusMessageChannel
+ * @property { number } ChannelState - State of channel `0` - not started, `1` - starting , `2` - active
  * @property { string } ChannelName - Name of channel
- * @property { StatusNum } TallyStatus - Tally of playlist: `0` is `disabled`, `1` is `preview`, `2` is program
- * @property { string } PreviewNote -
+ *
+ * @property { number } BlockCount - Amount of blocks in channel
+ *
+ * @property { StatusNum } TallyStatus - Tally of channel: `0` is `disabled`, `1` is `preview`, `2` is `program`
+ *
+ * @property { string } PreviewNote - String with preview note
+ *
  * @property { number } StageWidth - Output Width
  * @property { number } StageHeight - Output Height
- * @property { boolean } StatusPlaying - Is playlist in PLAY
- * @property { boolean } StatusPaused - Is playlist in PAUSE
- * @property { boolean } StatusCued - Is playlist in CUE
- * @property { boolean } BlockScheduleActive -
- * @property { number } BlockScheduleMethod - `0`; `1` - Always Play, independent of Playlist status; `2` - Play only, if first Clip is in CUE; `3`- Don't play, only show countdown, if first Clip is in CUE,
- * @property { number } BlockScheduleRemaining -
- * @property { boolean } BlockScheduleAlert -
- * @property { boolean } BlockScheduleOvertime -
- * @property { boolean } BlockAutoplayActive -
- * @property { number } BlockAutoplayRemaining -
- * @property { StatusNum } BlockAutoplayAlert -
- * @property { string } ClipName - Name of current clip
- * @property { number } ClipDuration - Duration of current clip
- * @property { number } ClipProgress - Progress in percents of current clip
- * @property { number } ClipRemaining -
- * @property { boolean } ClipRemainingAlert -
- * @property { number } ClipTimeStart - (UNIX Timestamp)
- * @property { number } ClipTimeEnd - (UNIX Timestamp)
- * @property { boolean } ClipIsClock -
- * @property { string } BlockName - Name of current block
- * @property { number } BlockDuration -
- * @property { number } BlockProgress -
- * @property { number } BlockPosition -
- * @property { number } BlockRemaining -
- * @property { boolean } BlockRemainingAlert -
- * @property { number } BlockTimeStart - (UNIX Timestamp)
- * @property { number } BlockTimeEnd - (UNIX Timestamp)
- * @property { boolean } BlockIsClock -
- * @property { boolean } ClipIsVideo -
- * @property { boolean } ClipIsImage -
- * @property { boolean } ClipIsAudio -
- * @property { boolean } ClipIsInput -
- * @property { boolean } ClipIsTube -
- * @property { boolean } ClipIsHighlight -
- * @property { boolean } ClipIsAction -
- * @property { number } ClipID -
- * @property { number } BlockID -
- * @property { string } ClipFile -
- * @property { number } ClipWidth -
- * @property { number } ClipHeight -
+ *
+ * @property { number } PlayState - Play state of channel: `0` is `stopped`, `1` is `cued`, `2` is `playing`, `3` is `paused`, `4` - `busy`
+ * @property { boolean } ProgressVisible - flag for hide/show progressbar on directors view
+ *
+ * @property { boolean } ScheduleVisible - flag for hide/show schedule on directors view
+ * @property { boolean } AutoplayVisible - flag for hide/show autoplay on directors view
+ *
+ * @property { string } BlockName - Name of current Block
+ * @property { number } BlockPosition - Current playhead position of block (`float seconds`)
+ * @property { string } BlockPositionString - Current playhead position of block in string format `HH:MM:SS`
+ * @property { number } BlockDuration - Block duration (`float seconds`)
+ * @property { string } BlockDurationString - Block duration in string format `HH:MM:SS`
+ * @property { number } BlockProgress - Block progress (`float percent`)
+ * @property { boolean } BlockProgressAlert - flag for block progress alert
+ * @property { number } BlockRemain - Block remaining time (`float seconds`)
+ * @property { string } BlockRemainString - Block remaining time in string format `HH:MM:SS`
+ * @property { number } BlockEnd - Time when block ends (`UNIX timestamp`)
+ * @property { string } BlockEndString - Time when block ends in string format `HH:MM:SS`
+ *
+ * @property { string } ClipName - Name of current Clip
+ * @property { number } ClipPosition - Current playhead position of Clip (`float seconds`)
+ * @property { string } ClipPositionString - Current playhead position of Clip in string format `HH:MM:SS`
+ * @property { number } ClipDuration - Clip duration (`float seconds`)
+ * @property { string } ClipDurationString - Clip duration in string format `HH:MM:SS`
+ * @property { number } ClipProgress - Clip progress (`float percent`)
+ * @property { boolean } ClipProgressAlert - flag for Clip progress alert
+ * @property { number } ClipRemain - Clip remaining time (`float seconds`)
+ * @property { string } ClipRemainString - Clip remaining time in string format `HH:MM:SS`
+ * @property { number } ClipEnd - Time when Clip ends (`UNIX timestamp`)
+ * @property { string } ClipEndString - Time when Clip ends in string format `HH:MM:SS`
+ *
+ * @property { string } ScheduleBlockName - Name of Schedule Block
+ * @property { number } ScheduleTime - Time when Schedule starts (`UNIX timestamp`)
+ * @property { string } ScheduleTimeString - Time when Schedule starts in string format `HH:MM:SS`
+ * @property { number } ScheduleRemain - Schedule remaining time (`float seconds`)
+ * @property { string } ScheduleRemainString - Schedule remaining time in string format `HH:MM:SS`
+ * @property { boolean } ScheduleAlert - flag for Schedule alert
+ * @property { string } ScheduleIcons - Schedule icons string
+ *
+ * @property { string } AutoplayBlockName - Name of Autoplay Block
+ * @property { number } AutoplayTime - Time when Autoplay starts (`UNIX timestamp`)
+ * @property { string } AutoplayTimeString - Time when Autoplay starts in string format `HH:MM:SS`
+ * @property { number } AutoplayRemain - Autoplay remaining time (`float seconds`)
+ * @property { string } AutoplayRemainString - Autoplay remaining time in string format `HH:MM:SS`
+ * @property { boolean } AutoplayAlert - flag for Autoplay alert
+ */
+
+/**
+ *
+ * @typedef { Object } StatusDirectorVeiw
+ * @property { number } DirectorType - Director type: `1` - Single channel, `2` - Dual channel, `3` - Four channel, `4` - 8 channel,
+ * @property { string } ChannelIDs - Channel ID's for director view (splitted by `,`)
+ * @property { boolean } ShowTimer - flag for showing timer for current director ID view
+ * @property { boolean } ShowName - flag for showing channel names for current director ID view
+ * @property { boolean } ShowTally - flag for showing tally for current director ID view
+ * @property { boolean } ShowNotes - flag for showing preview notes for current director ID view
  */
 
 /**
