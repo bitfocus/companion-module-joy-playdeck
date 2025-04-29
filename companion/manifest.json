@@ -3,7 +3,7 @@
 	"name": "Playdeck (Video Playout Software)",
 	"shortname": "Playdeck",
 	"description": "Playdeck (Video Playout Software)",
-	"version": "3.0.0",
+	"version": "4.0.0",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-joy-playdeck.git",
 	"bugs": "https://github.com/bitfocus/companion-module-joy-playdeck/issues",
@@ -18,15 +18,15 @@
 		}
 	],
 	"runtime": {
-		"type": "node18",
+		"type": "node22",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
-		"entrypoint": "../index.js"
+		"entrypoint": "../dist/index.js"
 	},
 	"legacyIds": [],
 	"manufacturer": "JOY event & media",
 	"products": [
-		"Playdeck with Feedbacks"
+		"Playdeck"
 	],
 	"keywords": []
 }
