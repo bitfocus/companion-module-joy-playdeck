@@ -15,14 +15,16 @@ class PlaydeckVersion {
         { id: '3.7b11', label: '3.7b11' },
         { id: '3.7b4', label: '3.7b4' },
         { id: '3.6b18', label: '3.6b18' },
-        { id: '3.5b12', label: '3.5b12 ONLY TCP' },
-        { id: '3.5b3', label: '3.5b3 ONLY TCP' },
-        { id: '3.4b8', label: '3.4b8 ONLY TCP COMMANDS' },
-        { id: '3.2b12', label: '3.2b12 ONLY TCP COMMANDS' },
-        { id: '3.2b11', label: '3.2b11 ONLY TCP COMMANDS' },
-        { id: '3.2b8', label: '3.2b8 ONLY TCP COMMANDS' },
-        { id: '3.2b2', label: '3.2b2 ONLY TCP COMMANDS' },
+        { id: '3.5b12', label: '3.5b12' },
+        { id: '3.5b3', label: '3.5b3' },
+        { id: '3.4b8', label: '3.4b8' },
+        { id: '3.2b12', label: '3.2b12' },
+        { id: '3.2b11', label: '3.2b11' },
+        { id: '3.2b8', label: '3.2b8' },
+        { id: '3.2b2', label: '3.2b2' },
     ];
+    static noEvents = ['3.4b8', '3.2b12', '3.2b11', '3.2b8', '3.2b2'];
+    static noWS = PlaydeckVersion.noEvents.concat(['3.5b12', '3.5b3']);
     static #isVersion(version) {
         if (!version)
             return false;
@@ -116,6 +118,9 @@ class PlaydeckVersion {
     }
     hasConnection(connection, direction) {
         return PlaydeckVersion.hasConnection(this.#version, connection, direction);
+    }
+    isLegacy() {
+        return PlaydeckVersion.isLowerThan(this.#version, `4.1b3`);
     }
 }
 exports.PlaydeckVersion = PlaydeckVersion;

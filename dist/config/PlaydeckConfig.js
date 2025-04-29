@@ -43,7 +43,7 @@ function getPlaydeckConfigFields() {
             id: 'advancedDisclaimer',
             label: 'Disclaimer',
             width: 9,
-            value: 'For more fine-tuning, use the "Advanced" switch. This is manual mode! Make changes only if you are sure they are necessary.',
+            value: 'For more detailed settings, use the "Advanced" switch. This is manual mode! Make changes only if you are sure that they are necessary. These settings will override the default settings for the version you selected (if a particular connection type is not supported in the selected version, it will be ignored).',
             isVisible: (configOptions) => {
                 const config = configOptions;
                 return config.isAdvanced === false;
@@ -55,9 +55,13 @@ function getPlaydeckConfigFields() {
             label: 'WebSockets',
             width: 12,
             value: 'WebSockets enabled by default',
-            isVisible: (configOptions) => {
+            isVisible: (configOptions, data) => {
                 const config = configOptions;
-                return config.isAdvanced === true;
+                const supported = data.notSupported.indexOf(config.version) === -1;
+                return config.isAdvanced === true && supported;
+            },
+            isVisibleData: {
+                notSupported: PlaydeckVersion_js_1.PlaydeckVersion.noWS,
             },
         },
         {
@@ -66,9 +70,13 @@ function getPlaydeckConfigFields() {
             id: 'isWS',
             width: 6,
             default: true,
-            isVisible: (configOptions) => {
+            isVisible: (configOptions, data) => {
                 const config = configOptions;
-                return config.isAdvanced === true;
+                const supported = data.notSupported.indexOf(config.version) === -1;
+                return config.isAdvanced === true && supported;
+            },
+            isVisibleData: {
+                notSupported: PlaydeckVersion_js_1.PlaydeckVersion.noWS,
             },
         },
         {
@@ -80,9 +88,13 @@ function getPlaydeckConfigFields() {
             required: false,
             min: 0,
             max: 65535,
-            isVisible: (configOptions) => {
+            isVisible: (configOptions, data) => {
                 const config = configOptions;
-                return config.isAdvanced === true;
+                const supported = data.notSupported.indexOf(config.version) === -1;
+                return config.isAdvanced === true && supported && config.isWS === true;
+            },
+            isVisibleData: {
+                notSupported: PlaydeckVersion_js_1.PlaydeckVersion.noWS,
             },
         },
         {
@@ -127,9 +139,13 @@ function getPlaydeckConfigFields() {
             label: 'TCP EVENTS',
             width: 12,
             value: 'To enable feedback in Playdeck, go to: Settings -> All Settings -> Remote Control -> Outgoing. And enable "TCP Events"',
-            isVisible: (configOptions) => {
+            isVisible: (configOptions, data) => {
                 const config = configOptions;
-                return config.isAdvanced === true;
+                const supported = data.notSupported.indexOf(config.version) === -1;
+                return config.isAdvanced === true && supported;
+            },
+            isVisibleData: {
+                notSupported: PlaydeckVersion_js_1.PlaydeckVersion.noEvents,
             },
         },
         {
@@ -138,9 +154,13 @@ function getPlaydeckConfigFields() {
             id: 'isTCPEvents',
             width: 6,
             default: false,
-            isVisible: (configOptions) => {
+            isVisible: (configOptions, data) => {
                 const config = configOptions;
-                return config.isAdvanced === true;
+                const supported = data.notSupported.indexOf(config.version) === -1;
+                return config.isAdvanced === true && supported;
+            },
+            isVisibleData: {
+                notSupported: PlaydeckVersion_js_1.PlaydeckVersion.noEvents,
             },
         },
         {
@@ -152,9 +172,13 @@ function getPlaydeckConfigFields() {
             required: false,
             min: 0,
             max: 65535,
-            isVisible: (configOptions) => {
+            isVisible: (configOptions, data) => {
                 const config = configOptions;
-                return config.isAdvanced === true && config.isTCPEvents === true;
+                const supported = data.notSupported.indexOf(config.version) === -1;
+                return config.isAdvanced === true && supported && config.isTCPEvents === true;
+            },
+            isVisibleData: {
+                notSupported: PlaydeckVersion_js_1.PlaydeckVersion.noEvents,
             },
         },
         {
@@ -171,20 +195,4 @@ function getPlaydeckConfigFields() {
         },
     ];
 }
-// const CHOICES_VERSIONS = [
-// 	{ id: '4.1b3', label: '4.1b3' },
-// 	{ id: '3.8b13', label: '3.8b13' },
-// 	{ id: '3.8b8', label: '3.8b8' },
-// 	{ id: '3.8b4', label: '3.8b4' },
-// 	{ id: '3.7b11', label: '3.7b11' },
-// 	{ id: '3.7b4', label: '3.7b4' },
-// 	{ id: '3.6b18', label: '3.6b18' },
-// 	{ id: '3.5b12', label: '3.5b12 ONLY TCP' },
-// 	{ id: '3.5b3', label: '3.5b3 ONLY TCP' },
-// 	{ id: '3.4b8', label: '3.4b8 ONLY TCP COMMANDS' },
-// 	{ id: '3.2b12', label: '3.2b12 ONLY TCP COMMANDS' },
-// 	{ id: '3.2b11', label: '3.2b11 ONLY TCP COMMANDS' },
-// 	{ id: '3.2b8', label: '3.2b8 ONLY TCP COMMANDS' },
-// 	{ id: '3.2b2', label: '3.2b2 ONLY TCP COMMANDS' },
-// ]
 //# sourceMappingURL=PlaydeckConfig.js.map
