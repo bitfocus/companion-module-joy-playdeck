@@ -13,18 +13,16 @@ class PlaydeckInstance extends base_1.InstanceBase {
      * returns readonly copy of config
      */
     get config() {
-        if (this.#config === undefined)
-            return null;
         return {
-            version: this.#config.version,
-            host: this.#config.host,
-            isAdvanced: this.#config.isAdvanced,
-            wsPort: this.#config.wsPort,
-            isWS: this.#config.isWS,
-            isTCPCommands: this.#config.isTCPCommands,
-            tcpPortCommands: this.#config.tcpPortCommands,
-            isTCPEvents: this.#config.isTCPEvents,
-            tcpPortEvents: this.#config.tcpPortEvents,
+            version: this.#config?.version,
+            host: this.#config?.host,
+            isAdvanced: this.#config?.isAdvanced,
+            wsPort: this.#config?.wsPort,
+            isWS: this.#config?.isWS,
+            isTCPCommands: this.#config?.isTCPCommands,
+            tcpPortCommands: this.#config?.tcpPortCommands,
+            isTCPEvents: this.#config?.isTCPEvents,
+            tcpPortEvents: this.#config?.tcpPortEvents,
         };
     }
     version;

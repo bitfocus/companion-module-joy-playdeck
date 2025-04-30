@@ -138,7 +138,7 @@ function getPlaydeckConfigFields() {
             id: 'eventInfo',
             label: 'TCP EVENTS',
             width: 12,
-            value: 'To enable feedback in Playdeck, go to: Settings -> All Settings -> Remote Control -> Outgoing. And enable "TCP Events"',
+            value: 'To enable feedback in Playdeck, go to: Settings -> All Settings -> Remote Control -> Outgoing. And enable "TCP Events". Warning: Enabling this option may result in a reduction in the amount of feedback data due to the fact that the feedback connection will be forcef to TCP instead of WebSocket (if it available in your version).',
             isVisible: (configOptions, data) => {
                 const config = configOptions;
                 const supported = data.notSupported.indexOf(config.version) === -1;
