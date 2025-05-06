@@ -40,6 +40,7 @@ export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 	}
 	async destroy(): Promise<void> {
 		this.log('debug', 'Playdeck Instance: Destroying...')
+		await this.connectionManager?.destroy()
 	}
 	async configUpdated(config: PlaydeckConfig): Promise<void> {
 		this.log('debug', 'Playdeck Instance: Updating config...')

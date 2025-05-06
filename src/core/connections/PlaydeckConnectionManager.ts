@@ -1,21 +1,20 @@
 import { PlaydeckInstance } from '../../index.js'
 import { PlaydeckConfig } from '../../config/PlaydeckConfig.js'
-import { LogLevel } from '@companion-module/base'
+import { LogLevel, InstanceStatus } from '@companion-module/base'
 import { PlaydeckConnection, ConnectionType, ConnectionDirection } from './PlaydeckConnection.js'
+import { PlaydeckTCPConnection } from './PlaydeckTCPConnection.js'
+import { PlaydeckWSConnection } from './PlaydeckWSConnection.js'
 
 export class PlaydeckConnectionManager {
-	/**
-	 * Connection for sending commands
-	 */
+	/** Connection for sending commands  */
 	outgoing: PlaydeckConnection | null = null
-	/**
-	 * Connection for recieving feedbacks
-	 */
+	/** Connection for recieving feedbacks  */
 	incoming: PlaydeckConnection | null = null
-	/**
-	 * Connecton for polling data from Playdeck. (Available from 4x versions)
-	 */
+	/** Connecton for polling data from Playdeck. (Available from 4x versions) */
 	query: PlaydeckConnection | null = null
+	/** Query polling interval in milleseconds	 */
+	#queryInteval: number = 2000
+	#queryIntervalID: NodeJS.Timeout | null = null
 	#isWSEnabled: boolean = false
 	#isEventsEnabled: boolean = false
 	#isLegacy: boolean = false
@@ -30,11 +29,20 @@ export class PlaydeckConnectionManager {
 	}
 	#init(): void {
 		this.#log('debug', `Initializing...`)
+		if (this.#queryIntervalID !== null) {
+			clearInterval(this.#queryIntervalID)
+		}
 		const incomingType = this.#getIncomingType()
 		const outgoingType = this.#getOutgoingType()
 		const queryType = !this.#isLegacy ? ConnectionType.WS : null
 		this.#log('info', `In: ${incomingType}; Out: ${outgoingType}; Query: ${queryType}`)
 		this.#makeConnections(incomingType, outgoingType, queryType)
+		if (queryType !== null) {
+			this.#queryIntervalID = setInterval(this.#queryPolling.bind(this), this.#queryInteval)
+		}
+	}
+	#queryPolling(): void {
+		this.#log('debug', `Polling...`)
 	}
 	#makeConnections(
 		incomingType: ConnectionType | null,
@@ -53,9 +61,7 @@ export class PlaydeckConnectionManager {
 			(Number(outgoingType === ConnectionType.WS) << 0) +
 			(Number(incomingType === ConnectionType.WS) << 1) +
 			(Number(queryType === ConnectionType.WS) << 2)
-		console.log(
-			`${Number(outgoingType === ConnectionType.WS) << 0} + ${Number(incomingType === ConnectionType.WS) << 1} +${Number(queryType === ConnectionType.WS) << 2}`,
-		)
+
 		if (wsConnectionDirection !== ConnectionDirection.None) {
 			const WSConnection = this.#makeConnection(ConnectionType.WS, wsConnectionDirection)
 			if (outgoingType === ConnectionType.WS) {
@@ -70,7 +76,15 @@ export class PlaydeckConnectionManager {
 		}
 	}
 	#makeConnection(type: ConnectionType | null, direction: ConnectionDirection | null): PlaydeckConnection | null {
-		this.#log('debug', `Making connection ${type} (${direction})`)
+		this.#log('debug', `Making connection ${type} (${ConnectionDirection[direction ?? 0]})`)
+		if (!this.#instance || !direction) return null
+		switch (type) {
+			case ConnectionType.TCP:
+				return new PlaydeckTCPConnection(this.#instance, direction)
+
+			case ConnectionType.WS:
+				return new PlaydeckWSConnection(this.#instance, direction)
+		}
 		return null
 	}
 	#getIncomingType(): ConnectionType | null {
@@ -99,6 +113,17 @@ export class PlaydeckConnectionManager {
 		if (this.#isWSEnabled) return ConnectionType.WS
 
 		return ConnectionType.TCP
+	}
+	isAllConnected(): boolean {
+		const amountOfOKs =
+			Number(this.incoming !== null && this.incoming.status === InstanceStatus.Ok) +
+			Number(this.outgoing !== null && this.outgoing.status === InstanceStatus.Ok) +
+			Number(this.outgoing !== null && this.outgoing.status === InstanceStatus.Ok)
+
+		const amountOfConnections =
+			Number(this.incoming !== null) + Number(this.outgoing !== null) + Number(this.outgoing !== null)
+		console.log(`${amountOfOKs} === ${amountOfConnections}`)
+		return amountOfOKs === amountOfConnections
 	}
 	async destroy(): Promise<void> {
 		this.#log('debug', `Destroying...`)

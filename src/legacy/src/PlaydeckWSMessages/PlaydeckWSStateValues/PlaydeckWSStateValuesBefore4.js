@@ -153,7 +153,6 @@ class PlaydeckWSStateValuesBefore4 {
   }
 }
 /**
- *
  * @typedef { Object } StatusMessage
  * @property { StatusMessageGeneral } General - Contains of general status for both playlists
  * @property { StatusMessagePlaylist[] } Playlist - Indicates status of each playlist

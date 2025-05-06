@@ -20,8 +20,7 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"@companion-module/base": "^1.11.3",
-		"ws": "^8.18.0"
+		"@companion-module/base": "^1.11.3"
 	},
 	"devDependencies": {
 		"@companion-module/tools": "^2.2.2",
@@ -31,7 +30,7 @@
 		"lint-staged": "^15.5.0",
 		"prettier": "^3.5.3",
 		"rimraf": "^6.0.1",
-		"typescript": "^5.8.2",
+		"typescript": "^5.8.3",
 		"typescript-eslint": "^8.29.0"
 	},
 	"prettier": "@companion-module/tools/.prettierrc.json",

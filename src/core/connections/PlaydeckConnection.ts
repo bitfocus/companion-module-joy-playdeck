@@ -18,7 +18,7 @@ import dns from 'dns'
 | All           | 1     | 1   | 1   | **7**  |
  */
 export enum ConnectionDirection {
-	None = 0 
+	None = 0,
 	Outgoing = 1,
 	Incoming = 2,
 	BiDirectional = 3,
@@ -32,7 +32,7 @@ export enum ConnectionType {
 	TCP = 'TCP',
 	WS = 'WebSocket',
 }
-export class PlaydeckConnection extends EventEmitter {
+export abstract class PlaydeckConnection extends EventEmitter {
 	#reconnectTimeout: number = 5000
 	protected instance?: PlaydeckInstance
 	protected port?: number
@@ -48,10 +48,14 @@ export class PlaydeckConnection extends EventEmitter {
 		this.status = InstanceStatus.Disconnected
 	}
 	protected init(): void {
-		this.log('debug', `Initializing ${this.type} (${this.direction}) conneciton`)
+		this.log('debug', `Initializing conneciton...`)
 	}
 	protected reconnect(): void {
-		this.updateStatus(InstanceStatus.Connecting, this.lastErrorMessage ? `Last error: ${this.lastErrorMessage}` : null)
+		this.updateStatus(
+			InstanceStatus.Connecting,
+			this.lastErrorMessage ? `Last error: ${this.lastErrorMessage}` : null,
+			true,
+		)
 		setTimeout(() => {
 			this.destroy()
 			this.log('info', `Trying to reconnect...`)
@@ -65,9 +69,7 @@ export class PlaydeckConnection extends EventEmitter {
 	send(command: string): void {
 		this.log('debug', `Sending ${command}`)
 	}
-	destroy(): void {
-		this.log('debug', `Destroying ${this.type} (${this.direction}) conneciton`)
-	}
+	abstract destroy(): void
 	/**
 	 * Returns promise with IPv4 adress of host: `{ address: string, family: 4 }`
 	 * @param { string } host
@@ -77,9 +79,9 @@ export class PlaydeckConnection extends EventEmitter {
 		return dns.promises.lookup(host, 4)
 	}
 	protected log(level: LogLevel, message: string): void {
-		this.instance?.log(level, `Playdeck ${this.type} (${this.direction}): ${message}`)
+		this.instance?.log(level, `Playdeck ${this.type} (${ConnectionDirection[this.direction]}): ${message}`)
 	}
-	protected updateStatus(connectionStatus: InstanceStatus, message: string | null, isGlogal?: boolean): void {
+	protected updateStatus(connectionStatus: InstanceStatus, message?: string | null, isGlogal?: boolean): void {
 		this.status = connectionStatus
 		if (isGlogal && this.instance !== undefined) {
 			this.instance.updateStatus(connectionStatus, message ? message : null)

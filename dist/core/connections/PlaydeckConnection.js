@@ -52,10 +52,10 @@ class PlaydeckConnection extends events_1.default {
         this.status = base_1.InstanceStatus.Disconnected;
     }
     init() {
-        this.log('debug', `Initializing ${this.type} (${this.direction}) conneciton`);
+        this.log('debug', `Initializing conneciton...`);
     }
     reconnect() {
-        this.updateStatus(base_1.InstanceStatus.Connecting, this.lastErrorMessage ? `Last error: ${this.lastErrorMessage}` : null);
+        this.updateStatus(base_1.InstanceStatus.Connecting, this.lastErrorMessage ? `Last error: ${this.lastErrorMessage}` : null, true);
         setTimeout(() => {
             this.destroy();
             this.log('info', `Trying to reconnect...`);
@@ -69,9 +69,6 @@ class PlaydeckConnection extends events_1.default {
     send(command) {
         this.log('debug', `Sending ${command}`);
     }
-    destroy() {
-        this.log('debug', `Destroying ${this.type} (${this.direction}) conneciton`);
-    }
     /**
      * Returns promise with IPv4 adress of host: `{ address: string, family: 4 }`
      * @param { string } host
@@ -81,7 +78,7 @@ class PlaydeckConnection extends events_1.default {
         return dns_1.default.promises.lookup(host, 4);
     }
     log(level, message) {
-        this.instance?.log(level, `Playdeck ${this.type} (${this.direction}): ${message}`);
+        this.instance?.log(level, `Playdeck ${this.type} (${ConnectionDirection[this.direction]}): ${message}`);
     }
     updateStatus(connectionStatus, message, isGlogal) {
         this.status = connectionStatus;
