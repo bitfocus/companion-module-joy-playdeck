@@ -1,4 +1,4 @@
-import { PlaydeckStatusInterface } from '../PlaydeckStatusInterface.js'
+import { PlaydeckStatusInterface } from '../../PlaydeckStatusInterface.js'
 
 
 export class PlaydeckStatusV4 extends PlaydeckStatusInterface<PlaydeckProjectValues, PlaydeckChannelValues> {
@@ -6,7 +6,7 @@ export class PlaydeckStatusV4 extends PlaydeckStatusInterface<PlaydeckProjectVal
 	#channel: PlaydeckChannelValues[]
 	#json?: string
 	#rawData: string | null = null
-	constructor(json: string) {
+	constructor(json: object) {
         super()
 		this.#json = json
 		try {

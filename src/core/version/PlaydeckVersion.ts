@@ -24,7 +24,7 @@ export class PlaydeckVersion {
 		{ id: '3.2b2', label: '3.2b2' },
 	] as const satisfies DropdownChoice[]
 	static noEvents: Version[] = ['3.4b8', '3.2b12', '3.2b11', '3.2b8', '3.2b2']
-	static noWS: Version[] = PlaydeckVersion.noEvents.concat(['3.5b12', '3.5b3'])
+	static noWS: Version[] = this.noEvents.concat(['3.5b12', '3.5b3'])
 
 	static #isVersion(version: Version): boolean {
 		if (!version) return false
@@ -56,15 +56,11 @@ export class PlaydeckVersion {
 	 */
 	static hasConnection(version: Version, connection: ConnectionType, direction?: ConnectionDirection): boolean {
 		if (connection === ConnectionType.TCP && direction === ConnectionDirection.Outgoing) return true
-		if (
-			connection === ConnectionType.WS &&
-			PlaydeckVersion.isGreaterOrEqual(version, PlaydeckVersion.#FIRST_WS_CONNECTION)
-		)
-			return true
+		if (connection === ConnectionType.WS && this.isGreaterOrEqual(version, this.#FIRST_WS_CONNECTION)) return true
 		if (
 			connection === ConnectionType.TCP &&
 			direction === ConnectionDirection.Incoming &&
-			PlaydeckVersion.isGreaterOrEqual(version, PlaydeckVersion.#FIRST_TCP_EVENTS)
+			this.isGreaterOrEqual(version, this.#FIRST_TCP_EVENTS)
 		)
 			return true
 		return false
@@ -78,9 +74,9 @@ export class PlaydeckVersion {
 	 * - `null` if one of arguments is a proper version
 	 */
 	static compareTwoVersions(version1: Version, version2: Version): VersionCompare {
-		if (!PlaydeckVersion.#isVersion(version1) || !PlaydeckVersion.#isVersion(version2)) return VersionCompare.Error
-		const parsed1 = PlaydeckVersion.#parseVersion(version1)
-		const parsed2 = PlaydeckVersion.#parseVersion(version2)
+		if (!this.#isVersion(version1) || !this.#isVersion(version2)) return VersionCompare.Error
+		const parsed1 = this.#parseVersion(version1)
+		const parsed2 = this.#parseVersion(version2)
 		for (let i = 0; i < parsed1.length; i++) {
 			if (parsed1[i] === parsed2[i]) continue
 			return parsed1[i] > parsed2[i] ? VersionCompare.Greater : VersionCompare.Lower
@@ -88,7 +84,7 @@ export class PlaydeckVersion {
 		return VersionCompare.Equal
 	}
 	static isGreaterOrEqual(version1: Version, version2: Version): boolean | null {
-		switch (PlaydeckVersion.compareTwoVersions(version1, version2)) {
+		switch (this.compareTwoVersions(version1, version2)) {
 			case VersionCompare.Greater:
 				return true
 			case VersionCompare.Equal:
@@ -99,7 +95,7 @@ export class PlaydeckVersion {
 		return false
 	}
 	static isLowerThan(version1: Version, version2: Version): boolean | null {
-		switch (PlaydeckVersion.compareTwoVersions(version1, version2)) {
+		switch (this.compareTwoVersions(version1, version2)) {
 			case VersionCompare.Lower:
 				return true
 			case VersionCompare.Error:

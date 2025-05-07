@@ -9,7 +9,9 @@ class PlaydeckStatus {
         this.#instance = instance;
         try {
             const jsonData = JSON.parse(sData);
-            this.#values = PlaydeckStatusFactory_js_1.PlaydeckStatusFactory.create(this.#instance.version, jsonData).getValues();
+            if (jsonData !== null && this.#instance.version !== null) {
+                this.#values = PlaydeckStatusFactory_js_1.PlaydeckStatusFactory.create(this.#instance.version, jsonData).getValues();
+            }
         }
         catch (e) {
             this.#log('error', `${e}`);

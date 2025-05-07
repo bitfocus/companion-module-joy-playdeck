@@ -5,7 +5,7 @@ const base_1 = require("@companion-module/base");
 const PlaydeckConnection_js_1 = require("./PlaydeckConnection.js");
 class PlaydeckWSConnection extends PlaydeckConnection_js_1.PlaydeckConnection {
     port = 11411;
-    #webSocket;
+    #webSocket = null;
     constructor(instance, direction) {
         super(instance, direction);
         this.type = PlaydeckConnection_js_1.ConnectionType.WS;
@@ -95,7 +95,7 @@ class PlaydeckWSConnection extends PlaydeckConnection_js_1.PlaydeckConnection {
         this.log('error', `WebSocket error: ${error.message}`);
         this.lastErrorMessage = error.message;
         this.updateStatus(base_1.InstanceStatus.UnknownError, this.lastErrorMessage, true);
-        if (this.#webSocket.readyState !== WebSocket.OPEN) {
+        if (this.#webSocket?.readyState !== WebSocket.OPEN) {
             this.reconnect();
         }
     }

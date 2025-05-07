@@ -1,1 +1,1 @@
-{"version":3,"file":"PlaydeckStatusInterface.js","sourceRoot":"","sources":["../../../../src/core/data/PlaydeckStatusManager/PlaydeckStatusInterface.ts"],"names":[],"mappings":";;;AACA,MAAsB,uBAAuB;IAC5C,OAAO,CAAY;IACnB,QAAQ,CAAa;IACrB,SAAS;QACR,OAAO;YACN,MAAM,EAAE,IAAI,CAAC,OAAO;YACpB,OAAO,EAAE,CAAC,IAAI,CAAC,QAAQ,CAAC;SACxB,CAAA;IACF,CAAC;CACD;AATD,0DASC"}
+{"version":3,"file":"PlaydeckStatusInterface.js","sourceRoot":"","sources":["../../../../src/core/data/PlaydeckStatusManager/PlaydeckStatusInterface.ts"],"names":[],"mappings":";;;AACA,MAAsB,uBAAuB;CAE5C;AAFD,0DAEC"}

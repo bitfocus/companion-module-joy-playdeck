@@ -5,7 +5,7 @@ import { PlaydeckConnection, ConnectionType, ConnectionDirection } from './Playd
 
 export class PlaydeckWSConnection extends PlaydeckConnection {
 	port = 11411
-	#webSocket?: WebSocket
+	#webSocket?: WebSocket | null = null
 	constructor(instance: PlaydeckInstance, direction: ConnectionDirection) {
 		super(instance, direction)
 		this.type = ConnectionType.WS
@@ -100,7 +100,7 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 		this.log('error', `WebSocket error: ${error.message}`)
 		this.lastErrorMessage = error.message
 		this.updateStatus(InstanceStatus.UnknownError, this.lastErrorMessage, true)
-		if (this.#webSocket.readyState !== WebSocket.OPEN) {
+		if (this.#webSocket?.readyState !== WebSocket.OPEN) {
 			this.reconnect()
 		}
 	}

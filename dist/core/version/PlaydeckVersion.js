@@ -24,7 +24,7 @@ class PlaydeckVersion {
         { id: '3.2b2', label: '3.2b2' },
     ];
     static noEvents = ['3.4b8', '3.2b12', '3.2b11', '3.2b8', '3.2b2'];
-    static noWS = PlaydeckVersion.noEvents.concat(['3.5b12', '3.5b3']);
+    static noWS = this.noEvents.concat(['3.5b12', '3.5b3']);
     static #isVersion(version) {
         if (!version)
             return false;
@@ -59,12 +59,11 @@ class PlaydeckVersion {
     static hasConnection(version, connection, direction) {
         if (connection === PlaydeckConnection_js_1.ConnectionType.TCP && direction === PlaydeckConnection_js_1.ConnectionDirection.Outgoing)
             return true;
-        if (connection === PlaydeckConnection_js_1.ConnectionType.WS &&
-            PlaydeckVersion.isGreaterOrEqual(version, PlaydeckVersion.#FIRST_WS_CONNECTION))
+        if (connection === PlaydeckConnection_js_1.ConnectionType.WS && this.isGreaterOrEqual(version, this.#FIRST_WS_CONNECTION))
             return true;
         if (connection === PlaydeckConnection_js_1.ConnectionType.TCP &&
             direction === PlaydeckConnection_js_1.ConnectionDirection.Incoming &&
-            PlaydeckVersion.isGreaterOrEqual(version, PlaydeckVersion.#FIRST_TCP_EVENTS))
+            this.isGreaterOrEqual(version, this.#FIRST_TCP_EVENTS))
             return true;
         return false;
     }
@@ -76,10 +75,10 @@ class PlaydeckVersion {
      * - `null` if one of arguments is a proper version
      */
     static compareTwoVersions(version1, version2) {
-        if (!PlaydeckVersion.#isVersion(version1) || !PlaydeckVersion.#isVersion(version2))
+        if (!this.#isVersion(version1) || !this.#isVersion(version2))
             return VersionCompare.Error;
-        const parsed1 = PlaydeckVersion.#parseVersion(version1);
-        const parsed2 = PlaydeckVersion.#parseVersion(version2);
+        const parsed1 = this.#parseVersion(version1);
+        const parsed2 = this.#parseVersion(version2);
         for (let i = 0; i < parsed1.length; i++) {
             if (parsed1[i] === parsed2[i])
                 continue;
@@ -88,7 +87,7 @@ class PlaydeckVersion {
         return VersionCompare.Equal;
     }
     static isGreaterOrEqual(version1, version2) {
-        switch (PlaydeckVersion.compareTwoVersions(version1, version2)) {
+        switch (this.compareTwoVersions(version1, version2)) {
             case VersionCompare.Greater:
                 return true;
             case VersionCompare.Equal:
@@ -99,7 +98,7 @@ class PlaydeckVersion {
         return false;
     }
     static isLowerThan(version1, version2) {
-        switch (PlaydeckVersion.compareTwoVersions(version1, version2)) {
+        switch (this.compareTwoVersions(version1, version2)) {
             case VersionCompare.Lower:
                 return true;
             case VersionCompare.Error:
