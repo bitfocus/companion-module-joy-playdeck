@@ -2,7 +2,7 @@
 import { PlaydeckInstance } from '../../index.js'
 import { InstanceStatus } from '@companion-module/base'
 import { PlaydeckConnection, ConnectionType, ConnectionDirection } from './PlaydeckConnection.js'
-
+import { PlaydeckStatus } from '../data/PlaydeckStatus.js'
 export class PlaydeckWSConnection extends PlaydeckConnection {
 	port = 11411
 	#webSocket?: WebSocket | null = null
@@ -51,8 +51,8 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 	}
 
 	#onmessage(message: MessageEvent): void {
+		if (!this.instance) return
 		const messageData: string = message.data
-
 		const wsMessage = this.#getMessage(messageData)
 		if (wsMessage !== null) {
 			switch (wsMessage.type) {
@@ -60,6 +60,7 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 					this.log(`debug`, `Recieved Event: ${wsMessage.data}`) // don't know what it means it returns {"AnyVariableName":"1"}
 					break
 				case WSMessageType.Status:
+					new PlaydeckStatus(this.instance, wsMessage.data)
 					break
 				case WSMessageType.Project:
 					this.log(`debug`, `Recieved Project: ${wsMessage.data}`) // don't know what it means it returns {"AnyVariableName":"1"}
@@ -96,7 +97,8 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 		this.log('debug', `Closed with code: ${event.code}, resason: ${event.reason}`)
 		this.reconnect()
 	}
-	#onerror(error: ErrorEvent): void {
+	#onerror(errorEvent: Event): void {
+		const error = errorEvent as ErrorEvent
 		this.log('error', `WebSocket error: ${error.message}`)
 		this.lastErrorMessage = error.message
 		this.updateStatus(InstanceStatus.UnknownError, this.lastErrorMessage, true)

@@ -5,6 +5,7 @@ import {
 	SomeCompanionConfigField,
 	CompanionVariableDefinition,
 	CompanionActionDefinitions,
+	LogLevel,
 } from '@companion-module/base'
 import { getPlaydeckConfigFields, PlaydeckConfig } from './config/PlaydeckConfig.js'
 import { UpgradeScripts } from './upgrades/PlaydeckUpgrades.js'
@@ -34,7 +35,9 @@ export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 	actionDefinitions: CompanionActionDefinitions = {}
 	state?: PlaydeckState
 	connectionManager?: PlaydeckConnectionManager
-
+	#lastLazyLogTimestamp: number | null = null
+	#lastLazyStatusTimestamp: number | null = null
+	#lazyLogInterval: number = 3000
 	constructor(internal: unknown) {
 		super(internal)
 	}
@@ -58,6 +61,27 @@ export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 		this.version = new PlaydeckVersion(this.#config.version)
 		this.state = new PlaydeckState(this)
 		this.connectionManager = new PlaydeckConnectionManager(this)
+	}
+	/** for log fast events not so fast (one time per `#lazyLogInterval`)*/
+	lazyLog(logLevel: LogLevel, message: string): void {
+		const newLastTimestamp = this.#updateLastLazyTimestamp(this.#lastLazyLogTimestamp)
+		if (newLastTimestamp) {
+			this.#lastLazyLogTimestamp = newLastTimestamp
+			this.log(logLevel, `Lazy: ${message}`)
+		}
+	}
+	#updateLastLazyTimestamp(lastLazyTimestamp: number | null): number | null {
+		const timestamp = Date.now()
+		if (lastLazyTimestamp === null || timestamp - lastLazyTimestamp > this.#lazyLogInterval) return timestamp
+		return null
+	}
+	/** for log fast events not so fast (one time per `#lazyLogInterval`)*/
+	lazyUpdateStatus(status: InstanceStatus, message: string | null): void {
+		const newLastTimestamp = this.#updateLastLazyTimestamp(this.#lastLazyStatusTimestamp)
+		if (newLastTimestamp) {
+			this.#lastLazyStatusTimestamp = newLastTimestamp
+			this.updateStatus(status, message)
+		}
 	}
 }
 
