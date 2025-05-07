@@ -1,8 +1,7 @@
 import { PlaydeckStatusInterface } from '../../PlaydeckStatusInterface.js'
-import { integer, TimestampString } from '../../../../../utils/PlaydeckUtils.js'
-import { StatusUtilsV3 } from './PlaydeckStatusUtilsV3.js'
+import { Tally, integer, TimestampString, PlaydeckUtils, PlaybackState } from '../../../../../utils/PlaydeckUtils.js'
 import { PlaydeckStatusMessageData } from './PlaydeckStatusMesageV3.js'
-import { Playlist, Tally, BlockAutoplayAlert, BlockScheduleMethod } from './PlaydeckStatusMesageV3.js'
+import { Playlist, BlockAutoplayAlert, BlockScheduleMethod } from './PlaydeckStatusMesageV3.js'
 export class PlaydeckStatusV3 extends PlaydeckStatusInterface<PlaydeckGeneralValues, PlaydeckPlaylistValues> {
 	#common: PlaydeckGeneralValues | null = null
 	#channel: PlaydeckPlaylistValues[] | null = null
@@ -32,8 +31,8 @@ export class PlaydeckStatusV3 extends PlaydeckStatusInterface<PlaydeckGeneralVal
 			activeChannels: general.ActiveChannels,
 			productionMode: Boolean(general.ProductionMode),
 			isRecording: general.IsRecording,
-			recordingDuration: StatusUtilsV3.convertFloat(general.RecordingDuration),
-			recordingTimeStart: StatusUtilsV3.convertTimestamp(general.RecordingTimeStart),
+			recordingDuration: PlaydeckUtils.convertFloat(general.RecordingDuration),
+			recordingTimeStart: PlaydeckUtils.convertTimestamp(general.RecordingTimeStart),
 		}
 	}
 	#getChannel(): PlaydeckPlaylistValues[] | null {
@@ -107,20 +106,20 @@ class PlaydeckPlaylistValues {
 		this.blockCount = playlist.BlockCount
 		this.blockScheduleActive = playlist.BlockScheduleActive
 		this.blockScheduleMethod = BlockScheduleMethod[playlist.BlockScheduleMethod] as keyof typeof BlockScheduleMethod
-		this.blockScheduleRemaining = StatusUtilsV3.convertFloat(playlist.BlockScheduleRemaining)
+		this.blockScheduleRemaining = PlaydeckUtils.convertFloat(playlist.BlockScheduleRemaining)
 		this.blockScheduleAlert = playlist.BlockScheduleAlert
 		this.blockScheduleOvertime = playlist.BlockScheduleOvertime
 		this.blockAutoplayActive = playlist.BlockAutoplayActive
-		this.blockAutoplayRemaining = StatusUtilsV3.convertFloat(playlist.BlockAutoplayRemaining)
+		this.blockAutoplayRemaining = PlaydeckUtils.convertFloat(playlist.BlockAutoplayRemaining)
 		this.blockAutoplayAlert = playlist.BlockAutoplayAlert
 		this.blockName = playlist.BlockName
-		this.blockDuration = StatusUtilsV3.convertFloat(playlist.BlockDuration)
-		this.blockProgress = StatusUtilsV3.convertFloat(playlist.BlockProgress)
-		this.blockPosition = StatusUtilsV3.convertFloat(playlist.BlockPosition)
-		this.blockRemaining = StatusUtilsV3.convertFloat(playlist.BlockRemaining)
+		this.blockDuration = PlaydeckUtils.convertFloat(playlist.BlockDuration)
+		this.blockProgress = PlaydeckUtils.convertFloat(playlist.BlockProgress)
+		this.blockPosition = PlaydeckUtils.convertFloat(playlist.BlockPosition)
+		this.blockRemaining = PlaydeckUtils.convertFloat(playlist.BlockRemaining)
 		this.blockRemainingAlert = playlist.BlockRemainingAlert
-		this.blockTimeStart = StatusUtilsV3.convertTimestamp(playlist.BlockTimeStart)
-		this.blockTimeEnd = StatusUtilsV3.convertTimestamp(playlist.BlockTimeEnd)
+		this.blockTimeStart = PlaydeckUtils.convertTimestamp(playlist.BlockTimeStart)
+		this.blockTimeEnd = PlaydeckUtils.convertTimestamp(playlist.BlockTimeEnd)
 		this.blockIsClock = playlist.BlockIsClock
 		this.blockID = playlist.BlockID
 		this.clipID = playlist.ClipID
@@ -128,13 +127,13 @@ class PlaydeckPlaylistValues {
 		this.clipWidth = playlist.ClipWidth
 		this.clipHeight = playlist.ClipHeight
 		this.clipName = playlist.ClipName
-		this.clipDuration = StatusUtilsV3.convertFloat(playlist.ClipDuration)
-		this.clipProgress = StatusUtilsV3.convertFloat(playlist.ClipProgress)
-		this.clipPosition = Math.max(StatusUtilsV3.convertFloat(playlist.ClipPosition) - 1, 0) // it equals `0` only if stopped and on que it is `1`
-		this.clipRemaining = StatusUtilsV3.convertFloat(playlist.ClipRemaining)
+		this.clipDuration = PlaydeckUtils.convertFloat(playlist.ClipDuration)
+		this.clipProgress = PlaydeckUtils.convertFloat(playlist.ClipProgress)
+		this.clipPosition = Math.max(PlaydeckUtils.convertFloat(playlist.ClipPosition) - 1, 0) // it equals `0` only if stopped and on que it is `1`
+		this.clipRemaining = PlaydeckUtils.convertFloat(playlist.ClipRemaining)
 		this.clipRemainingAlert = playlist.ClipRemainingAlert
-		this.clipTimeStart = StatusUtilsV3.convertTimestamp(playlist.ClipTimeStart)
-		this.clipTimeEnd = StatusUtilsV3.convertTimestamp(playlist.ClipTimeEnd)
+		this.clipTimeStart = PlaydeckUtils.convertTimestamp(playlist.ClipTimeStart)
+		this.clipTimeEnd = PlaydeckUtils.convertTimestamp(playlist.ClipTimeEnd)
 		this.clipType = this.#getClipType(playlist)
 	}
 
@@ -157,14 +156,6 @@ class PlaydeckPlaylistValues {
 		if (playlist.ClipIsVideo) return ClipType.Video
 		return ClipType.None
 	}
-}
-
-enum PlaybackState {
-	None = '',
-	Stop = 'stop',
-	Pause = 'pause',
-	Play = 'play',
-	Cue = 'cue',
 }
 
 enum ClipType {

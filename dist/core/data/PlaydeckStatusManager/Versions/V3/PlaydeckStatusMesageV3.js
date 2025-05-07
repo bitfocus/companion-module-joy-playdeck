@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BlockScheduleMethod = exports.Tally = exports.ProductionMode = exports.BlockAutoplayAlert = void 0;
+exports.BlockScheduleMethod = exports.ProductionMode = exports.BlockAutoplayAlert = void 0;
 var BlockAutoplayAlert;
 (function (BlockAutoplayAlert) {
     BlockAutoplayAlert[BlockAutoplayAlert["Alert0"] = 0] = "Alert0";
@@ -12,12 +12,6 @@ var ProductionMode;
     ProductionMode[ProductionMode["Off"] = 0] = "Off";
     ProductionMode[ProductionMode["On"] = 1] = "On";
 })(ProductionMode || (exports.ProductionMode = ProductionMode = {}));
-var Tally;
-(function (Tally) {
-    Tally[Tally["None"] = 0] = "None";
-    Tally[Tally["Preview"] = 1] = "Preview";
-    Tally[Tally["Program"] = 2] = "Program";
-})(Tally || (exports.Tally = Tally = {}));
 var BlockScheduleMethod;
 (function (BlockScheduleMethod) {
     BlockScheduleMethod[BlockScheduleMethod["None"] = 0] = "None";

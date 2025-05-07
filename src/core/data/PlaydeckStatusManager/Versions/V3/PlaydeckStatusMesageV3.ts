@@ -1,4 +1,4 @@
-import { integer, float, UNIXTimestamp } from '../../../../../utils/PlaydeckUtils.js'
+import { Tally, integer, float, UNIXTimestamp } from '../../../../../utils/PlaydeckUtils.js'
 
 export interface PlaydeckStatusMessageData {
 	/** Contains of general status for both playlists */
@@ -79,12 +79,6 @@ export enum ProductionMode {
 	Off = 0,
 	On = 1,
 }
-export enum Tally {
-	None = 0,
-	Preview = 1,
-	Program = 2,
-}
-
 export enum BlockScheduleMethod {
 	None = 0,
 	/** Always Play, independent of Playlist status */
