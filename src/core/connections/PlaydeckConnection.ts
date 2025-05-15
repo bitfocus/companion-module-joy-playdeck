@@ -32,7 +32,7 @@ export enum ConnectionType {
 	TCP = 'TCP',
 	WS = 'WebSocket',
 }
-export abstract class PlaydeckConnection extends EventEmitter {
+export abstract class PlaydeckConnection extends EventEmitter<PlaydeckConnectionEvents> {
 	#reconnectTimeout: number = 5000
 	protected instance?: PlaydeckInstance
 	protected port?: number
@@ -87,4 +87,11 @@ export abstract class PlaydeckConnection extends EventEmitter {
 			this.instance.updateStatus(connectionStatus, message ? message : null)
 		}
 	}
+}
+
+export interface PlaydeckConnectionEvents {
+	statusMessage: [status: string]
+	event: [event: string]
+	projectData: [data: string]
+	started: []
 }

@@ -5,11 +5,11 @@ export type float = number
 /** UNIX Timestamp in seconds in string formatted `HH:mm:ss` */
 export type TimestampString = string
 /** UNIX Timestamp in seconds */
-export type UNIXTimestamp = number
+export type TimestampUNIX = number
 
 export class PlaydeckUtils {
 	/** Converts UNIX Timestamp in seconds in string formatted HH:mm:ss padded with 0 */
-	static convertTimestamp(unixSecTimestamp: UNIXTimestamp): TimestampString {
+	static convertTimestamp(unixSecTimestamp: TimestampUNIX): TimestampString {
 		const date = new Date(unixSecTimestamp * 1000)
 		if (unixSecTimestamp > 0) {
 			return `${this.#padWithZero(date.getHours())}:${this.#padWithZero(date.getMinutes())}:${this.#padWithZero(date.getSeconds())}`
@@ -25,6 +25,12 @@ export class PlaydeckUtils {
 	}
 	static #padWithZero(num: integer): string {
 		return `0${num}`.slice(-2)
+	}
+	static isInEnum<T extends Record<string, string | number>>(value: string | number, enumObject: T): boolean {
+		return Object.values(enumObject).includes(value)
+	}
+	static trimFloat(num: float, trim: integer): float {
+		return Number(num.toFixed(trim))
 	}
 }
 

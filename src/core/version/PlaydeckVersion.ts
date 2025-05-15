@@ -4,11 +4,13 @@ import { ConnectionDirection, ConnectionType } from '../connections/PlaydeckConn
 export class PlaydeckVersion {
 	#version: Version
 	static holyBooly: boolean = false
-
+	static #LEGACY_CHANNELS = 2
+	static #FIRST_MODERN = '4.1b2' as Version
+	static #CHANNELS = 8
 	static #FIRST_TCP_EVENTS: Version = `3.5b3`
 	static #FIRST_WS_CONNECTION: Version = `3.6b18`
 	static configVersions = [
-		{ id: '4.1b3', label: '4.1b3' },
+		{ id: '4.1b8', label: '4.1b8' },
 		{ id: '3.8b13', label: '3.8b13' },
 		{ id: '3.8b8', label: '3.8b8' },
 		{ id: '3.8b4', label: '3.8b4' },
@@ -103,11 +105,17 @@ export class PlaydeckVersion {
 		}
 		return false
 	}
+	static availableChannels(version: Version): number {
+		if (PlaydeckVersion.isGreaterOrEqual(version, PlaydeckVersion.#FIRST_MODERN)) return PlaydeckVersion.#CHANNELS
+		return PlaydeckVersion.#LEGACY_CHANNELS
+	}
 	constructor(version: Version) {
 		this.#version = version
 	}
-
-	isEqisGreaterOrEqualualTo(version: Version): boolean | null {
+	availableChannels(): number {
+		return PlaydeckVersion.availableChannels(this.#version)
+	}
+	isGreaterOrEqualualTo(version: Version): boolean | null {
 		return PlaydeckVersion.isGreaterOrEqual(this.#version, version)
 	}
 	isLowerThan(version: Version): boolean | null {
@@ -117,7 +125,7 @@ export class PlaydeckVersion {
 		return PlaydeckVersion.hasConnection(this.#version, connection, direction)
 	}
 	isLegacy(): boolean | null {
-		return PlaydeckVersion.isLowerThan(this.#version, `4.1b3`)
+		return PlaydeckVersion.isLowerThan(this.#version, PlaydeckVersion.#FIRST_MODERN)
 	}
 }
 export type Version = (typeof PlaydeckVersion.configVersions)[number]['id']

@@ -1,13 +1,12 @@
-import { PlaydeckStatusInterface } from '../../PlaydeckStatusInterface.js'
+import { PlaydeckStatusInterface } from '../../../PlaydeckStatus.js'
 import { Tally, integer, TimestampString, PlaydeckUtils, PlaybackState } from '../../../../../utils/PlaydeckUtils.js'
 import { PlaydeckStatusMessageData } from './PlaydeckStatusMesageV3.js'
 import { Playlist, BlockAutoplayAlert, BlockScheduleMethod } from './PlaydeckStatusMesageV3.js'
-export class PlaydeckStatusV3 extends PlaydeckStatusInterface<PlaydeckGeneralValues, PlaydeckPlaylistValues> {
+export class PlaydeckStatusV3 implements PlaydeckStatusInterface<PlaydeckGeneralValues, PlaydeckPlaylistValues> {
 	#common: PlaydeckGeneralValues | null = null
 	#channel: PlaydeckPlaylistValues[] | null = null
 	#rawData: PlaydeckStatusMessageData | null = null
 	constructor(playdeckStatusObject: object) {
-		super()
 		this.#rawData = playdeckStatusObject as PlaydeckStatusMessageData
 	}
 	getValues(): PlaydeckValuesV3 | null {
@@ -40,6 +39,10 @@ export class PlaydeckStatusV3 extends PlaydeckStatusInterface<PlaydeckGeneralVal
 		if (this.#rawData.Playlist === undefined) return null
 		const channels: Playlist[] = this.#rawData.Playlist
 		return channels.map((playlist) => new PlaydeckPlaylistValues(playlist))
+	}
+	isChannelOn(channel: number): boolean {
+		if (channel) return true
+		return true
 	}
 }
 

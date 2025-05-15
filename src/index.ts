@@ -59,8 +59,8 @@ export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 		this.#config = config
 		this.updateStatus(InstanceStatus.Connecting, `Playdeck Instance: starting...`)
 		this.version = new PlaydeckVersion(this.#config.version)
-		this.state = new PlaydeckState(this)
 		this.connectionManager = new PlaydeckConnectionManager(this)
+		this.state = new PlaydeckState(this)
 	}
 	/** for log fast events not so fast (one time per `#lazyLogInterval`)*/
 	lazyLog(logLevel: LogLevel, message: string): void {
@@ -75,7 +75,7 @@ export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 		if (lastLazyTimestamp === null || timestamp - lastLazyTimestamp > this.#lazyLogInterval) return timestamp
 		return null
 	}
-	/** for log fast events not so fast (one time per `#lazyLogInterval`)*/
+	/** for log fast events not so fast (one time per `#lazyLogInterval`) */
 	lazyUpdateStatus(status: InstanceStatus, message: string | null): void {
 		const newLastTimestamp = this.#updateLastLazyTimestamp(this.#lastLazyStatusTimestamp)
 		if (newLastTimestamp) {

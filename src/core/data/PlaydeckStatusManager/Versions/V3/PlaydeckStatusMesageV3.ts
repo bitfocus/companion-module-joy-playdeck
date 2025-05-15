@@ -1,4 +1,4 @@
-import { Tally, integer, float, UNIXTimestamp } from '../../../../../utils/PlaydeckUtils.js'
+import { Tally, integer, float, TimestampUNIX } from '../../../../../utils/PlaydeckUtils.js'
 
 export interface PlaydeckStatusMessageData {
 	/** Contains of general status for both playlists */
@@ -16,7 +16,7 @@ export interface General {
 	IsRecording: boolean
 	RecordingDuration: float
 	/** Time when recording started (UNIX Timestamp) */
-	RecordingTimeStart: UNIXTimestamp
+	RecordingTimeStart: TimestampUNIX
 }
 
 export interface Playlist {
@@ -43,8 +43,8 @@ export interface Playlist {
 	ClipProgress: float
 	ClipRemaining: float
 	ClipRemainingAlert: boolean
-	ClipTimeStart: UNIXTimestamp
-	ClipTimeEnd: UNIXTimestamp
+	ClipTimeStart: TimestampUNIX
+	ClipTimeEnd: TimestampUNIX
 	ClipIsClock: boolean
 	/** Name of current block */
 	BlockName: string
@@ -53,8 +53,8 @@ export interface Playlist {
 	BlockPosition: float
 	BlockRemaining: float
 	BlockRemainingAlert: boolean
-	BlockTimeStart: UNIXTimestamp
-	BlockTimeEnd: UNIXTimestamp
+	BlockTimeStart: TimestampUNIX
+	BlockTimeEnd: TimestampUNIX
 	BlockIsClock: boolean
 	ClipIsVideo: boolean
 	ClipIsImage: boolean

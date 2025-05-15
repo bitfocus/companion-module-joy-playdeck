@@ -2,7 +2,6 @@
 import { PlaydeckInstance } from '../../index.js'
 import { InstanceStatus } from '@companion-module/base'
 import { PlaydeckConnection, ConnectionType, ConnectionDirection } from './PlaydeckConnection.js'
-import { PlaydeckStatus } from '../data/PlaydeckStatus.js'
 export class PlaydeckWSConnection extends PlaydeckConnection {
 	port = 11411
 	#webSocket?: WebSocket | null = null
@@ -57,15 +56,17 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 		if (wsMessage !== null) {
 			switch (wsMessage.type) {
 				case WSMessageType.Event:
-					this.log(`debug`, `Recieved Event: ${wsMessage.data}`) // don't know what it means it returns {"AnyVariableName":"1"}
+					this.log(`debug`, `Recieved Event: ${wsMessage.data}`)
+					this.emit('event', wsMessage.data)
 					break
 				case WSMessageType.Status:
-					new PlaydeckStatus(this.instance, wsMessage.data)
+					this.emit('statusMessage', wsMessage.data)
 					break
 				case WSMessageType.Project:
-					this.log(`debug`, `Recieved Project: ${wsMessage.data}`) // don't know what it means it returns {"AnyVariableName":"1"}
+					this.log(`debug`, `Recieved ProjectData`)
+					this.emit('projectData', wsMessage.data)
 					break
-				case WSMessageType.Premanent:
+				case WSMessageType.Permanent:
 					this.log(`debug`, `Recieved Permanent: ${wsMessage.data}`) // don't know what it means it returns {"AnyVariableName":"1"}
 					break
 			}
@@ -92,6 +93,7 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 			`Connected to Playdeck via WebSockets`,
 			this.instance?.connectionManager?.isAllConnected(),
 		)
+		this.emit('started')
 	}
 	#onclose(event: CloseEvent): void {
 		this.log('debug', `Closed with code: ${event.code}, resason: ${event.reason}`)
@@ -113,9 +115,8 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 		}
 	}
 	destroy(): void {
-		this.log('debug', `Destroying...`)
-
 		if (this.#webSocket) {
+			this.log('debug', `Destroying...`)
 			this.#webSocket.onopen = null
 			this.#webSocket.onerror = null
 			this.#webSocket.onclose = null
@@ -134,7 +135,7 @@ enum WSMessageType {
 	Event = 'event',
 	Status = 'status',
 	Project = 'project',
-	Premanent = 'permanent',
+	Permanent = 'permanent',
 }
 
 type WSMessage = {

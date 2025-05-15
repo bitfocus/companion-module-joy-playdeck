@@ -1,5 +1,5 @@
 import { PlaydeckInstance } from '../../index.js'
-import { InstanceStatus, LogLevel } from '@companion-module/base'
+import { InstanceStatus, LogLevel, TCPHelper } from '@companion-module/base'
 import { PlaydeckConnection, ConnectionType, ConnectionDirection } from './PlaydeckConnection.js'
 
 export class PlaydeckTCPConnection extends PlaydeckConnection {

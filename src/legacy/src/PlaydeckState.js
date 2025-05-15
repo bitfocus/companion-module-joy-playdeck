@@ -19,7 +19,6 @@ class PlaydeckState extends EventEmitter {
   }
   getVariableDefinitions() {}
   /**
-   *
    * @param { PlaydeckValues } newValues
    */
   updateValues(newValues) {

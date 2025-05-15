@@ -3,42 +3,48 @@ import { PlaydeckStatusFactory } from './PlaydeckStatusManager/PlaydeckStatusFac
 import { LogLevel, InstanceStatus } from '@companion-module/base'
 export class PlaydeckStatus {
 	#instance?: PlaydeckInstance
-	#values: PlaydeckValues<any, any> | null = null
-	constructor(instance: PlaydeckInstance, sData: string) {
+	#values: PlaydeckStatusValues<any, any> | null = null
+	constructor(instance: PlaydeckInstance) {
 		this.#instance = instance
+	}
+	update(sData?: string): void {
+		if (!this.#instance) return
+		if (typeof sData !== `string`) return
 		try {
 			const jsonData = JSON.parse(sData)
 			if (jsonData !== null && this.#instance.version !== null) {
 				const playdeckStatus = PlaydeckStatusFactory.create(this.#instance.version, jsonData)
 				if (playdeckStatus === null) return
 				this.#values = playdeckStatus.getValues()
-				if (this.#instance.state === undefined) return
 				if (this.#values === null) {
 					this.#lazyLog('warn', `Cannot read status, check version in config!`)
 					this.#lazyUpdateStatus(InstanceStatus.BadConfig, `Probably wrong version`)
 					return
 				}
-				this.#instance.state.setValues(this.#values)
 			}
 		} catch (e) {
 			this.#log('error', `${e}`)
 		}
 	}
-	getValues(): PlaydeckValues<any, any> | null {
+	getValues(): PlaydeckStatusValues<any, any> | null {
 		return this.#values
 	}
 	#lazyUpdateStatus(status: InstanceStatus, message: string | null): void {
-		this.#instance?.lazyUpdateStatus(status, `PlaydeckStatusHandler: ${message}`)
+		this.#instance?.lazyUpdateStatus(status, `PlaydeckStatusHandler (lazy): ${message}`)
 	}
 	#lazyLog(logLevel: LogLevel, message: string) {
-		this.#instance?.lazyLog(logLevel, `PlaydeckStatusHandler: ${message}`)
+		this.#instance?.lazyLog(logLevel, `PlaydeckStatusHandler (lazy): ${message}`)
 	}
 	#log(logLevel: LogLevel, message: string): void {
 		this.#instance?.log(logLevel, `PlaydeckStatusHandler: ${message}`)
 	}
 }
 
-export interface PlaydeckValues<CommonType, ChannelType> {
+export interface PlaydeckStatusValues<CommonType, ChannelType> {
 	common: CommonType
 	channel: ChannelType[]
+}
+
+export interface PlaydeckStatusInterface<CommonType, ChannelType> {
+	getValues(): PlaydeckStatusValues<CommonType, ChannelType> | null
 }

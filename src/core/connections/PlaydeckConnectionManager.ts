@@ -4,8 +4,9 @@ import { LogLevel, InstanceStatus } from '@companion-module/base'
 import { PlaydeckConnection, ConnectionType, ConnectionDirection } from './PlaydeckConnection.js'
 import { PlaydeckTCPConnection } from './PlaydeckTCPConnection.js'
 import { PlaydeckWSConnection } from './PlaydeckWSConnection.js'
+import { EventEmitter } from 'stream'
 
-export class PlaydeckConnectionManager {
+export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionManagerEvents> {
 	/** Connection for sending commands  */
 	outgoing: PlaydeckConnection | null = null
 	/** Connection for recieving feedbacks  */
@@ -20,6 +21,7 @@ export class PlaydeckConnectionManager {
 	#isLegacy: boolean = false
 	#instance?: PlaydeckInstance
 	constructor(instance: PlaydeckInstance) {
+		super()
 		this.#instance = instance
 		this.#isWSEnabled = this.#instance.version?.hasConnection(ConnectionType.WS) === true
 		this.#isEventsEnabled =
@@ -42,7 +44,8 @@ export class PlaydeckConnectionManager {
 		}
 	}
 	#queryPolling(): void {
-		this.#log('debug', `Polling...`)
+		if (this.query?.status !== InstanceStatus.Ok) return
+		// this.#log('debug', `Polling...`)
 	}
 	#makeConnections(
 		incomingType: ConnectionType | null,
@@ -74,18 +77,30 @@ export class PlaydeckConnectionManager {
 				this.query = WSConnection
 			}
 		}
+		if (this.incoming !== null) {
+			this.incoming.on('started', () => this.emit('incomingStarted', this.incoming!))
+		}
+		if (this.outgoing !== null) {
+			this.outgoing.on('started', () => this.emit('outgoingStarted', this.outgoing!))
+		}
+		if (this.query !== null) {
+			this.query.on('started', () => this.emit('queryStarted', this.query!))
+		}
 	}
 	#makeConnection(type: ConnectionType | null, direction: ConnectionDirection | null): PlaydeckConnection | null {
 		this.#log('debug', `Making connection ${type} (${ConnectionDirection[direction ?? 0]})`)
 		if (!this.#instance || !direction) return null
+		let conneciton: PlaydeckConnection | null = null
 		switch (type) {
 			case ConnectionType.TCP:
-				return new PlaydeckTCPConnection(this.#instance, direction)
+				conneciton = new PlaydeckTCPConnection(this.#instance, direction)
+				break
 
 			case ConnectionType.WS:
-				return new PlaydeckWSConnection(this.#instance, direction)
+				conneciton = new PlaydeckWSConnection(this.#instance, direction)
+				break
 		}
-		return null
+		return conneciton
 	}
 	#getIncomingType(): ConnectionType | null {
 		if (!this.#isEventsEnabled) return null
@@ -122,16 +137,26 @@ export class PlaydeckConnectionManager {
 
 		const amountOfConnections =
 			Number(this.incoming !== null) + Number(this.outgoing !== null) + Number(this.outgoing !== null)
-		console.log(`${amountOfOKs} === ${amountOfConnections}`)
 		return amountOfOKs === amountOfConnections
+	}
+	#destroyConnection(connection: PlaydeckConnection): void {
+		if (!connection) return
+		connection.removeAllListeners()
+		connection.destroy()
 	}
 	async destroy(): Promise<void> {
 		this.#log('debug', `Destroying...`)
-		if (this.incoming) this.incoming.destroy()
-		if (this.outgoing) this.outgoing.destroy()
-		if (this.query) this.query.destroy()
+		if (this.incoming) this.#destroyConnection(this.incoming)
+		if (this.outgoing) this.#destroyConnection(this.outgoing)
+		if (this.query) this.#destroyConnection(this.query)
 	}
 	#log(level: LogLevel, message: string): void {
 		this.#instance?.log(level, `Playdeck Connection Manager: ${message}`)
 	}
+}
+
+export interface PlaydeckConnectionManagerEvents {
+	incomingStarted: [incoming: PlaydeckConnection]
+	outgoingStarted: [outgoing: PlaydeckConnection]
+	queryStarted: [query: PlaydeckConnection]
 }

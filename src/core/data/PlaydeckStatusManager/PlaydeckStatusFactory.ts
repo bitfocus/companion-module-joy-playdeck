@@ -1,6 +1,6 @@
 import { PlaydeckStatusV3 } from './Versions/V3/PlaydeckStatusV3.js'
 import { PlaydeckStatusV4 } from './Versions/V4/PlaydeckStatusV4.js'
-import { PlaydeckStatusInterface } from './PlaydeckStatusInterface.js'
+import { PlaydeckStatusInterface } from '../PlaydeckStatus.js'
 import { PlaydeckVersion } from '../../version/PlaydeckVersion.js'
 export class PlaydeckStatusFactory {
 	static create(version: PlaydeckVersion | null | undefined, json: object): PlaydeckStatusInterface<any, any> | null {

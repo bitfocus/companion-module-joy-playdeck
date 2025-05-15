@@ -1,20 +1,19 @@
-import { PlaydeckStatusInterface } from '../../PlaydeckStatusInterface.js'
+import { PlaydeckStatusInterface } from '../../../PlaydeckStatus.js'
 import {
 	PlaybackState,
 	Tally,
 	integer,
 	TimestampString,
-	UNIXTimestamp,
+	TimestampUNIX,
 	PlaydeckUtils,
 } from '../../../../../utils/PlaydeckUtils.js'
 import { Channel, PlaydeckStatusMessageData, PlayState, ChannelState } from './PlaydeckStatusMesageV4.js'
 
-export class PlaydeckStatusV4 extends PlaydeckStatusInterface<PlaydeckProjectValues, PlaydeckChannelValues> {
+export class PlaydeckStatusV4 implements PlaydeckStatusInterface<PlaydeckProjectValues, PlaydeckChannelValues> {
 	#common: PlaydeckProjectValues | null = null
 	#channel: PlaydeckChannelValues[] | null = null
 	#rawData: PlaydeckStatusMessageData | null = null
 	constructor(playdeckStatusObject: object) {
-		super()
 		this.#rawData = playdeckStatusObject as PlaydeckStatusMessageData
 	}
 	getValues(): PlaydeckValuesV4 | null {
@@ -47,6 +46,10 @@ export class PlaydeckStatusV4 extends PlaydeckStatusInterface<PlaydeckProjectVal
 		const channels: Channel[] = this.#rawData.Channel
 		return channels.map((channel) => new PlaydeckChannelValues(channel))
 	}
+	isChannelOn(channel: number): boolean {
+		if (this.#channel === null) return false
+		return this.#channel[channel].channelState === ChannelState[ChannelState.Ready]
+	}
 }
 
 export interface PlaydeckValuesV4 {
@@ -59,7 +62,7 @@ interface PlaydeckProjectValues {
 	projectFileName: string
 	clockTime: TimestampString
 	timestamp: string
-	timestampUnix: UNIXTimestamp
+	timestampUnix: TimestampUNIX
 }
 
 class PlaydeckChannelValues {
@@ -75,6 +78,8 @@ class PlaydeckChannelValues {
 	scheduleVisible: boolean
 	autoplayVisible: boolean
 	blockName: string
+	blockNumber: number
+	blockID: number
 	blockPosition: TimestampString
 	blockDuration: TimestampString
 	blockProgress: integer
@@ -82,6 +87,8 @@ class PlaydeckChannelValues {
 	blockEnd: TimestampString
 	blockProgressAlert: boolean
 	clipName: string
+	clipNumber: number
+	clipID: number
 	clipPosition: TimestampString
 	clipDuration: TimestampString
 	clipProgress: integer
@@ -98,7 +105,7 @@ class PlaydeckChannelValues {
 	autoplayRemain: TimestampString
 	autoplayAlert: boolean
 	constructor(channel: Channel) {
-		this.channelState = ChannelState[channel.TallyStatus] as keyof typeof ChannelState
+		this.channelState = ChannelState[channel.ChannelState] as keyof typeof ChannelState
 		this.channelName = channel.ChannelName
 		this.blockCount = channel.BlockCount
 		this.tallyStatus = Tally[channel.TallyStatus] as keyof typeof Tally
@@ -110,6 +117,8 @@ class PlaydeckChannelValues {
 		this.scheduleVisible = channel.ScheduleVisible
 		this.autoplayVisible = channel.AutoplayVisible
 		this.blockName = channel.BlockName
+		this.blockNumber = channel.BlockNumber
+		this.blockID = channel.BlockID
 		this.blockPosition = channel.BlockPositionString
 		this.blockDuration = channel.BlockDurationString
 		this.blockProgress = PlaydeckUtils.convertFloat(channel.BlockProgress)
@@ -117,6 +126,8 @@ class PlaydeckChannelValues {
 		this.blockEnd = channel.BlockEndString
 		this.blockProgressAlert = channel.BlockProgressAlert
 		this.clipName = channel.ClipName
+		this.clipNumber = channel.ClipNumber
+		this.clipID = channel.ClipID
 		this.clipPosition = channel.ClipPositionString
 		this.clipDuration = channel.ClipDurationString
 		this.clipProgress = PlaydeckUtils.convertFloat(channel.ClipProgress)

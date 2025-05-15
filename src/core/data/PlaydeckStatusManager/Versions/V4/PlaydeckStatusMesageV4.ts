@@ -1,4 +1,4 @@
-import { Tally, integer, float, UNIXTimestamp, TimestampString } from '../../../../../utils/PlaydeckUtils.js'
+import { Tally, integer, float, TimestampUNIX, TimestampString } from '../../../../../utils/PlaydeckUtils.js'
 
 export interface PlaydeckStatusMessageData {
 	Project: Project
@@ -12,7 +12,7 @@ export interface Project {
 	ClockTime: TimestampString
 	/** Localized Timestamp `YYYY-MM-DD HH:mm:ss` */
 	Timestamp: string
-	TimestampUnix: UNIXTimestamp
+	TimestampUnix: TimestampUNIX
 }
 
 export interface Channel {
@@ -34,6 +34,8 @@ export interface Channel {
 	/** flag for hide/show autoplay on directors view */
 	AutoplayVisible: boolean
 	BlockName: string
+	BlockNumber: number
+	BlockID: number
 	BlockPosition: float
 	BlockPositionString: TimestampString
 	BlockDuration: float
@@ -42,9 +44,11 @@ export interface Channel {
 	BlockProgressAlert: boolean
 	BlockRemain: float
 	BlockRemainString: TimestampString
-	BlockEnd: UNIXTimestamp
+	BlockEnd: TimestampUNIX
 	BlockEndString: TimestampString
 	ClipName: string
+	ClipNumber: number
+	ClipID: number
 	ClipPosition: float
 	ClipPositionString: TimestampString
 	ClipDuration: float
@@ -53,17 +57,17 @@ export interface Channel {
 	ClipProgressAlert: boolean
 	ClipRemain: float
 	ClipRemainString: TimestampString
-	ClipEnd: UNIXTimestamp
+	ClipEnd: TimestampUNIX
 	ClipEndString: TimestampString
 	ScheduleBlockName: string
-	ScheduleTime: UNIXTimestamp
+	ScheduleTime: TimestampUNIX
 	ScheduleTimeString: TimestampString
 	ScheduleRemain: float
 	ScheduleRemainString: TimestampString
 	ScheduleAlert: boolean
 	ScheduleIcons: string
 	AutoplayBlockName: string
-	AutoplayTime: UNIXTimestamp
+	AutoplayTime: TimestampUNIX
 	AutoplayTimeString: TimestampString
 	AutoplayRemain: float
 	AutoplayRemainString: TimestampString
