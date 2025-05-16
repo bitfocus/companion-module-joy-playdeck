@@ -1,26 +1,21 @@
-import { CompanionVariableDefinition, CompanionVariableValue, CompanionVariableValues } from '@companion-module/base'
-import { PlaydeckVersion, Version, VersionCompare } from '../version/PlaydeckVersion.js'
 import { LogLevel } from '@companion-module/base'
 import { PlaydeckInstance } from '../../index.js'
-import { PlaydeckStatusValues } from '../data/PlaydeckStatus.js'
 import { PlaydeckStatus } from '../data/PlaydeckStatus.js'
 import { PlaydeckVariables } from './Variables/PlaydeckVariables.js'
 
-import { PlaydeckValuesV4 } from '../data/PlaydeckStatusManager/Versions/V4/PlaydeckStatusV4.js'
 import { PlaydeckEvents } from '../data/PlaydeckEvents.js'
+import { PlaydeckData } from '../data/PlaydeckData.js'
 /** Handles all incoming data, variables and feedbacks */
 export class PlaydeckState {
 	#instance?: PlaydeckInstance
 	#status: PlaydeckStatus
-	#project: {
-		common: any
-		channel: any[]
-	} | null = null //
+	#data: PlaydeckData | null = null //
 	#variables: PlaydeckVariables | null = null
 	constructor(instance: PlaydeckInstance) {
 		this.#instance = instance
 		this.#status = new PlaydeckStatus(this.#instance)
 		this.#variables = new PlaydeckVariables(this.#instance)
+		this.#data = new PlaydeckData(this.#instance)
 		if (!this.#instance.connectionManager) {
 			const errorMessage = `No connection manager!`
 			this.#log('error', errorMessage)
@@ -32,19 +27,23 @@ export class PlaydeckState {
 				this.#status.update(message)
 				if (this.#variables === null) return
 				this.#variables.setCurrent(this.#status.getValues())
+				this.#variables.checkData(this.#data, this.#status.getValues())
 			})
 			incoming.on('event', (eventMessage) => {
 				this.#variables?.onEvent(PlaydeckEvents.parseEvent(eventMessage))
+				this.#variables?.checkData(this.#data, this.#status.getValues())
 			})
-			incoming.on('projectData', (project) => {
-				this.#log('info', JSON.parse(project).Channel[0].Block[0].Clip[0].CropRight)
+			incoming.on('projectData', (projectData) => {
+				this.#data?.update(projectData)
+				if (this.#variables === null) return
+				this.#variables.checkData(this.#data, this.#status.getValues())
 			})
 		})
-		this.#instance.connectionManager.on('outgoingStarted', (outgoing) => {
-			setInterval(() => {
-				outgoing.send(`<projectdata>`)
-			}, 3000)
-		})
+		// this.#instance.connectionManager.on('outgoingStarted', (outgoing) => {
+		// 	setInterval(() => {
+		// 		outgoing.send(`<projectdata>`)
+		// 	}, 3000)
+		// })
 	}
 
 	#log(level: LogLevel, message: string) {

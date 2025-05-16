@@ -3,8 +3,72 @@ import { CompanionVariableDefinition, CompanionVariableValue } from '@companion-
 import { EventSources, PlaydeckEvent } from '../../../../../core/data/PlaydeckEvents.js'
 import { PlaybackState, PlaydeckUtils } from '../../../../../utils/PlaydeckUtils.js'
 import { PlaydeckVariableItem } from '../PlaydeckVariableItems.js'
+import {
+	PlaydeckClipData,
+	PlaydeckDataTypeV4,
+} from '../../../../../core/data/PlaydeckProjectManager/V4/PlaydectDataV4.js'
 
 export const variableItemsV4: PlaydeckVariableItem[] = [
+	{
+		getVariableDefinition: (): CompanionVariableDefinition => {
+			return {
+				variableId: `project_filename`,
+				name: `Current project filename`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4): CompanionVariableValue | undefined => {
+			if (current.common) return current.common.projectFileName
+			return
+		},
+		channel: false,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (): CompanionVariableDefinition => {
+			return {
+				variableId: `project_name`,
+				name: `Current project name`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4): CompanionVariableValue | undefined => {
+			if (current.common) return current.common.projectName
+			return
+		},
+		channel: false,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (): CompanionVariableDefinition => {
+			return {
+				variableId: `project_clock`,
+				name: `Current project clock`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4): CompanionVariableValue | undefined => {
+			if (current.common) return current.common.clockTime
+			return
+		},
+		channel: false,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (): CompanionVariableDefinition => {
+			return {
+				variableId: `project_timestamp`,
+				name: `Current project time with date (YYYY-MM-DD HH:mm:ss)`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4): CompanionVariableValue | undefined => {
+			if (current.common) return current.common.timestamp
+			return
+		},
+		channel: false,
+		version: '4.1b8',
+		deprecated: null,
+	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
 			if (channel === undefined) return null
@@ -13,8 +77,13 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 				name: `Play state of channel #${channel + 1}`,
 			}
 		},
-		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined => {
-			if (channel !== undefined && current.channel !== null) return current.channel[channel].playState
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				const state = chan.playState
+				if (state !== PlaybackState.None) return state
+				return null
+			}
 			return
 		},
 		getValueFromEvent: (event: PlaydeckEvent, channel?: number): CompanionVariableValue | undefined | null => {
@@ -31,17 +100,399 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		deprecated: null,
 	},
 	{
-		getVariableDefinition: (): CompanionVariableDefinition => {
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
 			return {
-				variableId: `project_filename`,
-				name: `Current project filename`,
+				variableId: `channel_${channel + 1}_tally`,
+				name: `Tally state of channel #${channel + 1}`,
 			}
 		},
-		getCurrentValue: (current: PlaydeckValuesV4): CompanionVariableValue | undefined => {
-			if (current.common) return current.common.projectFileName
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.tallyStatus
+			}
 			return
 		},
-		channel: false,
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_state`,
+				name: `Ready state of channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.channelState
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_name`,
+				name: `Ready state of channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.channelName
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_count`,
+				name: `Amount of blocks in channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.blockCount
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	////
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_name`,
+				name: `Current clip name on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.clipName
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_id`,
+				name: `Current clip UID on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.clipID
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_position`,
+				name: `Current clip playhead position on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.clipPosition
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_duration`,
+				name: `Current clip duration on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.clipDuration
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_time_end`,
+				name: `Time when current clip ends on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.clipEnd
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_remain`,
+				name: `Current clip remain on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.clipRemain
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_progress`,
+				name: `Current clip progress in percents on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.clipProgress
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	///
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_name`,
+				name: `Current block name on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.blockName
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_id`,
+				name: `Current block UID on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.blockID
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_position`,
+				name: `Current block playhead position on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.blockPosition
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_duration`,
+				name: `Current block duration on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.blockDuration
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_time_end`,
+				name: `Time when current block ends on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.blockEnd
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_remain`,
+				name: `Current block remain on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.blockRemain
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_progress`,
+				name: `Current block progress in percents on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				return chan.blockProgress
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	///
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_filetype`,
+				name: `Current clip file type on channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			if (data.current.channel === null) return
+			if (data.current.channel[channel] === undefined) return
+			const id = data.current.channel[channel].clipID
+			if (id === undefined) return
+			const clip = data.data.getItemByID(id) as PlaydeckClipData
+			if (clip === null) return
+			return clip.fileType
+		},
+		channel: true,
+		version: '4.1b8',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_clip_type`,
+				name: `Current clip type on channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			if (data.current.channel === null) return
+			if (data.current.channel[channel] === undefined) return
+			const id = data.current.channel[channel].clipID
+			if (id === undefined) return
+			const clip = data.data.getItemByID(id) as PlaydeckClipData
+			if (clip === null) return
+			return clip.itemType
+		},
+		channel: true,
 		version: '4.1b8',
 		deprecated: null,
 	},

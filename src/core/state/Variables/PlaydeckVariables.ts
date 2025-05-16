@@ -9,6 +9,7 @@ import { PlaydeckStatusValues } from '../../../core/data/PlaydeckStatus.js'
 import { PlaydeckVariableItem, variableItems } from './Items/PlaydeckVariableItems.js'
 
 import { PlaydeckEvent } from '../../../core/data/PlaydeckEvents.js'
+import { PlaydeckData } from '../../../core/data/PlaydeckData.js'
 export class PlaydeckVariables {
 	#variables: PlaydeckVariable[] = []
 	#variableDifinitions: Set<CompanionVariableDefinition> = new Set()
@@ -19,8 +20,8 @@ export class PlaydeckVariables {
 		this.#log('debug', `Initializing...`)
 		this.#initVariables(variableItems)
 	}
-	#time: number
 	#initVariables(variableItems: PlaydeckVariableItem[]): void {
+		this.#instance.setVariableDefinitions([])
 		variableItems.forEach((variableItem: PlaydeckVariableItem) => {
 			if (this.#isDeprecated(variableItem)) return
 			const newVar = this.#covertToVariable(variableItem) // need shallow copy because we change `channel` field
@@ -44,7 +45,7 @@ export class PlaydeckVariables {
 			value: undefined,
 			getVariableDefinition: variableItem.getVariableDefinition,
 			getCurrentValue: variableItem.getCurrentValue,
-			getProjectValue: variableItem.getProjectValue,
+			getFromData: variableItem.getFromData,
 			getValueFromEvent: variableItem.getValueFromEvent,
 			channel: variableItem.channel,
 			version: variableItem.version,
@@ -70,28 +71,34 @@ export class PlaydeckVariables {
 	#deleteVariable(variable: PlaydeckVariable) {
 		if (variable.variableDefinition === null) return
 		this.#variableDifinitions.delete(variable.variableDefinition)
-		this.#variableValues[variable.variableDefinition.variableId] = undefined
 	}
 
 	setCurrent(current: PlaydeckStatusValues<any, any> | null): void {
-		// this.#setVariables(current, 'getCurrentValue')
+		this.#setVariables(current, 'getCurrentValue')
 	}
 	onEvent(event: PlaydeckEvent): void {
 		this.#setVariables(event, 'getValueFromEvent')
 	}
+	checkData(data: PlaydeckData | null, current?: PlaydeckStatusValues<any, any> | null): void {
+		if (data === null) return
+		this.#setVariables({ data: data, current: current }, 'getFromData')
+	}
 	#setVariables(data: any, methodName: keyof PlaydeckVariable): void {
 		this.#variableValues = {}
 		this.#variables.forEach((variable: PlaydeckVariable) => {
+			if (variable.value === undefined) {
+				this.#deleteVariable(variable)
+			}
 			if (data === undefined || data === null) return
 			const сhannelIndex = typeof variable.channel === 'number' ? variable.channel : undefined
-			const value =
-				variable[methodName] && typeof variable[methodName] === 'function'
-					? variable[methodName](data, сhannelIndex)
-					: undefined
+			const method =
+				variable[methodName] && typeof variable[methodName] === 'function' ? variable[methodName] : undefined
+			if (method === undefined) return
+			const value = method(data, сhannelIndex)
 			if (value === null) return
+
 			if (variable.value !== value) {
 				variable.value = value as CompanionVariableValue
-				console.log(variable.value)
 				this.#updateVariables(variable)
 			}
 		})
@@ -104,14 +111,16 @@ export class PlaydeckVariables {
 
 	#updateVariables(variable: PlaydeckVariable): void {
 		if (variable.variableDefinition === null) return
-		if (this.#variableDifinitions.has(variable.variableDefinition)) {
-			if (variable.variableDefinition.variableId) {
-				if (variable.value === undefined) {
-					this.#deleteVariable(variable)
-				} else {
-					this.#variableValues[variable.variableDefinition.variableId] = variable.value
-				}
+		if (variable.value === undefined) {
+			if (this.#variableDifinitions.has(variable.variableDefinition)) {
+				this.#log('warn', `Deleting ${variable.variableDefinition.variableId}: ${variable.value}`)
+				this.#variableDifinitions.delete(variable.variableDefinition)
 			}
+			return
+		}
+		this.#variableValues[variable.variableDefinition.variableId] = variable.value
+		if (!this.#variableDifinitions.has(variable.variableDefinition)) {
+			this.#variableDifinitions.add(variable.variableDefinition)
 		}
 	}
 	#log(level: LogLevel, message: string) {

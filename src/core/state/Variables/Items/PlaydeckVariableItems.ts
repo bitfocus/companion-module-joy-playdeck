@@ -5,6 +5,7 @@ import { PlaydeckEvent } from '../../../../core/data/PlaydeckEvents.js'
 
 import { variableItemsV3 } from './V3/PlaydeckVariableItemsV3.js'
 import { variableItemsV4 } from './V4/PlaydeckVariableItemsV4.js'
+import { PlaydeckDataInterface } from '../../../../core/data/PlaydeckData.js'
 
 export const variableItems: PlaydeckVariableItem[] = [...variableItemsV3, ...variableItemsV4]
 
@@ -15,7 +16,10 @@ export interface PlaydeckVariableItem {
 		current: PlaydeckStatusValues<any, any>,
 		channel?: number,
 	) => CompanionVariableValue | undefined | null
-	getProjectValue?: (data: any, channel?: number) => CompanionVariableValue | undefined | null
+	getFromData?: (
+		data: { data: PlaydeckDataInterface<any, any, any, any>; current?: PlaydeckStatusValues<any, any> },
+		channel?: number,
+	) => CompanionVariableValue | undefined | null
 	getValueFromEvent?: (event: PlaydeckEvent, channel?: number) => CompanionVariableValue | undefined | null
 	channel?: boolean | number
 	version: Version | null

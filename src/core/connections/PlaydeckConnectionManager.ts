@@ -16,6 +16,7 @@ export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionMa
 	/** Query polling interval in milleseconds	 */
 	#queryInteval: number = 2000
 	#queryIntervalID: NodeJS.Timeout | null = null
+	#queryMessage: string = '<projectdata>'
 	#isWSEnabled: boolean = false
 	#isEventsEnabled: boolean = false
 	#isLegacy: boolean = false
@@ -84,8 +85,21 @@ export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionMa
 			this.outgoing.on('started', () => this.emit('outgoingStarted', this.outgoing!))
 		}
 		if (this.query !== null) {
-			this.query.on('started', () => this.emit('queryStarted', this.query!))
+			this.query.on('started', () => {
+				this.emit('queryStarted', this.query!)
+				this.#sendQuery()
+			})
 		}
+	}
+	#sendQuery() {
+		if (this.query === null) return
+		if (this.#queryIntervalID === null) return
+		clearTimeout(this.#queryIntervalID)
+		this.query.send(this.#queryMessage)
+		setTimeout(() => {
+			this.#sendQuery()
+		}, this.#queryInteval)
+		return
 	}
 	#makeConnection(type: ConnectionType | null, direction: ConnectionDirection | null): PlaydeckConnection | null {
 		this.#log('debug', `Making connection ${type} (${ConnectionDirection[direction ?? 0]})`)

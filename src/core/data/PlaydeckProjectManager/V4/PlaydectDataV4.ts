@@ -16,9 +16,12 @@ import {
 	ScaleType,
 	LoopType,
 	TransitionType,
+	DurationGfxType,
 } from './PlaydeckDataMessageV4.js'
 
-export class PlaydeckDataV4 implements PlaydeckDataInterface<PlaydeckProjectData, PlaydeckChannelData> {
+export class PlaydeckDataV4
+	implements PlaydeckDataInterface<PlaydeckProjectData, PlaydeckChannelData, PlaydeckBlockData, PlaydeckClipData>
+{
 	#common: PlaydeckProjectData | null = null
 	#channel: PlaydeckChannelData[] | null = null
 	#lookupMap: LookupMap | null = null
@@ -49,8 +52,10 @@ export class PlaydeckDataV4 implements PlaydeckDataInterface<PlaydeckProjectData
 		const blocks = new Map<number, PlaydeckBlockData>()
 		const clips = new Map<number, PlaydeckClipData>()
 		for (const channel of this.#channel) {
+			if (channel.block === undefined) continue
 			for (const block of channel.block) {
 				blocks.set(block.id, block)
+				if (block.clip === undefined) continue
 				for (const clip of block.clip) {
 					clips.set(clip.id, clip)
 				}
@@ -80,7 +85,12 @@ export class PlaydeckDataV4 implements PlaydeckDataInterface<PlaydeckProjectData
 		return channels.map((channel) => new PlaydeckChannelData(channel))
 	}
 }
-
+export type PlaydeckDataTypeV4 = PlaydeckDataInterface<
+	PlaydeckProjectData,
+	PlaydeckChannelData,
+	PlaydeckBlockData,
+	PlaydeckClipData
+>
 export interface PlaydeckProjectDataV4 {
 	common: PlaydeckProjectData
 	channel: PlaydeckChannelData[]
@@ -122,7 +132,7 @@ class PlaydeckChannelData {
 	blockCount: integer
 	stageWidth: integer
 	stageHeight: integer
-	block: PlaydeckBlockData[]
+	block?: PlaydeckBlockData[]
 	constructor(channel: Channel) {
 		this.channelState = ChannelState[channel.ChannelState] as keyof typeof ChannelState
 		this.channelName = channel.ChannelName
@@ -130,11 +140,12 @@ class PlaydeckChannelData {
 		this.stageWidth = channel.StageWidth
 		this.stageHeight = channel.StageHeight
 		const blocks = channel.Block
+		if (blocks === undefined) return
 		this.block = blocks.map((block) => new PlaydeckBlockData(block))
 	}
 }
 
-class PlaydeckBlockData extends PlaydeckItemData {
+export class PlaydeckBlockData extends PlaydeckItemData {
 	clipCount: integer
 	stopType: StopType
 	/** Represents delay in seconds for action (CUE/PAUSE next BLOCK) after Stop/Pause block if StopType is `stop` or `pause` */
@@ -158,7 +169,7 @@ class PlaydeckBlockData extends PlaydeckItemData {
 	/** In seconds */
 	scheduledRepeatDuration?: integer
 	scheduledMethod?: string
-	clip: PlaydeckClipData[]
+	clip?: PlaydeckClipData[]
 	constructor(block: Block) {
 		super(block)
 		this.clipCount = block.ClipCount
@@ -177,24 +188,28 @@ class PlaydeckBlockData extends PlaydeckItemData {
 		this.scheduledRepeatDuration = isScheduled ? block.ScheduledRepeatDuration : undefined
 		this.scheduledMethod = block.ScheduledMethodString
 		const clips = block.Clip
+		if (clips === undefined) return
 		this.clip = clips.map((clip) => new PlaydeckClipData(clip))
 	}
 }
 
-class PlaydeckClipData extends PlaydeckItemData {
+export class PlaydeckClipData extends PlaydeckItemData {
 	itemType: keyof typeof ItemType
-	fileName: string
-	fileSize: string
-	fileDate: string
-	fileType: string
+	fileName?: string
+	fileSize?: string
+	fileDate?: string
+	fileType?: string
 	/** Number of input if item type is Input */
 	itemInput?: integer
 	transitionType: TransitionType
 	/** seconds */
 	transitionTime?: float
-	durationGfx: integer
-	durationGfxType: integer
-	durationGfxClock: TimestampString
+	/** Duration of Still images in seconds */
+	durationGfx?: integer
+	/** Duration Type for stills (pictures etc.) */
+	durationGfxType: keyof typeof DurationGfxType
+	/** Time of day to play of Still images */
+	durationGfxClock?: TimestampString
 	pauseMode: keyof typeof PauseMode
 	pauseFollow?: keyof typeof PauseFollow
 	/** Pause/Stop after Clip and CUE/PLAY next Clip after this amount of seconds */
@@ -238,17 +253,20 @@ class PlaydeckClipData extends PlaydeckItemData {
 	constructor(clip: Clip) {
 		super(clip)
 		this.itemType = ItemType[clip.ItemType] as keyof typeof ItemType
-		this.fileName = clip.FileName
-		this.fileSize = clip.FileSizeString
-		this.fileDate = clip.FileDateString
+		this.fileName = clip.ItemType === ItemType.File ? clip.FileName : undefined
+		this.fileSize = clip.ItemType === ItemType.File ? clip.FileSizeString : undefined
+		this.fileDate = clip.ItemType === ItemType.File ? clip.FileDateString : undefined
 		this.fileType = clip.FileTypeString
 		this.itemInput = clip.ItemType === ItemType.Input ? clip.ItemInput : undefined
 		this.transitionType = clip.TransitionType
 		this.transitionTime =
 			this.transitionType !== TransitionType.None ? PlaydeckUtils.trimFloat(clip.TransitionTime, 2) : undefined
-		this.durationGfx = clip.DurationGfx
-		this.durationGfxType = clip.DurationGfxType
-		this.durationGfxClock = PlaydeckUtils.convertTimestamp(clip.DurationGfxClockUnix)
+		this.durationGfx = clip.DurationGfxType === DurationGfxType.Duration ? clip.DurationGfx : undefined
+		this.durationGfxType = DurationGfxType[clip.DurationGfxType] as keyof typeof DurationGfxType
+		this.durationGfxClock =
+			clip.DurationGfxType === DurationGfxType.UntilTime
+				? PlaydeckUtils.convertTimestamp(clip.DurationGfxClockUnix)
+				: undefined
 		this.pauseMode = PauseMode[clip.PauseMode] as keyof typeof PauseMode
 		this.pauseFollow =
 			clip.PauseMode !== PauseMode.None ? (PauseFollow[clip.PauseFollow] as keyof typeof PauseFollow) : undefined

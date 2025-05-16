@@ -69,8 +69,11 @@ export interface Clip extends Item {
 	TransitionType: TransitionType
 	/** seconds */
 	TransitionTime: float
+	/** Duration of Still images in seconds */
 	DurationGfx: integer
-	DurationGfxType: integer
+	/** Duration Type for stills (pictures etc.) */
+	DurationGfxType: DurationGfxType
+	/** Time of day to play of Still images */
 	DurationGfxClockUnix: TimestampUNIX
 	PauseMode: PauseMode
 	PauseFollow: PauseFollow
@@ -161,9 +164,11 @@ export enum ItemType {
 }
 
 export enum FileType {
+	None = 0,
 	Video = 1,
 	Image = 2,
 	Audio = 3,
+	Stream = 4,
 }
 
 export enum TransitionType {
@@ -204,4 +209,10 @@ export enum LoopType {
 	UntilClip = 2,
 	ForTime = 3,
 	UntilTime = 4,
+}
+
+export enum DurationGfxType {
+	Duration = 1,
+	UntilTime = 2,
+	Infinitely = 3,
 }

@@ -23,7 +23,7 @@ class PlaydeckState extends EventEmitter {
    */
   updateValues(newValues) {
     if (newValues === null) {
-      console.log('!!! NULLL !!!');
+      // console.log('!!! NULLL !!!');
       return;
     }
     let paramsToUpdate = [];
