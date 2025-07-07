@@ -39,11 +39,6 @@ export class PlaydeckState {
 				this.#variables.checkData(this.#data, this.#status.getValues())
 			})
 		})
-		// this.#instance.connectionManager.on('outgoingStarted', (outgoing) => {
-		// 	setInterval(() => {
-		// 		outgoing.send(`<projectdata>`)
-		// 	}, 3000)
-		// })
 	}
 
 	#log(level: LogLevel, message: string) {

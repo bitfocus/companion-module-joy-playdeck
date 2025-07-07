@@ -10,13 +10,14 @@ export class PlaydeckVersion {
 	static #FIRST_TCP_EVENTS: Version = `3.5b3`
 	static #FIRST_WS_CONNECTION: Version = `3.6b18`
 	static configVersions = [
-		{ id: '4.1b8', label: '4.1b8' },
+		{ id: '4.1b11', label: '4.1b11' },
 		{ id: '3.8b13', label: '3.8b13' },
 		{ id: '3.8b8', label: '3.8b8' },
 		{ id: '3.8b4', label: '3.8b4' },
 		{ id: '3.7b11', label: '3.7b11' },
 		{ id: '3.7b4', label: '3.7b4' },
 		{ id: '3.6b18', label: '3.6b18' },
+		{ id: '3.6b6', label: '3.6b6' },
 		{ id: '3.5b12', label: '3.5b12' },
 		{ id: '3.5b3', label: '3.5b3' },
 		{ id: '3.4b8', label: '3.4b8' },

@@ -4,6 +4,7 @@ import { EventSources, PlaydeckEvent } from '../../../../../core/data/PlaydeckEv
 import { PlaybackState, PlaydeckUtils } from '../../../../../utils/PlaydeckUtils.js'
 import { PlaydeckVariableItem } from '../PlaydeckVariableItems.js'
 import {
+	PlaydeckBlockData,
 	PlaydeckClipData,
 	PlaydeckDataTypeV4,
 } from '../../../../../core/data/PlaydeckProjectManager/V4/PlaydectDataV4.js'
@@ -21,7 +22,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: false,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -36,7 +37,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: false,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -51,7 +52,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: false,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -66,7 +67,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: false,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -96,7 +97,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return null
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -115,7 +116,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -134,7 +135,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -153,7 +154,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -172,7 +173,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	////
@@ -192,7 +193,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -211,7 +212,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -230,7 +231,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -249,7 +250,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -268,7 +269,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -287,7 +288,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -306,7 +307,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	///
@@ -326,7 +327,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -345,7 +346,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -364,7 +365,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -383,7 +384,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -402,7 +403,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -421,7 +422,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -440,7 +441,33 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_scheduled_method`,
+				name: `Current block_scheduled_method on channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			if (data.current.channel === null) return
+			if (data.current.channel[channel] === undefined) return
+			const id = data.current.channel[channel].blockID
+			if (id === undefined) return
+			const block = data.data.getItemByID(id) as PlaydeckBlockData
+			if (block === null) return
+			return block.scheduledMethod
+		},
+		channel: true,
+		version: '4.1b11',
 		deprecated: null,
 	},
 	///
@@ -467,7 +494,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return clip.fileType
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 	{
@@ -493,7 +520,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 			return clip.itemType
 		},
 		channel: true,
-		version: '4.1b8',
+		version: '4.1b11',
 		deprecated: null,
 	},
 ]

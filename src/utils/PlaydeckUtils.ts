@@ -1,3 +1,5 @@
+import { InputValue } from '@companion-module/base/dist'
+
 /** rounded down `number` */
 export type integer = number
 /** floaty number */
@@ -8,6 +10,7 @@ export type TimestampString = string
 export type TimestampUNIX = number
 
 export class PlaydeckUtils {
+	static RC_REGEX = /\<(.*?)\>/
 	/** Converts UNIX Timestamp in seconds in string formatted HH:mm:ss padded with 0 */
 	static convertTimestamp(unixSecTimestamp: TimestampUNIX): TimestampString {
 		const date = new Date(unixSecTimestamp * 1000)
@@ -31,6 +34,15 @@ export class PlaydeckUtils {
 	}
 	static trimFloat(num: float, trim: integer): float {
 		return Number(num.toFixed(trim))
+	}
+	static makeRCMessage(message: string, args: (InputValue | undefined | null)[]): string {
+		if (!message) return `<>`
+		if (!Array.isArray(args)) return `<${message}>`
+		for (let i = 0; i < args.length; i++) {
+			if (!args[i]) return `<${message}>`
+			message = `${message}|${args[i]}`
+		}
+		return `<${message}>`
 	}
 }
 

@@ -17,7 +17,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: false,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (): CompanionVariableDefinition => {
@@ -32,7 +32,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: false,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (): CompanionVariableDefinition => {
@@ -47,7 +47,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: false,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (): CompanionVariableDefinition => {
@@ -62,7 +62,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: false,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (): CompanionVariableDefinition => {
@@ -77,7 +77,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: false,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -104,7 +104,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -120,7 +120,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -136,7 +136,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -152,7 +152,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -168,7 +168,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -184,7 +184,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -200,7 +200,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -216,7 +216,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -232,7 +232,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -248,7 +248,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -264,7 +264,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -280,7 +280,7 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '3.6b18',
-		deprecated: '4.1b8',
+		deprecated: '4.1b11',
 	},
 ]
 /** null returns if need to ignore results, undefined if need to delete from variables */
