@@ -27,3 +27,8 @@ See [HELP.md](https://github.com/bitfocus/companion-module-joy-playdeck/blob/mas
 - Added support of all versions of Playdeck. Now when you choose version in config module automatically adjusts the set of commands in accordance with your chosen version.
 - Made managing of connections more flexible
 - Reorganised code to be more typed and classified and easy to update.
+
+**V4.0.0**
+
+- Add support of New 4 version.
+- Modern interactive config with Advanced part

@@ -179,7 +179,7 @@ export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionMa
 
 		const amountOfConnections =
 			Number(this.incoming !== null) + Number(this.outgoing !== null) + Number(this.query !== null)
-		console.log(this.incoming?.status, this.incoming?.status, this.query?.status)
+
 		return amountOfOKs === amountOfConnections
 	}
 	#destroyConnection(connection: PlaydeckConnection): void {
