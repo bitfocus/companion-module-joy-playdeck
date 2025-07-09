@@ -100,7 +100,7 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 		this.reconnect()
 	}
 	#onerror(errorEvent: Event): void {
-		const error = errorEvent as ErrorEvent
+		const error = errorEvent as ErEvent
 		this.log('error', `WebSocket error: ${error.message}`)
 		this.lastErrorMessage = error.message
 		this.updateStatus(InstanceStatus.UnknownError, this.lastErrorMessage, true)
@@ -129,6 +129,19 @@ export class PlaydeckWSConnection extends PlaydeckConnection {
 			this.#webSocket = null
 		}
 	}
+}
+/** Temporary type, because no type in @node/types and it causes build errors */
+interface ErEvent extends Event {
+	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ErrorEvent/colno) */
+	readonly colno: number
+	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ErrorEvent/error) */
+	readonly error: any
+	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ErrorEvent/filename) */
+	readonly filename: string
+	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ErrorEvent/lineno) */
+	readonly lineno: number
+	/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/ErrorEvent/message) */
+	readonly message: string
 }
 
 enum WSMessageType {
