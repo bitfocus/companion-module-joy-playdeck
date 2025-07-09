@@ -199,12 +199,7 @@ export function getPlaydeckConfigFields(): SomeCompanionConfigField[] {
 			id: 'footer',
 			label: '',
 			width: 9,
-			value: `
-			<div>
-				<p>Found a bug or have suggestions for improvement? Open an issue on <a href="https://github.com/bitfocus/companion-module-joy-playdeck/issues"">GitHub</a></p>
-				<img loading="lazy" decoding="async" src="${PlaydeckLogo}" width="30" height="30">   Approved by <a href="https://playdeck.tv/"">Playdeck</a></img>			
-			</div>
-			`,
+			value: `<p>Found a bug or have suggestions for improvement? Open an issue on <a href="https://github.com/bitfocus/companion-module-joy-playdeck/issues"">GitHub</a></p><img loading="lazy" decoding="async" src="${PlaydeckLogo}" width="30" height="30">   Approved by <a href="https://playdeck.tv/"">Playdeck</a></img>`,
 		},
 	]
 }
