@@ -4,7 +4,15 @@
 	"description": "Playdeck (Video Playout Software)",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"clean": "rimraf dist",
+		"postinstall": "husky",
+		"format": "prettier -w .",
+		"package": "run build && companion-module-build",
+		"build": "rimraf dist && run build:main",
+		"build:main": "tsc -p tsconfig.build.json",
+		"dev": "tsc -p tsconfig.build.json --watch",
+		"lint:raw": "eslint",
+		"lint": "run lint:raw ."
 	},
 	"repository": {
 		"type": "git",
@@ -12,10 +20,27 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"@companion-module/base": "^1.11.0",
-		"ws": "^8.18.0"
+		"@companion-module/base": "^1.12.1"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^2.1.0"
-	}
+		"@companion-module/tools": "^2.2.2",
+		"@types/node": "^24.0.12",
+		"eslint": "^9.23.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^15.5.0",
+		"prettier": "^3.5.3",
+		"rimraf": "^6.0.1",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.29.0"
+	},
+	"prettier": "@companion-module/tools/.prettierrc.json",
+	"lint-staged": {
+		"*.{css,json,md,scss}": [
+			"prettier --write"
+		],
+		"*.{ts,tsx,js,jsx}": [
+			"yarn lint:raw --fix"
+		]
+	},
+	"packageManager": "yarn@4.8.1"
 }
