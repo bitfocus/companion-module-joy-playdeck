@@ -113,6 +113,9 @@ export class PlaydeckVersion {
 	constructor(version: Version) {
 		this.#version = version
 	}
+	getCurrent(): Version {
+		return this.#version
+	}
 	availableChannels(): number {
 		return PlaydeckVersion.availableChannels(this.#version)
 	}

@@ -5,6 +5,7 @@ import { PlaydeckConnection, ConnectionType, ConnectionDirection } from './Playd
 import { PlaydeckTCPConnection } from './PlaydeckTCPConnection.js'
 import { PlaydeckWSConnection } from './PlaydeckWSConnection.js'
 import { EventEmitter } from 'stream'
+import { PlaydeckTCPServer } from './PlaydeckTCPServer.js'
 
 export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionManagerEvents> {
 	/** Connection for sending commands  */
@@ -79,15 +80,30 @@ export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionMa
 			}
 		}
 		if (this.incoming !== null) {
-			this.incoming.on('started', () => this.emit('incomingStarted', this.incoming!))
+			this.incoming.on('started', () => {
+				this.emit('incomingStarted', this.incoming!)
+				if (this.isAllConnected()) {
+					this.#updateStatus(InstanceStatus.Ok)
+				}
+			})
 		}
 		if (this.outgoing !== null) {
-			this.outgoing.on('started', () => this.emit('outgoingStarted', this.outgoing!))
+			this.outgoing.on('started', () => {
+				this.emit('outgoingStarted', this.outgoing!)
+
+				if (this.isAllConnected()) {
+					this.#updateStatus(InstanceStatus.Ok)
+				}
+			})
 		}
 		if (this.query !== null) {
 			this.query.on('started', () => {
 				this.emit('queryStarted', this.query!)
 				this.#sendQuery()
+
+				if (this.isAllConnected()) {
+					this.#updateStatus(InstanceStatus.Ok)
+				}
 			})
 		}
 	}
@@ -107,7 +123,19 @@ export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionMa
 		let conneciton: PlaydeckConnection | null = null
 		switch (type) {
 			case ConnectionType.TCP:
-				conneciton = new PlaydeckTCPConnection(this.#instance, direction)
+				switch (direction) {
+					case ConnectionDirection.Outgoing:
+						conneciton = new PlaydeckTCPConnection(this.#instance, direction)
+						break
+					case ConnectionDirection.Incoming:
+						if (this.#instance.version?.isLegacy()) {
+							conneciton = new PlaydeckTCPConnection(this.#instance, direction)
+						} else {
+							conneciton = new PlaydeckTCPServer(this.#instance, direction)
+						}
+						break
+				}
+
 				break
 
 			case ConnectionType.WS:
@@ -147,10 +175,11 @@ export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionMa
 		const amountOfOKs =
 			Number(this.incoming !== null && this.incoming.status === InstanceStatus.Ok) +
 			Number(this.outgoing !== null && this.outgoing.status === InstanceStatus.Ok) +
-			Number(this.outgoing !== null && this.outgoing.status === InstanceStatus.Ok)
+			Number(this.query !== null && this.query.status === InstanceStatus.Ok)
 
 		const amountOfConnections =
-			Number(this.incoming !== null) + Number(this.outgoing !== null) + Number(this.outgoing !== null)
+			Number(this.incoming !== null) + Number(this.outgoing !== null) + Number(this.query !== null)
+		console.log(this.incoming?.status, this.incoming?.status, this.query?.status)
 		return amountOfOKs === amountOfConnections
 	}
 	#destroyConnection(connection: PlaydeckConnection): void {
@@ -166,6 +195,9 @@ export class PlaydeckConnectionManager extends EventEmitter<PlaydeckConnectionMa
 	}
 	#log(level: LogLevel, message: string): void {
 		this.#instance?.log(level, `Playdeck Connection Manager: ${message}`)
+	}
+	#updateStatus(connectionStatus: InstanceStatus, message?: string | null): void {
+		this.#instance?.updateStatus(connectionStatus, message ? message : null)
 	}
 }
 

@@ -140,8 +140,9 @@ export class PlaydeckState {
 				currentChannelState.clipNumber = event.clipNumber
 			}
 
-			if ([Events.Cue, Events.Play, Events.Stop, Events.Pause].indexOf(currentEvent) !== -1) {
-				currentChannelState.state = currentEvent
+			if ([Events.Cue, Events.Play, Events.Stop, Events.Pause, Events.Unpause].indexOf(currentEvent) !== -1) {
+				const realEvent = currentEvent === Events.Unpause ? Events.Play : currentEvent
+				currentChannelState.state = realEvent
 			}
 
 			if (event.source === EventSources.Overlay) {
