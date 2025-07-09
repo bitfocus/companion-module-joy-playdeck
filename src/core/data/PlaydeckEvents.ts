@@ -93,6 +93,7 @@ export class PlaydeckEvents {
 					break
 			}
 		}
+		// console.log(event)
 		return event
 	}
 }

@@ -44,6 +44,9 @@ export class PlaydeckUtils {
 		}
 		return `<${message}>`
 	}
+	static isEmpty(obj: object): boolean {
+		return Object.keys(obj).length === 0
+	}
 }
 
 export enum PlaybackState {

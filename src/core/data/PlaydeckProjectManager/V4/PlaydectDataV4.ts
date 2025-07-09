@@ -30,6 +30,12 @@ export class PlaydeckDataV4
 	constructor(projectDataObject: object) {
 		this.#rawData = projectDataObject as PlaydeckDataMessage
 	}
+	/** This function helps to ident parent channel for ID */
+	getChannelByID(id: number): number | null {
+		if (this.#channel === null) return null
+		if (this.#lookupMap === null) return null
+		return this.#lookupMap.channels.get(id) || null
+	}
 	getItemByID(id: number): PlaydeckBlockData | PlaydeckClipData | null {
 		if (this.#channel === null) return null
 		if (this.#lookupMap === null) return null
@@ -51,19 +57,25 @@ export class PlaydeckDataV4
 		if (this.#channel === null) return
 		const blocks = new Map<number, PlaydeckBlockData>()
 		const clips = new Map<number, PlaydeckClipData>()
-		for (const channel of this.#channel) {
-			if (channel.block === undefined) continue
+		const channels = new Map<number, number>()
+		this.#channel.forEach((channel, index) => {
+			const channelNumber = index + 1
+			if (channel.block === undefined) return
 			for (const block of channel.block) {
 				blocks.set(block.id, block)
-				if (block.clip === undefined) continue
+				channels.set(block.id, channelNumber)
+				if (block.clip === undefined) return
 				for (const clip of block.clip) {
 					clips.set(clip.id, clip)
+					channels.set(clip.id, channelNumber)
 				}
 			}
-		}
+		})
+
 		this.#lookupMap = {
 			blocks: blocks,
 			clips: clips,
+			channels: channels,
 		}
 	}
 	#getCommon(): PlaydeckProjectData | null {
@@ -99,6 +111,8 @@ export interface PlaydeckProjectDataV4 {
 interface LookupMap {
 	blocks: Map<number, PlaydeckBlockData>
 	clips: Map<number, PlaydeckClipData>
+	/** This is for identify channel of ID Map<ID,ChannelNumber> */
+	channels: Map<number, number>
 }
 
 interface PlaydeckProjectData {

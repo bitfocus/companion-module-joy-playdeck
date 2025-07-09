@@ -97,7 +97,6 @@ export const variableItemsV3: PlaydeckVariableItem[] = [
 			if (channel !== event.channel - 1) return null
 			if ((event.source === EventSources.Playlist || event.source === EventSources.Clip) && event.event !== undefined) {
 				const state = event.event
-				console.log(state)
 				if (PlaydeckUtils.isInEnum(state, PlaybackState)) return state
 			}
 			return null

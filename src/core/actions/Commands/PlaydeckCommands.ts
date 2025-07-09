@@ -22,6 +22,7 @@ export abstract class PlaydeckCommands extends Array<PlaydeckCommand> {
 					(command.deprecated === null || version.isLowerThan(command.deprecated))
 				)
 			}
+			return false
 		})
 
 		super(...actualCommands)

@@ -13,6 +13,7 @@ import { PlaydeckVersion } from './core/version/PlaydeckVersion.js'
 import { PlaydeckState } from './core/state/PlaydeckState.js'
 import { PlaydeckConnectionManager } from './core/connections/PlaydeckConnectionManager.js'
 import { PlaydeckActions } from './core/actions/PlaydeckActions.js'
+import { PlaydeckFeedbacks } from './core/state/Feedbacks/PlaydeckFeedbacks.js'
 export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 	#config!: PlaydeckConfig
 	/**
@@ -63,6 +64,9 @@ export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 		this.version = new PlaydeckVersion(this.#config.version)
 		this.connectionManager = new PlaydeckConnectionManager(this)
 		this.state = new PlaydeckState(this)
+		if (this.state) {
+			this.state.initFeedbacks(new PlaydeckFeedbacks(this))
+		}
 		this.actions = new PlaydeckActions(this)
 	}
 	/** for log fast events not so fast (one time per `#lazyLogInterval`)*/

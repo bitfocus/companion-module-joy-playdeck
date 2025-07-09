@@ -18,7 +18,6 @@ type PlayoutCommandDescription = {
 
 function playoutAll(): PlaydeckCommandV4[] {
 	const all: PlaydeckCommandV4[] = []
-	console.log(playoutCommands)
 	for (const key in playoutCommands) {
 		const command = key as PlayoutCommand
 		all.push(playout(command))

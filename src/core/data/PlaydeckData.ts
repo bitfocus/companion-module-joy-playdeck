@@ -16,6 +16,10 @@ export class PlaydeckData implements PlaydeckDataInterface<any, any, any, any> {
 		if (this.#data === null) return null
 		return this.#data.getItemByID(id)
 	}
+	getChannelByID(id: number): number | null {
+		if (this.#data === null) return null
+		return this.#data.getChannelByID(id)
+	}
 	update(data: string): void {
 		if (!this.#instance) return
 		if (typeof data !== `string`) return
@@ -32,7 +36,7 @@ export class PlaydeckData implements PlaydeckDataInterface<any, any, any, any> {
 				}
 			}
 		} catch (e) {
-			console.log(e)
+			console.log(`PlaydeckData.update(data) error: ${e}`)
 		}
 	}
 
@@ -57,6 +61,7 @@ export interface PlaydeckDataInterface<
 > {
 	getValues(): PlaydeckDataValues<Common, Channel> | null
 	getItemByID(id: number): Block | Clip | null
+	getChannelByID(id: number): number | null
 }
 
 // export interface ChannelDataType<Block> {
