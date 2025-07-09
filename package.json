@@ -2,7 +2,7 @@
 	"name": "joy-playdeck",
 	"version": "3.0.0",
 	"description": "Playdeck (Video Playout Software)",
-	"main": "index.js",
+	"main": "dist/index.js",
 	"scripts": {
 		"clean": "rimraf dist",
 		"postinstall": "husky",
