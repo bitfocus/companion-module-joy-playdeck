@@ -21,9 +21,9 @@ export class PlaydeckEvents {
 		}
 		const splittedEvent = eventMessage.split('|')
 		const eventBody = splittedEvent[0]
-		const eventChannel = splittedEvent[1]
-		const eventBlock = splittedEvent[2]
-		const eventClip = splittedEvent[3]
+		const eventArg1 = splittedEvent[1]
+		const eventArg2 = splittedEvent[2]
+		const eventArg3 = splittedEvent[3]
 		const eventBodySplitted = eventBody.split('-')
 		const eventSource = eventBodySplitted[0]
 		if (eventSource !== undefined && PlaydeckUtils.isInEnum(eventSource, EventSources)) {
@@ -35,59 +35,76 @@ export class PlaydeckEvents {
 		if (eventAction !== undefined && PlaydeckUtils.isInEnum(eventAction, Events)) {
 			event.event = eventAction as Events
 		} else {
-			return event
+			if (eventAction === 'state') {
+				const stateEnum = Number(eventArg1)
+				event.event = Events[States[stateEnum] as keyof typeof Events]
+			} else {
+				return event
+			}
 		}
 		const eventSpecial = eventBodySplitted[2] as EventSpecials // id or string
 		if (eventSpecial !== undefined) {
 			switch (eventSpecial) {
-				case EventSpecials.ID:
+				case EventSpecials.ID: {
+					let ID = Number(eventArg1)
+					if (eventAction === 'state') {
+						ID = Number(eventArg2)
+					}
 					switch (event.source) {
 						case EventSources.Clip:
-							event.clipID = Number(eventChannel)
+							event.clipID = ID
 							break
 						case EventSources.Block:
-							event.blockID = Number(eventChannel)
+							event.blockID = ID
 							break
 					}
 					break
+				}
+
 				case EventSpecials.String:
 					switch (event.source) {
 						case EventSources.Clip:
-							event.channel = Number(eventChannel)
-							event.blockName = eventBlock
-							event.clipName = eventClip
+							event.channel = Number(eventArg1)
+							event.blockName = eventArg2
+							event.clipName = eventArg3
 							break
 						case EventSources.Block:
-							event.channel = Number(eventChannel)
-							event.blockName = eventBlock
+							event.channel = Number(eventArg1)
+							event.blockName = eventArg2
 							break
 					}
 					break
 			}
 		} else {
 			switch (event.source) {
-				case EventSources.Channel:
-					event.channel = Number(eventChannel)
+				case EventSources.Channel: {
+					let channelNum = Number(eventArg1)
+					if (eventAction === 'state') {
+						channelNum = Number(eventArg2)
+					}
+					event.channel = channelNum
 					break
+				}
+
 				case EventSources.Playlist:
-					event.channel = Number(eventChannel)
+					event.channel = Number(eventArg1)
 					break
 				case EventSources.Clip:
-					event.channel = Number(eventChannel)
-					event.blockNumber = Number(eventBlock)
-					event.clipNumber = Number(eventClip)
+					event.channel = Number(eventArg1)
+					event.blockNumber = Number(eventArg2)
+					event.clipNumber = Number(eventArg3)
 					break
 				case EventSources.Block:
-					event.channel = Number(eventChannel)
-					event.blockNumber = Number(eventBlock)
+					event.channel = Number(eventArg1)
+					event.blockNumber = Number(eventArg2)
 					break
 				case EventSources.Action:
-					event.channel = Number(eventChannel)
-					event.blockNumber = Number(eventBlock)
+					event.channel = Number(eventArg1)
+					event.blockNumber = Number(eventArg2)
 					break
 				case EventSources.Overlay:
-					event.channel = Number(eventChannel)
-					event.blockNumber = Number(eventBlock)
+					event.channel = Number(eventArg1)
+					event.blockNumber = Number(eventArg2)
 					break
 				case EventSources.Recording:
 					break
@@ -133,4 +150,11 @@ export enum Events {
 enum EventSpecials {
 	ID = 'id',
 	String = 'string',
+}
+
+enum States {
+	Stop = 0,
+	Cue = 1,
+	Play = 2,
+	Pause = 3,
 }
