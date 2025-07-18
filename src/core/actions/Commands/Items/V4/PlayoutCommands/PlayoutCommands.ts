@@ -61,7 +61,7 @@ function playoutList(command: PlayoutCommand): PlaydeckCommandV4 {
 		version: '4.1b11',
 		deprecated: null,
 		commandName: `CONTROL -  ${playoutCommands[command]} (LIST)`,
-		command: `%${command}list`,
+		command: `${command}list`,
 		description: `${playoutCommands[command]} the Clip in the List (Left or Rigth). Will skip inactive Clips.If you dont provide Clip, the first Clip of the Block will be used.If you dont provide Block/Clip, the selected Block/Clip will be used. Will skip inactive Clips.`,
 		arg1: 'LIST',
 		arg2: 'BLOCK',

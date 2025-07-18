@@ -31,18 +31,20 @@ const commandsAudio = ['mute', 'unmute']
 const targetsAudio: argNamesV4[] = ['CHANNEL', 'INPUT']
 
 function startStopInternalDefinition(isStart: boolean, type: string, command: string): string {
-	return `- ${isStart ? 'START' : 'STOP'} one ${!command.includes('all') ? ` or all ${type}. You can define multiple ${type.toLowerCase()}s at once e.g. "<${command}${type.toLowerCase()}|1|3+7+12>"}` : `${type}`}`
+	return `- ${isStart ? 'START' : 'STOP'} ${!command.includes('all') ? `one ${type}. You can define multiple ${type.toLowerCase()}s at once e.g. "<${command}${type.toLowerCase()}|1|3+7+12>"}` : ` all ${type}`}`
 }
 
 function startStopInternal(command: string, target: argNamesV4): PlaydeckCommandV4 {
 	const isAll = command.includes('all')
+	const curCommand = command.split('all')[0]
+	const isStart = curCommand.toLocaleLowerCase() === 'start'
 	const realTarget = `${target}${isAll ? 'S' : ``}`
 	return {
 		version: '4.1b11',
 		deprecated: null,
-		commandName: `ASSETS - ${`${command.split('all')[0]} ${realTarget}`.toUpperCase()}`,
+		commandName: `ASSETS - ${`${curCommand} ${realTarget}`.toUpperCase()}`,
 		command: `${command}${realTarget.toLowerCase()}`,
-		description: startStopInternalDefinition(true, realTarget, command),
+		description: startStopInternalDefinition(isStart, realTarget, command),
 		arg1: 'CHANNEL',
 		arg2: !isAll ? target : undefined,
 	}
