@@ -106,22 +106,38 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 
 					if (lastStateChannels) {
 						const lastChannelState = lastStateChannels[Number(fChannel)]
+
 						if (lastChannelState) {
 							const lastChannelBlock = [String(lastChannelState.blockName), String(lastChannelState.blockNumber)]
 							const lastChannelClip = [String(lastChannelState.clipName), String(lastChannelState.clipNumber)]
-							if (fState !== undefined) {
-								isState = String(lastChannelState.state) === String(fState)
-							}
 
-							if (fBlock !== undefined) {
-								isBlock = lastChannelBlock.indexOf(String(fBlock)) > -1
+							if (options.isUID) {
+								if (fState !== undefined && fItem !== undefined) {
+									const ID = Number(fItem)
+									const byID = state.lastState.byID
+									if (byID) {
+										const IDState = byID[ID]
+										if (IDState) {
+											isState = String(IDState) === String(fState)
+											return isState
+										}
+									}
+								}
+							} else {
+								if (fState !== undefined) {
+									isState = String(lastChannelState.state) === String(fState)
+								}
+								if (fBlock !== undefined) {
+									isBlock = lastChannelBlock.indexOf(String(fBlock)) > -1
+								}
+								if (fClip !== undefined) {
+									isClip = lastChannelClip.indexOf(String(fClip)) > -1
+								}
+								if (isAny) return isState
+								if (isAnyBlock || isAnyClip)
+									return (isAnyBlock && isState && isClip) || (isAnyClip && isState && isBlock)
+								return isState && isClip && isBlock
 							}
-							if (fClip !== undefined) {
-								isClip = lastChannelClip.indexOf(String(fClip)) > -1
-							}
-							if (isAny) return isState
-							if (isAnyBlock || isAnyClip) return (isAnyBlock && isState && isClip) || (isAnyClip && isState && isBlock)
-							return isState && isClip && isBlock
 						}
 					}
 				}
