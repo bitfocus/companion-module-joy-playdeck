@@ -71,6 +71,7 @@ export class PlaydeckVariables {
 	#deleteVariable(variable: PlaydeckVariable) {
 		if (variable.variableDefinition === null) return
 		this.#variableDifinitions.delete(variable.variableDefinition)
+		// update definitions!!
 	}
 
 	setCurrent(current: PlaydeckStatusValues<any, any> | null): void {
@@ -115,7 +116,7 @@ export class PlaydeckVariables {
 		})
 
 		if (Object.keys(this.#variableValues).length > 0) {
-			this.#instance?.setVariableDefinitions(Array.from(this.#variableDifinitions))
+			// this.#instance?.setVariableDefinitions(Array.from(this.#variableDifinitions))
 			this.#instance?.setVariableValues(this.#variableValues)
 		}
 	}
@@ -126,12 +127,14 @@ export class PlaydeckVariables {
 			if (this.#variableDifinitions.has(variable.variableDefinition)) {
 				this.#log('warn', `Deleting ${variable.variableDefinition.variableId}: ${variable.value}`)
 				this.#variableDifinitions.delete(variable.variableDefinition)
+				this.#instance?.setVariableDefinitions(Array.from(this.#variableDifinitions))
 			}
 			return
 		}
 		this.#variableValues[variable.variableDefinition.variableId] = variable.value
 		if (!this.#variableDifinitions.has(variable.variableDefinition)) {
 			this.#variableDifinitions.add(variable.variableDefinition)
+			this.#instance?.setVariableDefinitions(Array.from(this.#variableDifinitions))
 		}
 	}
 	#log(level: LogLevel, message: string) {
