@@ -101,7 +101,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 				const isAnyClip = Number(fClip) === 0
 				const isAnyBlock = Number(fBlock) === 0
 				const isAny = isAnyClip && isAnyBlock
-				if (state.lastState && !options.isUID) {
+				if (state.lastState) {
 					const lastStateChannels = state.lastState.channel
 
 					if (lastStateChannels) {
@@ -168,6 +168,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 								if (String(stateUIDChannel.playState) === String(PlaybackState.Stop)) return isState
 							}
 						}
+						return false
 					}
 				}
 				if (fState !== undefined) {
