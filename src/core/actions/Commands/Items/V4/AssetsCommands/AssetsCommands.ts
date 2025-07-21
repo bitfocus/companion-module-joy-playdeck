@@ -1,3 +1,4 @@
+import { PlaydeckUtils } from '../../../../../../utils/PlaydeckUtils.js'
 import { argNamesV4, PlaydeckCommandV4 } from '../PlaydeckComandsV4.js'
 
 function assetsAll(): PlaydeckCommandV4[] {
@@ -31,7 +32,7 @@ const commandsAudio = ['mute', 'unmute']
 const targetsAudio: argNamesV4[] = ['CHANNEL', 'INPUT']
 
 function startStopInternalDefinition(isStart: boolean, type: string, command: string): string {
-	return `- ${isStart ? 'START' : 'STOP'} ${!command.includes('all') ? `one ${type}. You can define multiple ${type.toLowerCase()}s at once e.g. "<${command}${type.toLowerCase()}|1|3+7+12>"}` : ` all ${type}`}`
+	return `${isStart ? 'START' : 'STOP'} ${!command.includes('all') ? `one or more ${type}S. You can define multiple ${PlaydeckUtils.capitalizeFirstLetter(type.toLowerCase())}s with "3+7+12"` : ` all ${type}`}`
 }
 
 function startStopInternal(command: string, target: argNamesV4): PlaydeckCommandV4 {
@@ -58,7 +59,7 @@ function startStopExternal(command: string, target: argNamesV4): PlaydeckCommand
 		commandName: `ASSETS - ${`${command} ${target}`.toUpperCase()}`,
 		command: `${command}${target.toLowerCase()}`,
 		description: `${command.toUpperCase()} the ${isDesk ? `Channel Desktop Output` : `${target.toUpperCase()}`}`,
-		arg1: target,
+		arg1: isDesk ? 'CHANNEL' : target,
 	}
 }
 

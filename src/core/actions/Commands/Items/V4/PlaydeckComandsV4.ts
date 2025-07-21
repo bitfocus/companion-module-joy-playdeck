@@ -72,6 +72,12 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 		if (arg === 'CHANNEL') {
 			return itemNumberField(8)
 		}
+		if (arg === 'RECORD') {
+			return itemNumberField(4)
+		}
+		if (arg === 'STREAM') {
+			return itemNumberField(15)
+		}
 		if (arg === 'COMMAND') {
 			return textInputField(
 				`${PlaydeckUtils.RC_REGEX}`,
