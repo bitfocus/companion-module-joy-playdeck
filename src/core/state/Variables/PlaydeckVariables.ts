@@ -94,7 +94,18 @@ export class PlaydeckVariables {
 			const method =
 				variable[methodName] && typeof variable[methodName] === 'function' ? variable[methodName] : undefined
 			if (method === undefined) return
-			const value = method(data, сhannelIndex)
+			let value = null
+			try {
+				value = method(data, сhannelIndex)
+			} catch (e) {
+				if (e instanceof Error) {
+					this.#log(
+						'error',
+						`Error occured in variable with ID: ${variable.variableDefinition?.variableId} in method: ${methodName}. Erorr: ${e.message}`,
+					)
+				}
+			}
+
 			if (value === null) return
 
 			if (variable.value !== value) {
