@@ -196,7 +196,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 	}
 }
 
-interface CheckStateOptionValues extends CompanionOptionValues {
+export interface CheckStateOptionValues extends CompanionOptionValues {
 	isChanString: boolean
 	channelNum: number
 	channelString: InputValue

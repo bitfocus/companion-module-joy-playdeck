@@ -96,7 +96,7 @@ function nextCommands(command: PlayoutCommand, isBlock: boolean): PlaydeckComman
 	return {
 		version: '4.1b11',
 		deprecated: null,
-		commandName: `CONTROL - ${nextPlayoutCommands[command]} Next ${isBlock ? `Block:` : `Clip`}`,
+		commandName: `CONTROL - ${nextPlayoutCommands[command]} Next ${isBlock ? `Block` : `Clip`}`,
 		command: `${command}next${isBlock ? 'block' : ''}`,
 		description: `${nextPlayoutCommands[command]} the next ${isBlock ? `Block` : `Clip`}`,
 		arg1: 'CHANNEL',
