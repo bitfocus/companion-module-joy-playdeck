@@ -71,6 +71,7 @@ export class PlaydeckVariables {
 	#deleteVariable(variable: PlaydeckVariable) {
 		if (variable.variableDefinition === null) return
 		this.#variableDifinitions.delete(variable.variableDefinition)
+		// update definitions!!
 	}
 
 	setCurrent(current: PlaydeckStatusValues<any, any> | null): void {
@@ -94,7 +95,18 @@ export class PlaydeckVariables {
 			const method =
 				variable[methodName] && typeof variable[methodName] === 'function' ? variable[methodName] : undefined
 			if (method === undefined) return
-			const value = method(data, сhannelIndex)
+			let value = null
+			try {
+				value = method(data, сhannelIndex)
+			} catch (e) {
+				if (e instanceof Error) {
+					this.#log(
+						'error',
+						`Error occured in variable with ID: ${variable.variableDefinition?.variableId} in method: ${methodName}. Erorr: ${e.message}`,
+					)
+				}
+			}
+
 			if (value === null) return
 
 			if (variable.value !== value) {
@@ -104,7 +116,7 @@ export class PlaydeckVariables {
 		})
 
 		if (Object.keys(this.#variableValues).length > 0) {
-			this.#instance?.setVariableDefinitions(Array.from(this.#variableDifinitions))
+			// this.#instance?.setVariableDefinitions(Array.from(this.#variableDifinitions))
 			this.#instance?.setVariableValues(this.#variableValues)
 		}
 	}
@@ -115,12 +127,14 @@ export class PlaydeckVariables {
 			if (this.#variableDifinitions.has(variable.variableDefinition)) {
 				this.#log('warn', `Deleting ${variable.variableDefinition.variableId}: ${variable.value}`)
 				this.#variableDifinitions.delete(variable.variableDefinition)
+				this.#instance?.setVariableDefinitions(Array.from(this.#variableDifinitions))
 			}
 			return
 		}
 		this.#variableValues[variable.variableDefinition.variableId] = variable.value
 		if (!this.#variableDifinitions.has(variable.variableDefinition)) {
 			this.#variableDifinitions.add(variable.variableDefinition)
+			this.#instance?.setVariableDefinitions(Array.from(this.#variableDifinitions))
 		}
 	}
 	#log(level: LogLevel, message: string) {

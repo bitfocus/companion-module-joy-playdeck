@@ -36,7 +36,7 @@ export class PlaydeckData implements PlaydeckDataInterface<any, any, any, any> {
 				}
 			}
 		} catch (e) {
-			console.log(`PlaydeckData.update(data) error: ${e}`)
+			this.#log('error', `PlaydeckData.update(data) error: ${e}`)
 		}
 	}
 

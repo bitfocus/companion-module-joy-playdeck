@@ -1,7 +1,7 @@
 import { CompanionActionDefinitions, CompanionActionEvent, InputValue, LogLevel } from '@companion-module/base'
 import { PlaydeckInstance } from '../../index.js'
 import { PlaydeckUtils } from '../../utils/PlaydeckUtils.js'
-import { playdeckCommandsFactory } from './Commands/Items/PlaydeckComandsFactory.js'
+import { PlaydeckCommandsFactory } from './Commands/Items/PlaydeckComandsFactory.js'
 import { PlaydeckCommand } from './Commands/PlaydeckCommands.js'
 export class PlaydeckActions {
 	#instance: PlaydeckInstance
@@ -21,7 +21,7 @@ export class PlaydeckActions {
 	}
 	#getActionDefinitions(): CompanionActionDefinitions {
 		const result: CompanionActionDefinitions = {}
-		const commands = playdeckCommandsFactory.create(this.#instance.version)
+		const commands = PlaydeckCommandsFactory.create(this.#instance.version)
 		if (commands === null) {
 			this.#log('warn', `No command to load`)
 			return result

@@ -62,7 +62,7 @@ function playoutList(command: PlayoutCommand): PlaydeckCommandV4 {
 		deprecated: null,
 		commandName: `CONTROL -  ${playoutCommands[command]} (LIST)`,
 		command: `${command}list`,
-		description: `${playoutCommands[command]} the Clip in the List (Left or Rigth). Will skip inactive Clips.If you dont provide Clip, the first Clip of the Block will be used.If you dont provide Block/Clip, the selected Block/Clip will be used. Will skip inactive Clips.`,
+		description: `${playoutCommands[command]} the Clip in the List (Left or Rigth). Will skip inactive Clips. If you dont provide Clip, the first Clip of the Block will be used. If you dont provide Block/Clip, the selected Block/Clip will be used. Will skip inactive Clips.`,
 		arg1: 'LIST',
 		arg2: 'BLOCK',
 		arg3: 'CLIP',
@@ -86,7 +86,7 @@ function playoutFlex(command: PlayoutCommand): PlaydeckCommandV4 {
 		deprecated: null,
 		commandName: `CONTROL - ${playoutCommands[command]} Flex`,
 		command: `${command}flex`,
-		description: `- ${playoutCommands[command]} a Clip/Block by PATTERN. Will skip inactive Clips.`,
+		description: `${playoutCommands[command]} by PATTERN: "b:anyname c:anyname" (Block/Clip, Block optional)`,
 		arg1: 'CHANNEL',
 		arg2: 'PATTERN',
 	}
@@ -96,9 +96,9 @@ function nextCommands(command: PlayoutCommand, isBlock: boolean): PlaydeckComman
 	return {
 		version: '4.1b11',
 		deprecated: null,
-		commandName: `CONTROL - ${nextPlayoutCommands[command]} Next ${isBlock ? `Block:` : `Clip`}`,
+		commandName: `CONTROL - ${nextPlayoutCommands[command]} Next ${isBlock ? `Block` : `Clip`}`,
 		command: `${command}next${isBlock ? 'block' : ''}`,
-		description: `- ${nextPlayoutCommands[command]} the next ${isBlock ? `Block` : `Clip`}`,
+		description: `${nextPlayoutCommands[command]} the next ${isBlock ? `Block` : `Clip`}`,
 		arg1: 'CHANNEL',
 	}
 }
@@ -114,7 +114,7 @@ const switchChannel: PlaydeckCommandV4 = {
 }
 
 function selectDesctiption(type: 'Channel' | 'List' | 'UID'): string {
-	return `Will select a certain Clip per ${type}. If you dont provide Clip, the Block Header is being selected. If you dont provide Block/Clip, nothing happens. Also works, if Channel is currrently not in view (8 Channel Version)`
+	return `Will select a certain Clip per ${type}. If you dont provide Clip, the first Clip of the Block will be selected. If you don't provide Block/Clip, nothing happens. Also works, if Channel is currrently not in view (8 Channel Version)`
 }
 
 const select: PlaydeckCommandV4 = {
@@ -152,7 +152,7 @@ const pause: PlaydeckCommandV4 = {
 	deprecated: null,
 	commandName: `CONTROL - PAUSE`,
 	command: `pause`,
-	description: `- PAUSE will toggle pause of current playing Playback, if Clip is playing, otherwise ignored.`,
+	description: `PAUSE will toggle pause of current playing Playback, if Clip is playing, otherwise ignored.`,
 	arg1: 'CHANNEL',
 }
 
@@ -181,7 +181,7 @@ const position: PlaydeckCommandV4 = {
 	deprecated: null,
 	commandName: `CONTROL - POSITION`,
 	command: `position`,
-	description: `Jump the Playhead to a new Position in the currently playing Clip. Will be ignored, if no Clip is playing. A negative Timestamp will be calculated as Duration minus Timestamp.`,
+	description: `Jump to TIMESTAMP (HH:MM:SS:FF or MM:SS:FF or SS:FF). A negative Timestamp will be calculated as Duration minus Timestamp.`,
 	arg1: 'CHANNEL',
 	arg2: 'TIMESTAMP',
 }

@@ -14,6 +14,7 @@ import { PlaydeckState } from './core/state/PlaydeckState.js'
 import { PlaydeckConnectionManager } from './core/connections/PlaydeckConnectionManager.js'
 import { PlaydeckActions } from './core/actions/PlaydeckActions.js'
 import { PlaydeckFeedbacks } from './core/state/Feedbacks/PlaydeckFeedbacks.js'
+import { PlaydeckPresets } from './core/presets/PlaydeckPresets.js'
 export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 	#config!: PlaydeckConfig
 	/**
@@ -38,6 +39,7 @@ export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 	state?: PlaydeckState
 	connectionManager?: PlaydeckConnectionManager
 	actions?: PlaydeckActions
+	presets?: PlaydeckPresets
 	#lastLazyLogTimestamp: number | null = null
 	#lastLazyStatusTimestamp: number | null = null
 	#lazyLogInterval: number = 3000
@@ -68,6 +70,7 @@ export class PlaydeckInstance extends InstanceBase<PlaydeckConfig> {
 			this.state.initFeedbacks(new PlaydeckFeedbacks(this))
 		}
 		this.actions = new PlaydeckActions(this)
+		this.presets = new PlaydeckPresets(this)
 	}
 	/** for log fast events not so fast (one time per `#lazyLogInterval`)*/
 	lazyLog(logLevel: LogLevel, message: string): void {

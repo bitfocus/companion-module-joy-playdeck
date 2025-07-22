@@ -81,6 +81,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				const state = chan.playState
 				if (state !== PlaybackState.None) return state
 				return null
@@ -111,6 +112,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.tallyStatus
 			}
 			return
@@ -130,6 +132,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.channelState
 			}
 			return
@@ -149,6 +152,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.channelName
 			}
 			return
@@ -168,6 +172,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.blockCount
 			}
 			return
@@ -188,6 +193,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.clipName
 			}
 			return
@@ -207,6 +213,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.clipID
 			}
 			return
@@ -226,6 +233,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.clipPosition
 			}
 			return
@@ -245,6 +253,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.clipDuration
 			}
 			return
@@ -264,6 +273,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.clipEnd
 			}
 			return
@@ -283,6 +293,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.clipRemain
 			}
 			return
@@ -302,6 +313,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.clipProgress
 			}
 			return
@@ -322,6 +334,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.blockName
 			}
 			return
@@ -341,6 +354,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.blockID
 			}
 			return
@@ -360,6 +374,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.blockPosition
 			}
 			return
@@ -379,6 +394,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.blockDuration
 			}
 			return
@@ -398,6 +414,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.blockEnd
 			}
 			return
@@ -417,6 +434,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.blockRemain
 			}
 			return
@@ -436,6 +454,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
 			if (channel !== undefined && current.channel !== null) {
 				const chan = current.channel[channel]
+				if (chan === undefined) return null
 				return chan.blockProgress
 			}
 			return
