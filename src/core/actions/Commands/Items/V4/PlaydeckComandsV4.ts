@@ -21,6 +21,7 @@ export type argNamesV4 =
 	| 'FILENAME'
 	| 'INPUT'
 	| 'COMMAND'
+	| 'TIME'
 export interface PlaydeckCommandV4 extends PlaydeckCommand {
 	arg1?: argNamesV4
 	arg2?: argNamesV4
@@ -54,6 +55,18 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 				range: false,
 			}
 		}
+		const timeNumberField = (): SomeCompanionActionInputField => {
+			return {
+				type: 'number',
+				id: `arg${index}`,
+				label: `${arg} (MS):`,
+				min: 0,
+				max: 100000,
+				default: 0,
+				required: true,
+				range: false,
+			}
+		}
 		const textInputField: (regex: string, tooltip: string) => SomeCompanionActionInputField = (regex, tooltip) => {
 			return {
 				type: 'textinput',
@@ -77,6 +90,9 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 		}
 		if (arg === 'STREAM') {
 			return itemNumberField(15)
+		}
+		if (arg === 'TIME') {
+			return timeNumberField()
 		}
 		if (arg === 'COMMAND') {
 			return textInputField(
@@ -118,6 +134,14 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 			command: `customcommand`,
 			description: `Send custom command...`,
 			arg1: `COMMAND`,
+		},
+		{
+			version: '4.1b11',
+			deprecated: null,
+			commandName: `UTILS - WAIT`,
+			command: `wait`,
+			description: `Will halt execution of upcoming Commands for the duration of TIME`,
+			arg1: 'TIME',
 		},
 		...PlayoutCommands,
 		...AssetsCommands,
