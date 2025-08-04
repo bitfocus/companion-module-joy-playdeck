@@ -136,7 +136,7 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 			arg1: `COMMAND`,
 		},
 		{
-			version: '4.1b11',
+			version: '4.1b16',
 			deprecated: null,
 			commandName: `UTILS - WAIT`,
 			command: `wait`,
