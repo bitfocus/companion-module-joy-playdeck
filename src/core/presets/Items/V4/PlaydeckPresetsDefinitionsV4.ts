@@ -151,11 +151,11 @@ export class PlaydeckPresetsDefinitionsV4 implements PlaydeckPresetsDefinitions 
 						presetSubCategory = this.#getChannelSubCategory(command)
 						presetChannelCategory = PlaydeckUtils.capitalizeFirstLetter(presetCategory.replace('_', ' '))
 						switch (presetSubCategory) {
-							case CommandChannelSubCategory.Standart:
+							case CommandChannelSubCategory.Standard:
 								this.#makeDescription({
 									id: `preset_${presetCategory}_${presetSubCategory}`,
 									category: `${presetChannelCategory}`,
-									name: 'Standart',
+									name: 'Standard',
 									text: '',
 								})
 								break
@@ -296,7 +296,7 @@ export class PlaydeckPresetsDefinitionsV4 implements PlaydeckPresetsDefinitions 
 			return command.includes(category)
 		})
 		if (category) return category
-		return CommandChannelSubCategory.Standart
+		return CommandChannelSubCategory.Standard
 	}
 	#getAssetsSubCategory(command: string): CommandAssetsSubCategory | undefined {
 		if (!command) return
@@ -410,7 +410,7 @@ enum CommandCategory {
 }
 
 enum CommandChannelSubCategory {
-	Standart = '0_standart',
+	Standard = '0_Standard',
 	Flex = 'flex',
 	Position = 'position',
 	Action = 'action',
