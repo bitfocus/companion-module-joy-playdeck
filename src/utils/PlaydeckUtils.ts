@@ -10,7 +10,7 @@ export type TimestampString = string
 export type TimestampUNIX = number
 
 export class PlaydeckUtils {
-	static RC_REGEX = /\<(.*?)\>/
+	static RC_REGEX = /<(.*?)>/
 	/** Converts UNIX Timestamp in seconds in string formatted HH:mm:ss padded with 0 */
 	static convertTimestamp(unixSecTimestamp: TimestampUNIX): TimestampString {
 		const date = new Date(unixSecTimestamp * 1000)
