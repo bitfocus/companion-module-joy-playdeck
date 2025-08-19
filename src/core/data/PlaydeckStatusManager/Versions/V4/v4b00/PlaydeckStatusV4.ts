@@ -1,4 +1,4 @@
-import { PlaydeckStatusInterface } from '../../../PlaydeckStatus.js'
+import { PlaydeckStatusInterface } from '../../../../PlaydeckStatus.js'
 import {
 	PlaybackState,
 	Tally,
@@ -6,18 +6,18 @@ import {
 	TimestampString,
 	TimestampUNIX,
 	PlaydeckUtils,
-} from '../../../../../utils/PlaydeckUtils.js'
-import { Channel, PlaydeckStatusMessageData, PlayState, ChannelState } from './PlaydeckStatusMesageV4.js'
+} from '../../../../../../utils/PlaydeckUtils.js'
+import { Channel, PlaydeckStatusMessageData, PlayState, ChannelState } from './PlaydeckStatusMessageV4.js'
 
 export class PlaydeckStatusV4 implements PlaydeckStatusInterface<PlaydeckProjectValues, PlaydeckChannelValues> {
 	#common: PlaydeckProjectValues | null = null
 	#channel: PlaydeckChannelValues[] | null = null
-	#rawData: PlaydeckStatusMessageData | null = null
+	protected rawData: PlaydeckStatusMessageData | null = null
 	constructor(playdeckStatusObject: object) {
-		this.#rawData = playdeckStatusObject as PlaydeckStatusMessageData
+		this.rawData = playdeckStatusObject as PlaydeckStatusMessageData
 	}
 	getValues(): PlaydeckValuesV4 | null {
-		if (this.#rawData === null) return null
+		if (this.rawData === null) return null
 		this.#common = this.#getCommon()
 		this.#channel = this.#getChannel()
 		if (this.#common === null) return null
@@ -29,9 +29,9 @@ export class PlaydeckStatusV4 implements PlaydeckStatusInterface<PlaydeckProject
 		}
 	}
 	#getCommon(): PlaydeckProjectValues | null {
-		if (this.#rawData === null) return null
-		if (this.#rawData.Project === undefined) return null
-		const project = this.#rawData.Project
+		if (this.rawData === null) return null
+		if (this.rawData.Project === undefined) return null
+		const project = this.rawData.Project
 		return {
 			projectName: project.ProjectName,
 			projectFileName: project.ProjectFilename,
@@ -41,9 +41,9 @@ export class PlaydeckStatusV4 implements PlaydeckStatusInterface<PlaydeckProject
 		}
 	}
 	#getChannel(): PlaydeckChannelValues[] | null {
-		if (this.#rawData === null) return null
-		if (this.#rawData.Channel === undefined) return null
-		const channels: Channel[] = this.#rawData.Channel
+		if (this.rawData === null) return null
+		if (this.rawData.Channel === undefined) return null
+		const channels: Channel[] = this.rawData.Channel
 		return channels.map((channel) => new PlaydeckChannelValues(channel))
 	}
 	isChannelOn(channel: number): boolean {

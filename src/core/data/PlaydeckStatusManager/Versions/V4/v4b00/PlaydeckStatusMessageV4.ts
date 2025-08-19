@@ -1,4 +1,4 @@
-import { Tally, integer, float, TimestampUNIX, TimestampString } from '../../../../../utils/PlaydeckUtils.js'
+import { Tally, integer, float, TimestampUNIX, TimestampString } from '../../../../../../utils/PlaydeckUtils.js'
 
 export interface PlaydeckStatusMessageData {
 	Project: Project
@@ -91,7 +91,7 @@ export enum DirectorType {
 	EightChannel = 4,
 }
 export enum ChannelState {
-	Started = 0,
+	Inactive = 0,
 	Starting = 1,
 	Ready = 2,
 	Error = 3,

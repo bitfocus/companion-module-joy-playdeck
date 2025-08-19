@@ -1,4 +1,4 @@
-import { PlaydeckValuesV4 } from '../../../../../core/data/PlaydeckStatusManager/Versions/V4/PlaydeckStatusV4.js'
+import { PlaydeckValuesV4 } from '../../../../data/PlaydeckStatusManager/Versions/V4/v4b00/PlaydeckStatusV4.js'
 import { CompanionVariableDefinition, CompanionVariableValue } from '@companion-module/base/dist'
 import { EventSources, PlaydeckEvent } from '../../../../../core/data/PlaydeckEvents.js'
 import { PlaybackState, PlaydeckUtils } from '../../../../../utils/PlaydeckUtils.js'

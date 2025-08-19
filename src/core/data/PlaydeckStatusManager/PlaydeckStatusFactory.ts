@@ -1,5 +1,6 @@
 import { PlaydeckStatusV3 } from './Versions/V3/PlaydeckStatusV3.js'
-import { PlaydeckStatusV4 } from './Versions/V4/PlaydeckStatusV4.js'
+import { PlaydeckStatusV4 } from './Versions/V4/v4b00/PlaydeckStatusV4.js'
+import { PlaydeckStatusV4b16 } from './Versions/V4/v4b16/PlaydeckStatusV4b16.js'
 import { PlaydeckStatusInterface } from '../PlaydeckStatus.js'
 import { PlaydeckVersion } from '../../version/PlaydeckVersion.js'
 export class PlaydeckStatusFactory {
@@ -8,6 +9,7 @@ export class PlaydeckStatusFactory {
 		if (version.isLegacy()) {
 			return new PlaydeckStatusV3(json)
 		}
-		return new PlaydeckStatusV4(json)
+		if (version.isLowerThan('4.1b16')) return new PlaydeckStatusV4(json)
+		return new PlaydeckStatusV4b16(json)
 	}
 }
