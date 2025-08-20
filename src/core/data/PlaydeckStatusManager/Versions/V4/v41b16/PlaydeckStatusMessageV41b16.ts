@@ -1,4 +1,4 @@
-import { PlaydeckStatusMessageData } from '../v4b00/PlaydeckStatusMessageV4.js'
+import { PlaydeckStatusMessageData } from '../v40b00/PlaydeckStatusMessageV4.js'
 type ChannelKeys = `Channel${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8}`
 type OutputKeys = `Output${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8}`
 type InputKeys = `Input${1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12}`
@@ -26,6 +26,6 @@ export enum StatebleTargets {
 	Output = 'Output',
 	Input = 'Input',
 	Stream = 'Stream',
-	DirectorView = 'Director',
+	Director = 'Director',
 	Recording = 'Recording',
 }

@@ -10,25 +10,25 @@ import {
 import { Channel, PlaydeckStatusMessageData, PlayState, ChannelState } from './PlaydeckStatusMessageV4.js'
 
 export class PlaydeckStatusV4 implements PlaydeckStatusInterface<PlaydeckProjectValues, PlaydeckChannelValues> {
-	#common: PlaydeckProjectValues | null = null
-	#channel: PlaydeckChannelValues[] | null = null
+	protected common: PlaydeckProjectValues | null = null
+	protected channel: PlaydeckChannelValues[] | null = null
 	protected rawData: PlaydeckStatusMessageData | null = null
 	constructor(playdeckStatusObject: object) {
 		this.rawData = playdeckStatusObject as PlaydeckStatusMessageData
 	}
 	getValues(): PlaydeckValuesV4 | null {
 		if (this.rawData === null) return null
-		this.#common = this.#getCommon()
-		this.#channel = this.#getChannel()
-		if (this.#common === null) return null
-		if (this.#channel === null) return null
+		this.common = this.getCommon()
+		this.channel = this.getChannel()
+		if (this.common === null) return null
+		if (this.channel === null) return null
 
 		return {
-			common: this.#common,
-			channel: this.#channel,
+			common: this.common,
+			channel: this.channel,
 		}
 	}
-	#getCommon(): PlaydeckProjectValues | null {
+	protected getCommon(): PlaydeckProjectValues | null {
 		if (this.rawData === null) return null
 		if (this.rawData.Project === undefined) return null
 		const project = this.rawData.Project
@@ -40,15 +40,15 @@ export class PlaydeckStatusV4 implements PlaydeckStatusInterface<PlaydeckProject
 			timestampUnix: project.TimestampUnix,
 		}
 	}
-	#getChannel(): PlaydeckChannelValues[] | null {
+	protected getChannel(): PlaydeckChannelValues[] | null {
 		if (this.rawData === null) return null
 		if (this.rawData.Channel === undefined) return null
 		const channels: Channel[] = this.rawData.Channel
 		return channels.map((channel) => new PlaydeckChannelValues(channel))
 	}
 	isChannelOn(channel: number): boolean {
-		if (this.#channel === null) return false
-		return this.#channel[channel].channelState === ChannelState[ChannelState.Ready]
+		if (this.channel === null) return false
+		return this.channel[channel].channelState === ChannelState[ChannelState.Ready]
 	}
 }
 

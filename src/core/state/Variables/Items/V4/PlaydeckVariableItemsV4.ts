@@ -1,4 +1,5 @@
-import { PlaydeckValuesV4 } from '../../../../data/PlaydeckStatusManager/Versions/V4/v4b00/PlaydeckStatusV4.js'
+import { PlaydeckValuesV4 } from '../../../../data/PlaydeckStatusManager/Versions/V4/v40b00/PlaydeckStatusV4.js'
+import { PlaydeckValuesV41b16 } from '../../../../data/PlaydeckStatusManager/Versions/V4/v41b16/PlaydeckStatusV41b16.js'
 import { CompanionVariableDefinition, CompanionVariableValue } from '@companion-module/base/dist'
 import { EventSources, PlaydeckEvent } from '../../../../../core/data/PlaydeckEvents.js'
 import { PlaybackState, PlaydeckUtils } from '../../../../../utils/PlaydeckUtils.js'
@@ -9,7 +10,7 @@ import {
 	PlaydeckDataTypeV4,
 } from '../../../../../core/data/PlaydeckProjectManager/V4/PlaydectDataV4.js'
 
-export const variableItemsV4: PlaydeckVariableItem[] = [
+const variableItemsV40b00: PlaydeckVariableItem[] = [
 	{
 		getVariableDefinition: (): CompanionVariableDefinition => {
 			return {
@@ -139,7 +140,7 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		},
 		channel: true,
 		version: '4.1b11',
-		deprecated: null,
+		deprecated: '4.1b16',
 	},
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
@@ -543,3 +544,11 @@ export const variableItemsV4: PlaydeckVariableItem[] = [
 		deprecated: null,
 	},
 ]
+
+export const variableItemsV4: PlaydeckVariableItem[] = [...variableItemsV40b00]
+
+// function getStatesVariableItem(): PlaydeckVariableItem {
+// 	return
+// 	{
+// 	}
+// }

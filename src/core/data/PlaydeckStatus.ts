@@ -40,11 +40,12 @@ export class PlaydeckStatus {
 	}
 }
 
-export interface PlaydeckStatusValues<CommonType, ChannelType> {
+export interface PlaydeckStatusValues<CommonType, ChannelType, StatesType = undefined> {
 	common: CommonType
 	channel: ChannelType[]
+	states?: StatesType
 }
 
-export interface PlaydeckStatusInterface<CommonType, ChannelType> {
-	getValues(): PlaydeckStatusValues<CommonType, ChannelType> | null
+export interface PlaydeckStatusInterface<CommonType, ChannelType, StatesType = undefined> {
+	getValues(): PlaydeckStatusValues<CommonType, ChannelType, StatesType> | null
 }
