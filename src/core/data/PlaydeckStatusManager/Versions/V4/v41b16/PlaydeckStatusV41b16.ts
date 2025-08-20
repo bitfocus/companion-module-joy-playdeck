@@ -1,3 +1,4 @@
+import { PlaydeckStatusValues } from '../../../../../../core/data/PlaydeckStatus.js'
 import { PlaydeckStatusV4, PlaydeckValuesV4 } from '../v40b00/PlaydeckStatusV4.js'
 import {
 	PlaydeckStatusMessageDataV4b16,
@@ -51,7 +52,11 @@ export class PlaydeckStatusV4b16 extends PlaydeckStatusV4 {
 	}
 }
 
-export type PlaydeckValuesV41b16 = PlaydeckValuesV4 & { states: ObjectsStates }
+export type PlaydeckValuesV41b16 = PlaydeckStatusValues<
+	PlaydeckValuesV4['common'],
+	PlaydeckValuesV4['channel'][number],
+	ObjectsStates
+>
 
 type StateStrings = keyof typeof State
 

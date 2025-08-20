@@ -4,7 +4,10 @@ import { PlaydeckStatusV4b16 } from './Versions/V4/v41b16/PlaydeckStatusV41b16.j
 import { PlaydeckStatusInterface } from '../PlaydeckStatus.js'
 import { PlaydeckVersion } from '../../version/PlaydeckVersion.js'
 export class PlaydeckStatusFactory {
-	static create(version: PlaydeckVersion | null | undefined, json: object): PlaydeckStatusInterface<any, any> | null {
+	static create(
+		version: PlaydeckVersion | null | undefined,
+		json: object,
+	): PlaydeckStatusInterface<any, any, any> | null {
 		if (!version) return null
 		if (version.isLegacy()) {
 			return new PlaydeckStatusV3(json)

@@ -13,7 +13,7 @@ export const variableItems: PlaydeckVariableItem[] = [...variableItemsV3, ...var
 export interface PlaydeckVariableItem {
 	getVariableDefinition: (channel?: number) => CompanionVariableDefinition | null
 	getCurrentValue?: (
-		current: PlaydeckStatusValues<any, any>,
+		current: PlaydeckStatusValues<any, any, any>,
 		channel?: number,
 	) => CompanionVariableValue | undefined | null
 	getFromData?: (

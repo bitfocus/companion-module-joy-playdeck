@@ -545,10 +545,67 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 	},
 ]
 
-export const variableItemsV4: PlaydeckVariableItem[] = [...variableItemsV40b00]
+const variableItemsV41b16: PlaydeckVariableItem[] = [
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_state`,
+				name: `Ready state of channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV41b16, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				if (chan === undefined) return null
+				if (!current.states) return chan.channelState
+				return current.states.channel[channel]
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b16',
+		deprecated: null,
+	},
+	...getOtherStates(),
+]
 
-// function getStatesVariableItem(): PlaydeckVariableItem {
-// 	return
-// 	{
-// 	}
-// }
+function getOtherStates(): PlaydeckVariableItem[] {
+	const statableObjectsWithCapacity = {
+		channel: 8,
+		output: 8,
+		input: 12,
+		stream: 15,
+		director: 4,
+		recording: 4,
+	}
+	const result = []
+	for (const [statableObject, capacity] of Object.entries(statableObjectsWithCapacity)) {
+		if (statableObject === 'channel') continue
+
+		for (let i = 0; i < capacity; i++) {
+			const varItem: PlaydeckVariableItem = {
+				getVariableDefinition: (): CompanionVariableDefinition | null => {
+					return {
+						variableId: `${statableObject}_${i + 1}_state`,
+						name: `Ready state of ${statableObject} #${i + 1}`,
+					}
+				},
+				getCurrentValue: (current: PlaydeckValuesV41b16): CompanionVariableValue | undefined | null => {
+					const states = current.states
+					if (!states) return null
+					const statesKey = statableObject as keyof typeof states
+					if (!states[statesKey]) return null
+					return states[statesKey][i]
+				},
+				channel: false,
+				version: '4.1b16',
+				deprecated: null,
+			}
+			result.push(varItem)
+		}
+	}
+	return result
+}
+
+export const variableItemsV4: PlaydeckVariableItem[] = [...variableItemsV40b00, ...variableItemsV41b16]
