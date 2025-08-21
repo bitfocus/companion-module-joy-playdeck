@@ -28,7 +28,7 @@ export const PlaydeckFeedbacksDefinitionsV41b16 = (state: PlaydeckStateV41b16): 
 						default: StateableTargets.Channel.toLowerCase(),
 						choices: [
 							{ id: StateableTargets.Channel.toLowerCase(), label: 'CHANNEL' },
-							{ id: StateableTargets.Output.toLowerCase(), label: 'OUTPUT' },
+							{ id: StateableTargets.Output.toLowerCase(), label: 'OUTPUT (DESKTOP)' },
 							{ id: StateableTargets.Input.toLowerCase(), label: 'INPUT' },
 							{ id: StateableTargets.Stream.toLowerCase(), label: 'STREAM' },
 							{ id: StateableTargets.Director.toLowerCase(), label: 'DIRECTOR' },

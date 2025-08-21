@@ -10,7 +10,7 @@ import { PlaydeckCommands } from '../../../actions/Commands/PlaydeckCommands.js'
 import { PlaybackState, PlaydeckUtils } from '../../../../utils/PlaydeckUtils.js'
 import { CheckStateOptionValues } from '../../../state/Feedbacks/Items/V4/PlaydeckFeebacksItemsV4.js'
 import { PlaydeckInstance } from '../../../../index.js'
-
+import { StateableTargets } from '../../../../core/data/PlaydeckStatusManager/Versions/V4/v41b16/PlaydeckStatusMessageV41b16.js'
 export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinitions {
 	#presetDefinitions: Map<string, CompanionPresetDefinition> = new Map()
 	#commands: PlaydeckCommands | null = null
@@ -328,10 +328,18 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 
 	#isAssets(command: string): boolean {
 		const assets = Object.values(CommandAssetsSubCategory)
+
 		return assets.some((value) => command.includes(value))
 	}
 	#makePreset(preset: PlaydeckPresetDefinitionItem) {
 		const icon = PlaydeckUtils.ICONS[preset.action.actionId as keyof typeof PlaydeckUtils.ICONS]
+		const stateableObjectFromCommands = {
+			startdesktop: StateableTargets.Output.toLowerCase(),
+			startstream: StateableTargets.Stream.toLowerCase(),
+			startrecord: StateableTargets.Recording.toLowerCase(),
+		}
+		const stateableObject =
+			stateableObjectFromCommands[preset.action.actionId as keyof typeof stateableObjectFromCommands]
 		const newPreset: CompanionPresetDefinition = {
 			category: preset.category,
 			type: 'button',
@@ -380,7 +388,23 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 							},
 						},
 					]
-				: [],
+				: stateableObject
+					? [
+							{
+								feedbackId: `checkObjectsState`,
+								options: {
+									stateableObject: stateableObject,
+									isNumberString: false,
+									objectNumber: preset.action.options.arg1 !== '' ? preset.action.options.arg1 : 1,
+									objectNumberString: preset.action.options.arg1 !== '' ? preset.action.options.arg1 : '1',
+								},
+								style: {
+									color: combineRgb(255, 255, 255),
+									bgcolor: combineRgb(255, 0, 0),
+								},
+							},
+						]
+					: [],
 		}
 
 		this.#presetDefinitions.set(preset.id, newPreset)
