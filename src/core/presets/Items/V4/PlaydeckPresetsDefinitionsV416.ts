@@ -331,15 +331,19 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 		return assets.some((value) => command.includes(value))
 	}
 	#makePreset(preset: PlaydeckPresetDefinitionItem) {
+		const icon = PlaydeckUtils.ICONS[preset.action.actionId as keyof typeof PlaydeckUtils.ICONS]
 		const newPreset: CompanionPresetDefinition = {
 			category: preset.category,
 			type: 'button',
 			name: preset.text,
 			style: {
 				text: preset.text,
-				size: this.#fontSize,
+				size: icon ? 10 : this.#fontSize,
 				color: combineRgb(255, 255, 255),
 				bgcolor: combineRgb(0, 0, 0),
+				png64: icon,
+				alignment: icon ? 'center:bottom' : undefined,
+				pngalignment: icon ? 'center:top' : undefined,
 			},
 			steps: [
 				{
@@ -371,7 +375,7 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 								bgcolor: combineRgb(255, 0, 0),
 								text:
 									preset.feedback.state === PlaybackState.Play
-										? `#${preset.feedback.channelNum}\nPLAY\nremain:\n$(${this.#instance?.label}:channel_${preset.feedback.channelNum}_clip_remain)`
+										? `#${preset.feedback.channelNum}\nPLAY\n$(${this.#instance?.label}:channel_${preset.feedback.channelNum}_clip_remain)`
 										: undefined,
 							},
 						},
