@@ -1,7 +1,7 @@
 import { combineRgb, CompanionFeedbackDefinitions, CompanionOptionValues, InputValue } from '@companion-module/base'
 import { PlaydeckState } from '../../../../../core/state/PlaydeckState.js'
 import { PlaybackState } from '../../../../../utils/PlaydeckUtils.js'
-import { PlaydeckValuesV4 } from '../../../../../core/data/PlaydeckStatusManager/Versions/V4/PlaydeckStatusV4.js'
+import { PlaydeckValuesV4 } from '../../../../data/PlaydeckStatusManager/Versions/V4/v40b00/PlaydeckStatusV4.js'
 
 export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): CompanionFeedbackDefinitions => {
 	return {

@@ -40,6 +40,7 @@ function playoutAll(): PlaydeckCommandV4[] {
 	all.push(position)
 	all.push(saveposition)
 	all.push(recallposition)
+	all.push(fadeedit)
 	return all
 }
 
@@ -202,6 +203,16 @@ const recallposition: PlaydeckCommandV4 = {
 	command: `recallposition`,
 	description: `Recall the saved Clip/Position for later use`,
 	arg1: 'CHANNEL',
+}
+
+const fadeedit: PlaydeckCommandV4 = {
+	version: '4.1b16',
+	deprecated: null,
+	commandName: `CONTROL - FADE EDIT`,
+	command: `fadeedit`,
+	description: `Will overwrite the current Fade In/Out Time`,
+	arg1: 'CHANNEL',
+	arg2: 'TIME',
 }
 
 export const PlayoutCommands: PlaydeckCommandV4[] = [...playoutAll()]

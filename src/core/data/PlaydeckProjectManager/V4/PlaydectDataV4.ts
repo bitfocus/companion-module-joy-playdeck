@@ -1,6 +1,6 @@
 import { float, integer, PlaydeckUtils, TimestampString, TimestampUNIX } from '../../../../utils/PlaydeckUtils.js'
 import { PlaydeckDataInterface } from '../../PlaydeckData.js'
-import { ChannelState } from '../../PlaydeckStatusManager/Versions/V4/PlaydeckStatusMesageV4.js'
+import { ChannelState } from '../../PlaydeckStatusManager/Versions/V4/v40b00/PlaydeckStatusMessageV4.js'
 import {
 	PlaydeckDataMessage,
 	Block,

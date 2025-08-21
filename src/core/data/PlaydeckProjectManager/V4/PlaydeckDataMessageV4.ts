@@ -1,5 +1,5 @@
 import { integer, float, TimestampUNIX, TimestampString } from '../../../../utils/PlaydeckUtils.js'
-import { ChannelState } from '../../PlaydeckStatusManager/Versions/V4/PlaydeckStatusMesageV4.js'
+import { ChannelState } from '../../PlaydeckStatusManager/Versions/V4/v40b00/PlaydeckStatusMessageV4.js'
 
 export interface PlaydeckDataMessage {
 	Project: Project
