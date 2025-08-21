@@ -15,7 +15,7 @@ export const PlaydeckFeedbacksDefinitionsV41b16 = (state: PlaydeckStateV41b16): 
 			checkObjectsState: {
 				type: 'boolean',
 				name: `Check object started`,
-				description: `Returns the 'Started' state of selected object (channel, input, output, recording, directors view, stream)) in selected playlist`,
+				description: `Returns the 'Started' state of selected object (channel, input, output (desktop), recording, directors view, stream)) in selected playlist`,
 				defaultStyle: {
 					bgcolor: combineRgb(255, 0, 0),
 					color: combineRgb(255, 255, 255),
@@ -31,7 +31,7 @@ export const PlaydeckFeedbacksDefinitionsV41b16 = (state: PlaydeckStateV41b16): 
 							{ id: StateableTargets.Output.toLowerCase(), label: 'OUTPUT (DESKTOP)' },
 							{ id: StateableTargets.Input.toLowerCase(), label: 'INPUT' },
 							{ id: StateableTargets.Stream.toLowerCase(), label: 'STREAM' },
-							{ id: StateableTargets.Director.toLowerCase(), label: 'DIRECTOR' },
+							{ id: StateableTargets.Director.toLowerCase(), label: 'DIRECTOR VIEW' },
 							{ id: StateableTargets.Recording.toLowerCase(), label: 'RECORDING' },
 						],
 					},
@@ -46,7 +46,7 @@ export const PlaydeckFeedbacksDefinitionsV41b16 = (state: PlaydeckStateV41b16): 
 						id: 'objectNumber',
 						label: 'Object Number',
 						min: 1,
-						max: 8,
+						max: 15,
 						default: 1,
 						isVisible: (opt) => opt.isNumberString === false,
 					},

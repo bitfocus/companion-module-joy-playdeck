@@ -20,7 +20,8 @@ You can choose appropriate version. The module automatically adjusts the set of 
 **RECORDING**: START, STOP;
 
 **UTILS**: WAIT
-**Custom command** - sends a custom command (shold be formatted like `<{command}|{playlidID}|{blockID}|{clipID}>`)
+
+**Custom command** - sends a custom command (shold be formatted like `<{command}|{playlistID}|{blockID}|{clipID}>`)
 
 **Available feedbacks (become active after some actions):**
 
@@ -33,6 +34,5 @@ You can choose appropriate version. The module automatically adjusts the set of 
   - _Item ID_
 
 - **Current ready state** with options:
-  - _Target_: **CHANNEL**, **OUTPUT**, **INPUT**, ,**DIRECTOR VIEW**, ,**RECORDING**
+  - _Target_: **CHANNEL**, **OUTPUT (DESKTOP)**, **INPUT**, ,**DIRECTOR VIEW**, ,**RECORDING**
   - _Target Number_: number
-  - _State_: _**NOT ACTIVE**_, _**STARTING**_, _**STARTED**_, _**ERROR**_

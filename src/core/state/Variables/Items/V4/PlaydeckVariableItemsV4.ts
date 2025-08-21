@@ -9,6 +9,7 @@ import {
 	PlaydeckClipData,
 	PlaydeckDataTypeV4,
 } from '../../../../../core/data/PlaydeckProjectManager/V4/PlaydectDataV4.js'
+import { StateableTargets } from '../../../../../core/data/PlaydeckStatusManager/Versions/V4/v41b16/PlaydeckStatusMessageV41b16.js'
 
 const variableItemsV40b00: PlaydeckVariableItem[] = [
 	{
@@ -588,7 +589,7 @@ function getOtherStates(): PlaydeckVariableItem[] {
 				getVariableDefinition: (): CompanionVariableDefinition | null => {
 					return {
 						variableId: `${stateableObject}_${i + 1}_state`,
-						name: `Ready state of ${stateableObject} #${i + 1}`,
+						name: `Ready state of ${stateableObject.toLowerCase() == StateableTargets.Output.toLowerCase() ? `channel ${stateableObject}` : stateableObject} #${i + 1}`,
 					}
 				},
 				getCurrentValue: (current: PlaydeckValuesV41b16): CompanionVariableValue | undefined | null => {
