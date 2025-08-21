@@ -17,5 +17,8 @@ export class PlaydeckFeedbacks {
 	}
 	checkFeedbacks(): void {
 		this.#instance.checkFeedbacks('checkState')
+		if (this.#instance.version?.isGreaterOrEqualualTo('4.1b16')) {
+			this.#instance.checkFeedbacks('checkObjectsState')
+		}
 	}
 }

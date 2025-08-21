@@ -21,7 +21,7 @@ export enum State {
 	Error = 3,
 }
 
-export enum StatebleTargets {
+export enum StateableTargets {
 	Channel = 'Channel',
 	Output = 'Output',
 	Input = 'Input',

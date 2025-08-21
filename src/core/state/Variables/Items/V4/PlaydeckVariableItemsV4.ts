@@ -571,7 +571,7 @@ const variableItemsV41b16: PlaydeckVariableItem[] = [
 ]
 
 function getOtherStates(): PlaydeckVariableItem[] {
-	const statableObjectsWithCapacity = {
+	const stateableObjectsWithCapacity = {
 		channel: 8,
 		output: 8,
 		input: 12,
@@ -580,21 +580,21 @@ function getOtherStates(): PlaydeckVariableItem[] {
 		recording: 4,
 	}
 	const result = []
-	for (const [statableObject, capacity] of Object.entries(statableObjectsWithCapacity)) {
-		if (statableObject === 'channel') continue
+	for (const [stateableObject, capacity] of Object.entries(stateableObjectsWithCapacity)) {
+		if (stateableObject === 'channel') continue
 
 		for (let i = 0; i < capacity; i++) {
 			const varItem: PlaydeckVariableItem = {
 				getVariableDefinition: (): CompanionVariableDefinition | null => {
 					return {
-						variableId: `${statableObject}_${i + 1}_state`,
-						name: `Ready state of ${statableObject} #${i + 1}`,
+						variableId: `${stateableObject}_${i + 1}_state`,
+						name: `Ready state of ${stateableObject} #${i + 1}`,
 					}
 				},
 				getCurrentValue: (current: PlaydeckValuesV41b16): CompanionVariableValue | undefined | null => {
 					const states = current.states
 					if (!states) return null
-					const statesKey = statableObject as keyof typeof states
+					const statesKey = stateableObject as keyof typeof states
 					if (!states[statesKey]) return null
 					return states[statesKey][i]
 				},
