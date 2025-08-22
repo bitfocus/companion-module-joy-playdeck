@@ -383,7 +383,7 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 								bgcolor: combineRgb(255, 0, 0),
 								text:
 									preset.feedback.state === PlaybackState.Play
-										? `#${preset.feedback.channelNum}\nPLAY\n$(${this.#instance?.label}:channel_${preset.feedback.channelNum}_clip_remain)`
+										? `#${preset.feedback.channelNum}\\n$(${this.#instance?.label}:channel_${preset.feedback.channelNum}_clip_remain)`
 										: undefined,
 							},
 						},
