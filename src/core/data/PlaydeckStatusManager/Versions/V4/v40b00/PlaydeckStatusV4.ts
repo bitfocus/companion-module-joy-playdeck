@@ -71,6 +71,7 @@ class PlaydeckChannelValues {
 	blockCount: integer
 	tallyStatus: keyof typeof Tally
 	previewNote: string
+	selectedID?: integer
 	stageWidth: integer
 	stageHeight: integer
 	playState: PlaybackState
@@ -110,6 +111,9 @@ class PlaydeckChannelValues {
 		this.blockCount = channel.BlockCount
 		this.tallyStatus = Tally[channel.TallyStatus] as keyof typeof Tally
 		this.previewNote = channel.PreviewNote
+		if (channel.SelectedID) {
+			this.selectedID = channel.SelectedID
+		}
 		this.stageWidth = channel.StageWidth
 		this.stageHeight = channel.StageHeight
 		this.playState = this.#getPlaybackState(channel.PlayState)

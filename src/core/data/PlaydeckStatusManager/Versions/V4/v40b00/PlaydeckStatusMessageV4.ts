@@ -21,6 +21,8 @@ export interface Channel {
 	BlockCount: integer
 	TallyStatus: Tally
 	PreviewNote: string
+	/** Since 4.2b9 */
+	SelectedID?: integer
 	/** Output Width */
 	StageWidth: integer
 	/** Output Height */
