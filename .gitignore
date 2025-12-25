@@ -8,3 +8,4 @@ dist/
 /pkg
 /pkg.tgz
 oldVersion/
+*.tgz
