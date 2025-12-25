@@ -20,6 +20,7 @@ function assetsAll(): PlaydeckCommandV4[] {
 			all.push(audio(command, target))
 		})
 	})
+	all.push(toggleoverlay)
 	return all
 }
 const commandsInternal = ['start', 'stop', 'stopall']
@@ -79,6 +80,16 @@ const appendproject: PlaydeckCommandV4 = {
 	command: `appendproject`,
 	description: `Appends all Blocks to the current Project`,
 	arg1: 'FILENAME',
+}
+
+const toggleoverlay: PlaydeckCommandV4 = {
+	version: '4.2b9',
+	deprecated: null,
+	commandName: `ASSETS - TOGGLE OVERLAY`,
+	command: `toggleoverlay`,
+	description: `TOGGLE one or more OVERLAYS. You can define multiple Overlays with "3+7+12"`,
+	arg1: 'CHANNEL',
+	arg2: 'OVERLAY',
 }
 
 function audio(command: string, target: argNamesV4): PlaydeckCommandV4 {
