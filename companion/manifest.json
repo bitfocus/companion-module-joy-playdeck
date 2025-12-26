@@ -3,7 +3,7 @@
 	"name": "Playdeck (Video Playout Software)",
 	"shortname": "Playdeck",
 	"description": "Playdeck (Video Playout Software)",
-	"version": "4.1.0",
+	"version": "4.1.1",
 	"license": "MIT",
 	"repository": "git+https://github.com/bitfocus/companion-module-joy-playdeck.git",
 	"bugs": "https://github.com/bitfocus/companion-module-joy-playdeck/issues",

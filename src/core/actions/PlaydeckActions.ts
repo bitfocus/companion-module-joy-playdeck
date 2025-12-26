@@ -55,7 +55,9 @@ export class PlaydeckActions {
 		}
 	}
 	#makeRCCommand(command: string, args: (InputValue | undefined)[]): string {
-		if (command === `customcommand`) return args[0] ? args.toString() : ``
+		if (command === `customcommand`) return args[0] ? args[0].toString() : ``
+		if (command === `selectNext`) return `<moveselect|${args[0] ? args[0].toString() : ``}|1>`
+		if (command === `selectPrevious`) return `<moveselect|${args[0] ? args[0].toString() : ``}|-1>`
 		return PlaydeckUtils.makeRCMessage(command, args)
 	}
 	#log(level: LogLevel, message: string) {

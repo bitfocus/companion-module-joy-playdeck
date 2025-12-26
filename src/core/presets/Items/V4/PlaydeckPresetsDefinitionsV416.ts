@@ -319,7 +319,7 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 		return command.includes('id')
 	}
 	#isUtils(command: string): boolean {
-		return command === 'customcommand'
+		return command === 'customcommand' || command === 'wait'
 	}
 	#isList(command: string): boolean {
 		const listStrings = ['list', 'switchchannel']
@@ -447,7 +447,7 @@ enum CommandChannelSubCategory {
 	Action = 'action',
 	Overlay = 'overlay',
 	Desktop = 'desktop',
-	Audio = 'mutechannel',
+	Audio = 'mute',
 }
 
 enum CommandAssetsSubCategory {
