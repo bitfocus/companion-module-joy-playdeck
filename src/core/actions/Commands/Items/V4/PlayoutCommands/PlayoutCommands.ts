@@ -231,7 +231,7 @@ const selectNext: PlaydeckCommandV4 = {
 	deprecated: null,
 	commandName: `CONTROL - SELECT Next CLIP`,
 	command: `selectNext`,
-	description: `Move Selection upwards to previous Clip (same as Cursor-Up)`,
+	description: `Move Selection downwards to next Clip (same as Cursor-Down)`,
 	arg1: 'CHANNEL',
 }
 const selectPrevious: PlaydeckCommandV4 = {
@@ -239,7 +239,7 @@ const selectPrevious: PlaydeckCommandV4 = {
 	deprecated: null,
 	commandName: `CONTROL - SELECT Previous CLIP`,
 	command: `selectPrevious`,
-	description: `Move Selection downwards to next Clip (same as Cursor-Down)`,
+	description: `Move Selection upwards to previous Clip (same as Cursor-Up)`,
 	arg1: 'CHANNEL',
 }
 
