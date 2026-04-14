@@ -249,6 +249,26 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
 			if (channel === undefined) return null
 			return {
+				variableId: `channel_${channel + 1}_clip_number`,
+				name: `Current clip number on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				if (chan === undefined) return null
+				return chan.clipNumber
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b11',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
 				variableId: `channel_${channel + 1}_clip_position`,
 				name: `Current clip playhead position on channel #${channel + 1}`,
 			}
@@ -379,6 +399,26 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 				const chan = current.channel[channel]
 				if (chan === undefined) return null
 				return chan.blockID
+			}
+			return
+		},
+		channel: true,
+		version: '4.1b11',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_number`,
+				name: `Current block Number on channel #${channel + 1}`,
+			}
+		},
+		getCurrentValue: (current: PlaydeckValuesV4, channel?: number): CompanionVariableValue | undefined | null => {
+			if (channel !== undefined && current.channel !== null) {
+				const chan = current.channel[channel]
+				if (chan === undefined) return null
+				return chan.blockNumber
 			}
 			return
 		},
