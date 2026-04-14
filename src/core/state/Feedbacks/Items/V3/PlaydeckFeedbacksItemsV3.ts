@@ -133,7 +133,7 @@ const utils = {
 				label: `${source} Number/Name (0 for any)`,
 				id: `${source.toLowerCase()}`,
 				default: `0`,
-				useVariables: true,
+				useVariables: { local: true },
 			}
 		},
 	},

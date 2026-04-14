@@ -1,4 +1,10 @@
-import { CompanionActionDefinitions, CompanionActionEvent, InputValue, LogLevel } from '@companion-module/base'
+import {
+	CompanionActionDefinitions,
+	CompanionActionEvent,
+	CompanionFeedbackContext,
+	InputValue,
+	LogLevel,
+} from '@companion-module/base'
 import { PlaydeckInstance } from '../../index.js'
 import { PlaydeckUtils } from '../../utils/PlaydeckUtils.js'
 import { PlaydeckCommandsFactory } from './Commands/Items/PlaydeckComandsFactory.js'
@@ -30,8 +36,8 @@ export class PlaydeckActions {
 			const commanndID = playdeckCommand.command
 			result[commanndID] = {
 				name: playdeckCommand.commandName,
-				callback: async (action) => {
-					await this.#doAction(action)
+				callback: async (action, ctx) => {
+					await this.#doAction(action, ctx)
 				},
 				options: commands.getOptions(playdeckCommand),
 				description: playdeckCommand.description,
@@ -39,12 +45,12 @@ export class PlaydeckActions {
 		})
 		return result
 	}
-	async #doAction(action: PlaydeckAction) {
+	async #doAction(action: PlaydeckAction, ctx: CompanionFeedbackContext) {
 		const outgoingConnection = this.#instance.connectionManager?.outgoing
 		let { arg1, arg2, arg3 } = action.options
-		if (arg1 !== undefined) arg1 = await this.#instance.parseVariablesInString(arg1.toString())
-		if (arg2 !== undefined) arg2 = await this.#instance.parseVariablesInString(arg2.toString())
-		if (arg3 !== undefined) arg3 = await this.#instance.parseVariablesInString(arg3.toString())
+		if (arg1 !== undefined) arg1 = await ctx.parseVariablesInString(arg1.toString())
+		if (arg2 !== undefined) arg2 = await ctx.parseVariablesInString(arg2.toString())
+		if (arg3 !== undefined) arg3 = await ctx.parseVariablesInString(arg3.toString())
 		const command = this.#makeRCCommand(action.actionId, [arg1, arg2, arg3])
 		if (outgoingConnection) {
 			if (command !== ``) {

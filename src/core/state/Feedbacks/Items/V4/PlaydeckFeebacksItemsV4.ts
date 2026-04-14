@@ -53,7 +53,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 					label: `Channel`,
 					id: `channelString`,
 					default: `0`,
-					useVariables: true,
+					useVariables: { local: true },
 					isVisible: (opt) => opt.isChanString === true && opt.isUID === false,
 				},
 
@@ -62,7 +62,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 					label: `Block Number/Name`,
 					id: `block`,
 					default: ``,
-					useVariables: true,
+					useVariables: { local: true },
 					isVisible: (opt) => opt.isUID === false,
 				},
 				{
@@ -70,7 +70,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 					label: `Clip Number/Name (0 for any)`,
 					id: `clip`,
 					default: `0`,
-					useVariables: true,
+					useVariables: { local: true },
 					isVisible: (opt) => opt.isUID === false,
 				},
 
@@ -79,7 +79,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 					label: `Item UID (0 for any)`,
 					id: `item`,
 					default: `0`,
-					useVariables: true,
+					useVariables: { local: true },
 					isVisible: (opt) => opt.isUID === true,
 				},
 			],
