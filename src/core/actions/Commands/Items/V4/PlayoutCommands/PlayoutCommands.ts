@@ -50,7 +50,7 @@ function playoutAll(): PlaydeckCommandV4[] {
 	all.push(unloop)
 	all.push(mute)
 	all.push(unmute)
-
+	all.push(positionmarker)
 	return all
 }
 
@@ -257,7 +257,7 @@ const marknext: PlaydeckCommandV4 = {
 const activate: PlaydeckCommandV4 = {
 	version: '4.2b9',
 	deprecated: null,
-	commandName: `CONTROL - ACTIVATE Clip `,
+	commandName: `CONTROL - ACTIVATE Clip`,
 	command: `activate`,
 	description: `Sets the Clip as active for Playout (same as Checkmark). ${dontProvideMessage}`,
 	arg1: 'CHANNEL',
@@ -268,7 +268,7 @@ const activate: PlaydeckCommandV4 = {
 const disable: PlaydeckCommandV4 = {
 	version: '4.2b9',
 	deprecated: null,
-	commandName: `CONTROL - DISABLE Clip `,
+	commandName: `CONTROL - DISABLE Clip`,
 	command: `disable`,
 	description: `Sets the Clip as inactive for Playout (same as Checkmark). ${dontProvideMessage}`,
 	arg1: 'CHANNEL',
@@ -279,7 +279,7 @@ const disable: PlaydeckCommandV4 = {
 const loop: PlaydeckCommandV4 = {
 	version: '4.2b9',
 	deprecated: null,
-	commandName: `CONTROL - LOOP Clip `,
+	commandName: `CONTROL - LOOP Clip`,
 	command: `loop`,
 	description: `Sets the Clip for infinite looping. ${dontProvideMessage}`,
 	arg1: 'CHANNEL',
@@ -290,7 +290,7 @@ const loop: PlaydeckCommandV4 = {
 const unloop: PlaydeckCommandV4 = {
 	version: '4.2b9',
 	deprecated: null,
-	commandName: `CONTROL - UNLOOP Clip `,
+	commandName: `CONTROL - UNLOOP Clip`,
 	command: `unloop`,
 	description: `Sets the Clip for not looping. ${dontProvideMessage}`,
 	arg1: 'CHANNEL',
@@ -301,7 +301,7 @@ const unloop: PlaydeckCommandV4 = {
 const mute: PlaydeckCommandV4 = {
 	version: '4.2b9',
 	deprecated: null,
-	commandName: `CONTROL - MUTE Clip `,
+	commandName: `CONTROL - MUTE Clip`,
 	command: `mute`,
 	description: `Sets the Clip as muted. ${dontProvideMessage}`,
 	arg1: 'CHANNEL',
@@ -312,11 +312,21 @@ const mute: PlaydeckCommandV4 = {
 const unmute: PlaydeckCommandV4 = {
 	version: '4.2b9',
 	deprecated: null,
-	commandName: `CONTROL - UNMUTE Clip `,
+	commandName: `CONTROL - UNMUTE Clip`,
 	command: `unmute`,
 	description: `Sets the Clip as not muted. ${dontProvideMessage}`,
 	arg1: 'CHANNEL',
 	arg2: 'BLOCK',
 	arg3: 'CLIP',
+}
+
+const positionmarker: PlaydeckCommandV4 = {
+	version: '4.3b3',
+	deprecated: null,
+	commandName: `CONTROL - POSITION MARKER`,
+	command: `positionmarker`,
+	description: `Jump to the designated Marker Name within the current playing Clip`,
+	arg1: 'CHANNEL',
+	arg2: 'MARKER',
 }
 export const PlayoutCommands: PlaydeckCommandV4[] = [...playoutAll()]

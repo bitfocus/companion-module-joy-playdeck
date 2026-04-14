@@ -22,6 +22,7 @@ export type argNamesV4 =
 	| 'INPUT'
 	| 'COMMAND'
 	| 'TIME'
+	| 'MARKER'
 export interface PlaydeckCommandV4 extends PlaydeckCommand {
 	arg1?: argNamesV4
 	arg2?: argNamesV4
