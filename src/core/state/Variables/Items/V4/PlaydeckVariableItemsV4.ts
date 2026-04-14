@@ -609,6 +609,66 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
 			if (channel === undefined) return null
 			return {
+				variableId: `channel_${channel + 1}_block_1_name`,
+				name: `Name of block #1 in channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			const dataValues = data.data.getValues()
+			if (!dataValues?.channel) return
+			const channelData = dataValues.channel[channel]
+			if (!channelData) return
+			if (!channelData.block) return
+			const blockData = channelData.block[0]
+			if (!blockData) return
+			const firstBlockName = blockData.name
+			return firstBlockName
+		},
+		channel: true,
+		version: '4.1b11',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_1_clipname`,
+				name: `Name of first clip in block #1 in channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			const dataValues = data.data.getValues()
+			if (!dataValues?.channel) return
+			const channelData = dataValues.channel[channel]
+			if (!channelData) return
+			if (!channelData.block) return
+			const blockData = channelData.block[0]
+			if (!blockData) return
+			const clipData = blockData.clip
+			if (!clipData) return
+			const firstClipData = clipData[0]
+			if (!firstClipData) return
+			const firstBlockName = firstClipData.name
+			return firstBlockName
+		},
+		channel: true,
+		version: '4.1b11',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
 				variableId: `channel_${channel + 1}_selected_clip_name`,
 				name: `Selected clip name on channel #${channel + 1}`,
 			}
