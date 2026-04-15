@@ -64,7 +64,7 @@ export class PlaydeckDataV4
 			for (const block of channel.block) {
 				blocks.set(block.id, block)
 				channels.set(block.id, channelNumber)
-				if (block.clip === undefined) return
+				if (block.clip === undefined) continue
 				for (const clip of block.clip) {
 					clips.set(clip.id, clip)
 					channels.set(clip.id, channelNumber)
