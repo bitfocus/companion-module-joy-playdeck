@@ -695,6 +695,116 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
 			if (channel === undefined) return null
 			return {
+				variableId: `channel_${channel + 1}_selected_clip_number`,
+				name: `Selected clip name on channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			if (data.current.channel === null) return
+			if (data.current.channel[channel] === undefined) return
+			const id = data.current.channel[channel].selectedID
+			if (id === undefined) return
+			const clip = data.data.getItemByID(id) as PlaydeckClipData
+			if (clip === null) return
+			return clip.number
+		},
+		channel: true,
+		version: '4.2b9',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_selected_clip_canplay`,
+				name: `Selected clip name on channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			if (data.current.channel === null) return
+			if (data.current.channel[channel] === undefined) return
+			const id = data.current.channel[channel].selectedID
+			if (id === undefined) return
+			const clip = data.data.getItemByID(id) as PlaydeckClipData
+			if (clip === null) return
+			return clip.canPlay
+		},
+		channel: true,
+		version: '4.2b9',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_selected_clip_block`,
+				name: `Selected clip name on channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			if (data.current.channel === null) return
+			if (data.current.channel[channel] === undefined) return
+			const id = data.current.channel[channel].selectedID
+			if (id === undefined) return
+			const clip = data.data.getItemByID(id) as PlaydeckClipData
+			if (clip === null) return
+			if (clip.parentID === undefined) return
+			const parentBlock = data.data.getItemByID(clip.parentID) as PlaydeckBlockData
+			if (parentBlock === null) return
+			return parentBlock.number
+		},
+		channel: true,
+		version: '4.2b9',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_selected_clip_block_name`,
+				name: `Selected clip name on channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			if (data.current.channel === null) return
+			if (data.current.channel[channel] === undefined) return
+			const id = data.current.channel[channel].selectedID
+			if (id === undefined) return
+			const clip = data.data.getItemByID(id) as PlaydeckClipData
+			if (clip === null) return
+			if (clip.parentID === undefined) return
+			const parentBlock = data.data.getItemByID(clip.parentID) as PlaydeckBlockData
+			if (parentBlock === null) return
+			return parentBlock.name
+		},
+		channel: true,
+		version: '4.2b9',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
 				variableId: `channel_${channel + 1}_selected_clip_type`,
 				name: `Selected clip type on channel #${channel + 1}`,
 			}

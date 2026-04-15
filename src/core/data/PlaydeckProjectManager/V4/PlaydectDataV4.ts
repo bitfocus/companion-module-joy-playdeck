@@ -66,6 +66,7 @@ export class PlaydeckDataV4
 				channels.set(block.id, channelNumber)
 				if (block.clip === undefined) continue
 				for (const clip of block.clip) {
+					clip.parentID = block.id
 					clips.set(clip.id, clip)
 					channels.set(clip.id, channelNumber)
 				}
@@ -208,6 +209,8 @@ export class PlaydeckBlockData extends PlaydeckItemData {
 }
 
 export class PlaydeckClipData extends PlaydeckItemData {
+	/** UID of parent BLOCK for lookup table */
+	parentID?: number
 	itemType: keyof typeof ItemType
 	fileName?: string
 	fileSize?: string
