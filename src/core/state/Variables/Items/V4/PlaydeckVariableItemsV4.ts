@@ -107,6 +107,30 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
 			if (channel === undefined) return null
 			return {
+				variableId: `channel_${channel + 1}_canplay_error`,
+				name: `Indicates that at least one track cannot be played on channel channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			const dataValues = data.data.getValues()
+			if (!dataValues?.channel) return
+			const channelData = dataValues.channel[channel]
+			if (!channelData || !channelData.block) return
+			return channelData.block.some((block) => block.clip && block.clip.some((clip) => clip.canPlay === false))
+		},
+		channel: true,
+		version: '4.1b11',
+		deprecated: null,
+	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
 				variableId: `channel_${channel + 1}_tally`,
 				name: `Tally state of channel #${channel + 1}`,
 			}
