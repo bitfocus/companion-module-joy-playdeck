@@ -2,6 +2,7 @@ import { combineRgb, CompanionFeedbackDefinitions, CompanionOptionValues, InputV
 import { PlaydeckState } from '../../../../../core/state/PlaydeckState.js'
 import { PlaybackState } from '../../../../../utils/PlaydeckUtils.js'
 import { PlaydeckValuesV4 } from '../../../../data/PlaydeckStatusManager/Versions/V4/v40b00/PlaydeckStatusV4.js'
+import { Events } from '../../../../../core/data/PlaydeckEvents.js'
 
 export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): CompanionFeedbackDefinitions => {
 	return {
@@ -24,6 +25,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 						{ id: PlaybackState.Pause, label: 'PAUSE' },
 						{ id: PlaybackState.Stop, label: 'STOP' },
 						{ id: PlaybackState.Cue, label: 'CUE' },
+						{ id: Events.End, label: 'END' },
 					],
 				},
 				{
@@ -118,14 +120,21 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 									if (byID) {
 										const IDState = byID[ID]
 										if (IDState) {
-											isState = String(IDState) === String(fState)
-											return isState
+											if (fState !== Events.End) {
+												isState = String(IDState.state) === String(fState)
+												return isState
+											}
+											return IDState.isEnd
 										}
 									}
 								}
 							} else {
 								if (fState !== undefined) {
-									isState = String(lastChannelState.state) === String(fState)
+									if (fState !== Events.End) {
+										isState = String(lastChannelState.state) === String(fState)
+									} else {
+										isState = lastChannelState.isEnd
+									}
 								}
 								if (fBlock !== undefined) {
 									isBlock = lastChannelBlock.indexOf(String(fBlock)) > -1
@@ -200,7 +209,7 @@ export interface CheckStateOptionValues extends CompanionOptionValues {
 	isChanString: boolean
 	channelNum: number
 	channelString: InputValue
-	state: PlaybackState
+	state: PlaybackState | Events
 	block: InputValue
 	clip: InputValue
 	item: number
