@@ -207,6 +207,32 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 		version: '4.1b11',
 		deprecated: null,
 	},
+	{
+		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+			if (channel === undefined) return null
+			return {
+				variableId: `channel_${channel + 1}_block_clip_count`,
+				name: `Amount of clips in current block in channel #${channel + 1}`,
+			}
+		},
+		getFromData(
+			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
+			channel?: number,
+		): CompanionVariableValue | undefined {
+			if (channel === undefined) return
+			if (!(data?.data && data.current)) return
+			if (data.current.channel === null) return
+			if (data.current.channel[channel] === undefined) return
+			const id = data.current.channel[channel].blockID
+			if (id === undefined) return
+			const block = data.data.getItemByID(id) as PlaydeckBlockData
+			if (block === null) return
+			return block.clipCount
+		},
+		channel: true,
+		version: '4.1b11',
+		deprecated: null,
+	},
 	////
 	{
 		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
