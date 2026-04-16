@@ -696,7 +696,7 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			if (channel === undefined) return null
 			return {
 				variableId: `channel_${channel + 1}_selected_clip_number`,
-				name: `Selected clip name on channel #${channel + 1}`,
+				name: `Selected clip number (in block) on channel #${channel + 1}`,
 			}
 		},
 		getFromData(
@@ -722,7 +722,7 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			if (channel === undefined) return null
 			return {
 				variableId: `channel_${channel + 1}_selected_clip_canplay`,
-				name: `Selected clip name on channel #${channel + 1}`,
+				name: `Selected clip ability to play on channel #${channel + 1}`,
 			}
 		},
 		getFromData(
@@ -748,7 +748,7 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			if (channel === undefined) return null
 			return {
 				variableId: `channel_${channel + 1}_selected_clip_block`,
-				name: `Selected clip name on channel #${channel + 1}`,
+				name: `Selected clip parent block number on channel #${channel + 1}`,
 			}
 		},
 		getFromData(
@@ -777,7 +777,7 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			if (channel === undefined) return null
 			return {
 				variableId: `channel_${channel + 1}_selected_clip_block_name`,
-				name: `Selected clip name on channel #${channel + 1}`,
+				name: `Selected clip parent block name on channel #${channel + 1}`,
 			}
 		},
 		getFromData(
@@ -832,7 +832,7 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			if (channel === undefined) return null
 			return {
 				variableId: `channel_${channel + 1}_selected_clip_filetype`,
-				name: `Selected clip type on channel #${channel + 1}`,
+				name: `Selected clip file type on channel #${channel + 1}`,
 			}
 		},
 		getFromData(
