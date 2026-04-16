@@ -812,7 +812,7 @@ const variableItemsV42b19: PlaydeckVariableItem[] = [
 			if (channel === undefined) return null
 			return {
 				variableId: `channel_${channel + 1}_selected_clip_canplay`,
-				name: `Selected clip ability to play on channel #${channel + 1}`,
+				name: `Indicates whether the selected clip can be played on channel #${channel + 1}`,
 			}
 		},
 		getFromData(
