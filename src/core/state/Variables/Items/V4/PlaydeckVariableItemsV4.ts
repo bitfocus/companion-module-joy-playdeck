@@ -108,7 +108,7 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			if (channel === undefined) return null
 			return {
 				variableId: `channel_${channel + 1}_canplay_error`,
-				name: `Indicates that at least one track cannot be played on channel channel #${channel + 1}`,
+				name: `Indicates that at least one track cannot be played on channel #${channel + 1}`,
 			}
 		},
 		getFromData(
