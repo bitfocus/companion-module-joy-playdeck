@@ -124,7 +124,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 												isState = String(IDState.state) === String(fState)
 												return isState
 											}
-											return IDState.isEnd
+											return IDState.isEnd ?? false
 										}
 									}
 								}
@@ -133,7 +133,7 @@ export const PlaydeckFeedbacksDefinitionsV4 = (state: PlaydeckStateV4): Companio
 									if (fState !== Events.End) {
 										isState = String(lastChannelState.state) === String(fState)
 									} else {
-										isState = lastChannelState.isEnd
+										isState = lastChannelState.isEnd ?? false
 									}
 								}
 								if (fBlock !== undefined) {
