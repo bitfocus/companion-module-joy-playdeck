@@ -29,6 +29,12 @@ export class PlaydeckDataV4
 	#rawData: PlaydeckDataMessage | null = null
 	constructor(projectDataObject: object) {
 		this.#rawData = projectDataObject as PlaydeckDataMessage
+		if (this.#rawData === null) return
+		this.#common = this.#getCommon()
+		this.#channel = this.#getChannel()
+		if (this.#common === null) return
+		if (this.#channel === null) return
+		this.#buildLookup()
 	}
 	/** This function helps to ident parent channel for ID */
 	getChannelByID(id: number): number | null {
@@ -43,11 +49,8 @@ export class PlaydeckDataV4
 	}
 	getValues(): PlaydeckProjectDataV4 | null {
 		if (this.#rawData === null) return null
-		this.#common = this.#getCommon()
-		this.#channel = this.#getChannel()
 		if (this.#common === null) return null
 		if (this.#channel === null) return null
-		this.#buildLookup()
 		return {
 			common: this.#common,
 			channel: this.#channel,
