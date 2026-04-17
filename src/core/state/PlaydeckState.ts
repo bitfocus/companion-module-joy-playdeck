@@ -134,7 +134,6 @@ export class PlaydeckState {
 				currentChannelState.isEnd = currentEvent === Events.End
 			}
 
-			console.log(currentChannelState.isEnd, currentEvent)
 			if (event.blockName) {
 				currentChannelState.blockName = event.blockName
 			}
