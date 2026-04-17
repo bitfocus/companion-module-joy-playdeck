@@ -60,7 +60,7 @@ function playout(command: PlayoutCommand): PlaydeckCommandV4 {
 		deprecated: null,
 		commandName: `CONTROL - ${playoutCommands[command]}`,
 		command: `${command}`,
-		description: `${playoutCommands[command]} the Clip in the Channel. ${dontProvideMessage}. Will skip inactive Clips.`,
+		description: `${playoutCommands[command]} the Clip in the Channel. ${dontProvideMessage} Will skip inactive Clips.`,
 		arg1: 'CHANNEL',
 		arg2: 'BLOCK',
 		arg3: 'CLIP',
