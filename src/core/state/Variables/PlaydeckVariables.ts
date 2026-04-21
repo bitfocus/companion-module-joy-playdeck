@@ -30,7 +30,14 @@ export class PlaydeckVariables {
 				if (channelCount) {
 					for (let i = 0; i < channelCount; i++) {
 						newVar.channel = i
-						this.#addVariable(this.#covertToVariable(newVar))
+						if (newVar.block) {
+							for (let b = 0; b < 42; b++) {
+								newVar.block = b
+								this.#addVariable(this.#covertToVariable(newVar))
+							}
+						} else {
+							this.#addVariable(this.#covertToVariable(newVar))
+						}
 					}
 				}
 			} else {
@@ -40,14 +47,16 @@ export class PlaydeckVariables {
 	}
 	#covertToVariable(variableItem: PlaydeckVariableItem): PlaydeckVariable {
 		const channel = typeof variableItem.channel === 'number' ? variableItem.channel : undefined
+		const block = typeof variableItem.block === 'number' ? variableItem.block : undefined
 		return {
-			variableDefinition: variableItem.getVariableDefinition(channel),
+			variableDefinition: variableItem.getVariableDefinition(channel, block),
 			value: undefined,
 			getVariableDefinition: variableItem.getVariableDefinition,
 			getCurrentValue: variableItem.getCurrentValue,
 			getFromData: variableItem.getFromData,
 			getValueFromEvent: variableItem.getValueFromEvent,
 			channel: variableItem.channel,
+			block: variableItem.block,
 			version: variableItem.version,
 			deprecated: variableItem.deprecated,
 		}
@@ -92,12 +101,13 @@ export class PlaydeckVariables {
 			}
 			if (data === undefined || data === null) return
 			const сhannelIndex = typeof variable.channel === 'number' ? variable.channel : undefined
+			const blockIndex = typeof variable.block === 'number' ? variable.block : undefined
 			const method =
 				variable[methodName] && typeof variable[methodName] === 'function' ? variable[methodName] : undefined
 			if (method === undefined) return
 			let value = null
 			try {
-				value = method(data, сhannelIndex)
+				value = method(data, сhannelIndex, blockIndex)
 			} catch (e) {
 				if (e instanceof Error) {
 					this.#log(

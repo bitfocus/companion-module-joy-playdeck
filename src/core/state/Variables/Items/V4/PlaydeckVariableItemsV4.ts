@@ -635,16 +635,17 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 		deprecated: null,
 	},
 	{
-		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+		getVariableDefinition: (channel?: number, block: number = 0): CompanionVariableDefinition | null => {
 			if (channel === undefined) return null
 			return {
-				variableId: `channel_${channel + 1}_block_1_name`,
-				name: `Name of block #1 in channel #${channel + 1}`,
+				variableId: `channel_${channel + 1}_block_${block + 1}_name`,
+				name: `Name of block #${block + 1} in channel #${channel + 1}`,
 			}
 		},
 		getFromData(
 			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
 			channel?: number,
+			block: number = 0,
 		): CompanionVariableValue | undefined {
 			if (channel === undefined) return
 			if (!(data?.data && data.current)) return
@@ -653,26 +654,28 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			const channelData = dataValues.channel[channel]
 			if (!channelData) return
 			if (!channelData.block) return
-			const blockData = channelData.block[0]
+			const blockData = channelData.block[block]
 			if (!blockData) return
 			const firstBlockName = blockData.name
 			return firstBlockName
 		},
 		channel: true,
+		block: true,
 		version: '4.1b11',
 		deprecated: null,
 	},
 	{
-		getVariableDefinition: (channel?: number): CompanionVariableDefinition | null => {
+		getVariableDefinition: (channel?: number, block: number = 0): CompanionVariableDefinition | null => {
 			if (channel === undefined) return null
 			return {
-				variableId: `channel_${channel + 1}_block_1_clipname`,
-				name: `Name of first clip in block #1 in channel #${channel + 1}`,
+				variableId: `channel_${channel + 1}_block_${block + 1}_clipname`,
+				name: `Name of first clip in block #${block + 1} in channel #${channel + 1}`,
 			}
 		},
 		getFromData(
 			data: { data?: PlaydeckDataTypeV4; current?: PlaydeckValuesV4 },
 			channel?: number,
+			block: number = 0,
 		): CompanionVariableValue | undefined {
 			if (channel === undefined) return
 			if (!(data?.data && data.current)) return
@@ -681,7 +684,7 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			const channelData = dataValues.channel[channel]
 			if (!channelData) return
 			if (!channelData.block) return
-			const blockData = channelData.block[0]
+			const blockData = channelData.block[block]
 			if (!blockData) return
 			const clipData = blockData.clip
 			if (!clipData) return
@@ -691,6 +694,7 @@ const variableItemsV40b00: PlaydeckVariableItem[] = [
 			return firstBlockName
 		},
 		channel: true,
+		block: true,
 		version: '4.1b11',
 		deprecated: null,
 	},

@@ -11,7 +11,7 @@ export const variableItems: PlaydeckVariableItem[] = [...variableItemsV3, ...var
 
 /** null returns if need to ignore results, undefined if need to delete from variables */
 export interface PlaydeckVariableItem {
-	getVariableDefinition: (channel?: number) => CompanionVariableDefinition | null
+	getVariableDefinition: (channel?: number, block?: number) => CompanionVariableDefinition | null
 	getCurrentValue?: (
 		current: PlaydeckStatusValues<any, any, any>,
 		channel?: number,
@@ -19,9 +19,11 @@ export interface PlaydeckVariableItem {
 	getFromData?: (
 		data: { data: PlaydeckDataInterface<any, any, any, any>; current?: PlaydeckStatusValues<any, any> },
 		channel?: number,
+		block?: number,
 	) => CompanionVariableValue | undefined | null
 	getValueFromEvent?: (event: PlaydeckEvent, channel?: number) => CompanionVariableValue | undefined | null
 	channel?: boolean | number
+	block?: boolean | number
 	version: Version | null
 	deprecated: Version | null
 }
