@@ -29,6 +29,12 @@ export class PlaydeckDataV4
 	#rawData: PlaydeckDataMessage | null = null
 	constructor(projectDataObject: object) {
 		this.#rawData = projectDataObject as PlaydeckDataMessage
+		if (this.#rawData === null) return
+		this.#common = this.#getCommon()
+		this.#channel = this.#getChannel()
+		if (this.#common === null) return
+		if (this.#channel === null) return
+		this.#buildLookup()
 	}
 	/** This function helps to ident parent channel for ID */
 	getChannelByID(id: number): number | null {
@@ -43,11 +49,8 @@ export class PlaydeckDataV4
 	}
 	getValues(): PlaydeckProjectDataV4 | null {
 		if (this.#rawData === null) return null
-		this.#common = this.#getCommon()
-		this.#channel = this.#getChannel()
 		if (this.#common === null) return null
 		if (this.#channel === null) return null
-		this.#buildLookup()
 		return {
 			common: this.#common,
 			channel: this.#channel,
@@ -64,8 +67,9 @@ export class PlaydeckDataV4
 			for (const block of channel.block) {
 				blocks.set(block.id, block)
 				channels.set(block.id, channelNumber)
-				if (block.clip === undefined) return
+				if (block.clip === undefined) continue
 				for (const clip of block.clip) {
+					clip.parentID = block.id
 					clips.set(clip.id, clip)
 					channels.set(clip.id, channelNumber)
 				}
@@ -208,6 +212,8 @@ export class PlaydeckBlockData extends PlaydeckItemData {
 }
 
 export class PlaydeckClipData extends PlaydeckItemData {
+	/** UID of parent BLOCK for lookup table */
+	parentID?: number
 	itemType: keyof typeof ItemType
 	fileName?: string
 	fileSize?: string

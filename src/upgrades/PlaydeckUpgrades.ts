@@ -1,5 +1,5 @@
 import type { CompanionStaticUpgradeScript } from '@companion-module/base'
-import { PlaydeckConfig } from '../config/PlaydeckConfig'
+import { PlaydeckConfig } from '../config/PlaydeckConfig.js'
 
 export const UpgradeScripts: CompanionStaticUpgradeScript<PlaydeckConfig>[] = [
 	/*

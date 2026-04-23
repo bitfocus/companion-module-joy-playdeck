@@ -55,7 +55,7 @@ export const PlaydeckFeedbacksDefinitionsV41b16 = (state: PlaydeckStateV41b16): 
 						label: `Object Number`,
 						id: `objectNumberString`,
 						default: `1`,
-						useVariables: true,
+						useVariables: { local: true },
 						isVisible: (opt) => opt.isNumberString === true,
 					},
 				],

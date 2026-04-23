@@ -20,7 +20,7 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 		if (commands === undefined) return
 		this.#commands = commands
 		this.#instance = instance
-		console.log(this.#instance?.label) // USE IT TO GET VARIABLES IN FEEDBACK
+		// console.log(this.#instance?.label) // USE IT TO GET VARIABLES IN FEEDBACK
 		this.#init()
 	}
 	getDefinitions(): CompanionPresetDefinitions {

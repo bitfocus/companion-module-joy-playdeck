@@ -124,9 +124,16 @@ export class PlaydeckState {
 			let asset
 
 			if (channels[channelNumber] === undefined) {
-				channels[channelNumber] = {}
+				channels[channelNumber] = {
+					isEnd: false,
+				}
 			}
 			const currentChannelState = channels[channelNumber]
+
+			if (currentEvent !== Events.Pause && currentEvent !== Events.Stop) {
+				currentChannelState.isEnd = currentEvent === Events.End
+			}
+
 			if (event.blockName) {
 				currentChannelState.blockName = event.blockName
 			}
@@ -173,7 +180,15 @@ export class PlaydeckState {
 			}
 			const byID = this.lastState.byID
 
-			byID[ID] = currentEvent
+			if (byID[ID] === undefined) {
+				byID[ID] = {
+					isEnd: false,
+				}
+			}
+			byID[ID].state = currentEvent
+			if (currentEvent !== Events.Pause && currentEvent !== Events.Stop) {
+				byID[ID].isEnd = currentEvent === Events.End
+			}
 		}
 	}
 	#log(level: LogLevel, message: string) {
@@ -184,14 +199,17 @@ export class PlaydeckState {
 export interface PlaydeckLastState {
 	playlist?: Record<number, PlaydeckChannelState>
 	channel?: Record<number, PlaydeckChannelState>
-	byID?: Record<PlaydeckUID, Events>
+	byID?: Record<PlaydeckUID, LastState>
 	recording?: Events
 }
 
 type PlaydeckUID = number
 
-interface PlaydeckChannelState {
+interface LastState {
+	isEnd?: boolean
 	state?: Events
+}
+interface PlaydeckChannelState extends LastState {
 	clipName?: string
 	clipNumber?: number
 	blockName?: string
