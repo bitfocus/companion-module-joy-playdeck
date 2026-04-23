@@ -1,12 +1,12 @@
-Supports all versions up to **4.2b9**.
+Supports all versions up to **4.3b3**.
 You can select the appropriate version, and the module will automatically adjust the set of commands according to your choice.
 
 ---
 
-**🔧 Available Commands (for Playdeck 4.1b16; version dependent)**
+**🔧 Available Commands (for Playdeck 4.3b3; version dependent)**
 
 - **CONTROL**:
-  CUE/PLAY/FADE-IN by number/list/UID/flex; CUE/PLAY Next; SWITCH CHANNEL; PAUSE/STOP; POSITION; POSITION SAVE/RECALL; FADE EDIT; SELECT Previous/Next Clip; MARK Next Clip; ACTIVATE/DISABLE Clip; LOOP/UNLOOP Clip
+  CUE/PLAY/FADE-IN by number/list/UID/flex; CUE/PLAY Next; SWITCH CHANNEL; PAUSE/STOP; POSITION; POSITION SAVE/RECALL; FADE EDIT; SELECT Previous/Next Clip; MARK Next Clip; ACTIVATE/DISABLE Clip; LOOP/UNLOOP Clip; POSITION MARKER
 
 - **ASSETS**:
   LOAD, APPEND Project
@@ -46,7 +46,7 @@ You can select the appropriate version, and the module will automatically adjust
 **Current channel state**
 
 - **Channel**: 1–8
-- **State**: `STOP`, `PAUSE`, `PLAY`, `CUE`
+- **State**: `STOP`, `PAUSE`, `PLAY`, `CUE`, `END`
 - **Block Number/Name**: `0` = any
 - **Clip Number/Name**: `0` = any
 - **Item ID**
