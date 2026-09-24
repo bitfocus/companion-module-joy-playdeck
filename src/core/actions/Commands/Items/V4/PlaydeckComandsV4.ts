@@ -112,7 +112,7 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 	}
 
 	getOptions(command: PlaydeckCommandV4): SomeCompanionActionInputField[] {
-		const args = [command.arg1, command.arg2, command.arg3]
+		const args = this.#getCommandArgs(command)
 		const options: SomeCompanionActionInputField[] = []
 
 		for (let i = 0; i < args.length; i++) {
@@ -123,6 +123,12 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 			}
 		}
 		return options
+	}
+	#getCommandArgs(command: PlaydeckCommandV4): argNamesV4[] {
+		return Object.entries(command)
+			.filter(([key]) => /^arg\d+$/.test(key))
+			.sort(([a], [b]) => Number(a.slice(3)) - Number(b.slice(3)))
+			.map(([, value]) => value as argNamesV4)
 	}
 	static commands: PlaydeckCommandV4[] = [
 		{
