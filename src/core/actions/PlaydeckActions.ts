@@ -47,11 +47,13 @@ export class PlaydeckActions {
 	}
 	async #doAction(action: PlaydeckAction, ctx: CompanionFeedbackContext) {
 		const outgoingConnection = this.#instance.connectionManager?.outgoing
-		let { arg1, arg2, arg3 } = action.options
-		if (arg1 !== undefined) arg1 = await ctx.parseVariablesInString(arg1.toString())
-		if (arg2 !== undefined) arg2 = await ctx.parseVariablesInString(arg2.toString())
-		if (arg3 !== undefined) arg3 = await ctx.parseVariablesInString(arg3.toString())
-		const command = this.#makeRCCommand(action.actionId, [arg1, arg2, arg3])
+		const args = this.#getArguments(action.options)
+		for (let i = 0; i < args.length; i++) {
+			const arg = args[i]
+			if (arg !== undefined) args[i] = await ctx.parseVariablesInString(arg.toString())
+		}
+
+		const command = this.#makeRCCommand(action.actionId, args)
 		if (outgoingConnection) {
 			if (command !== ``) {
 				if (action.actionId) outgoingConnection.send(command)
@@ -59,6 +61,14 @@ export class PlaydeckActions {
 				this.#log(`warn`, `Empty command!`)
 			}
 		}
+	}
+	#getArguments(options: Partial<Record<`arg${number}`, InputValue>>): (InputValue | undefined)[] {
+		return Object.keys(options)
+			.filter((key) => /^arg\d+$/.test(key))
+			.sort((a, b) => {
+				return Number(a.slice(3)) - Number(b.slice(3))
+			})
+			.map((key) => options[key as keyof typeof options])
 	}
 	#makeRCCommand(command: string, args: (InputValue | undefined)[]): string {
 		if (command === `customcommand`) return args[0] ? args[0].toString() : ``
