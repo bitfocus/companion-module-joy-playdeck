@@ -4,14 +4,17 @@ const playoutCommands: PlayoutCommandDescription = {
 	cue: 'CUE',
 	play: 'PLAY',
 	fadein: 'FADE-IN',
+	cuemarker: 'CUE MARKER',
+	playmarker: 'PLAY MARKER',
 }
 
 const nextPlayoutCommands: PlayoutCommandDescription = {
 	cue: 'CUE',
 	play: 'PLAY',
+	fade: 'FADE',
 }
 
-type PlayoutCommand = 'cue' | 'play' | 'fadein'
+type PlayoutCommand = 'cue' | 'play' | 'fadein' | 'fade' | 'playmarker' | 'cuemarker'
 type PlayoutCommandDescription = {
 	[id in PlayoutCommand]?: string
 }
@@ -20,16 +23,29 @@ function playoutAll(): PlaydeckCommandV4[] {
 	const all: PlaydeckCommandV4[] = []
 	for (const key in playoutCommands) {
 		const command = key as PlayoutCommand
+		if (command === 'cuemarker' || command === 'playmarker') {
+			all.push(playoutIDwithMarker(command))
+			continue
+		}
 		all.push(playout(command))
 		all.push(playoutID(command))
 		all.push(playoutList(command))
 		all.push(playoutFlex(command))
+		all.push(playoutWithPos(command))
+		all.push(playoutIDwithPos(command))
+		all.push(playoutListWithPos(command))
 	}
 	for (const key in nextPlayoutCommands) {
 		const command = key as PlayoutCommand
-		all.push(nextCommands(command, false))
-		all.push(nextCommands(command, true))
+		if (command === 'fade') {
+			all.push(fadeNextCommand({ isBlock: false }))
+			all.push(fadeNextCommand({ isBlock: true }))
+			continue
+		}
+		all.push(nextCommands(command, { isBlock: false }))
+		all.push(nextCommands(command, { isBlock: true }))
 	}
+
 	all.push(switchChannel)
 	all.push(select)
 	all.push(selectList)
@@ -51,13 +67,17 @@ function playoutAll(): PlaydeckCommandV4[] {
 	all.push(mute)
 	all.push(unmute)
 	all.push(positionmarker)
+	// 4.3b7
+	all.push(hold)
+	all.push(resume)
+
 	return all
 }
 
 function playout(command: PlayoutCommand): PlaydeckCommandV4 {
 	return {
 		version: '4.1b11',
-		deprecated: null,
+		deprecated: '4.3b7',
 		commandName: `CONTROL - ${playoutCommands[command]}`,
 		command: `${command}`,
 		description: `${playoutCommands[command]} the Clip in the Channel. ${dontProvideMessage} Will skip inactive Clips.`,
@@ -66,11 +86,18 @@ function playout(command: PlayoutCommand): PlaydeckCommandV4 {
 		arg3: 'CLIP',
 	}
 }
+function playoutWithPos(command: PlayoutCommand): PlaydeckCommandV4 {
+	const cmd = playout(command)
+	cmd.version = '4.3b7'
+	cmd.deprecated = null
+	cmd.arg4 = 'POS'
+	return cmd
+}
 
 function playoutList(command: PlayoutCommand): PlaydeckCommandV4 {
 	return {
 		version: '4.1b11',
-		deprecated: null,
+		deprecated: '4.3b7',
 		commandName: `CONTROL -  ${playoutCommands[command]} (LIST)`,
 		command: `${command}list`,
 		description: `${playoutCommands[command]} the Clip in the List (Left or Rigth). ${dontProvideMessage} Will skip inactive Clips.`,
@@ -79,16 +106,38 @@ function playoutList(command: PlayoutCommand): PlaydeckCommandV4 {
 		arg3: 'CLIP',
 	}
 }
-
+function playoutListWithPos(command: PlayoutCommand): PlaydeckCommandV4 {
+	const cmd = playoutList(command)
+	cmd.version = '4.3b7'
+	cmd.deprecated = null
+	cmd.arg4 = 'POS'
+	return cmd
+}
 function playoutID(command: PlayoutCommand): PlaydeckCommandV4 {
 	return {
 		version: '4.1b11',
-		deprecated: null,
+		deprecated: '4.3b7',
 		commandName: `CONTROL - ${playoutCommands[command]} ID`,
 		command: `${command}id`,
-		description: `${playoutCommands[command]} the Block/Clip (auto-detect) by UNIQUE ID (UID) instead of Numeration. Will find Block/Clip even after moving to another Channel. Retrieve your UID with Mouse Over in the Last Column in Playlist`,
+		description: `${playoutCommands[command]?.split(' ')[0]} the Block/Clip (auto-detect) by UNIQUE ID (UID) instead of Numeration. Will find Block/Clip even after moving to another Channel. Retrieve your UID with Mouse Over in the Last Column in Playlist`,
 		arg1: 'ID',
 	}
+}
+function playoutIDwithPos(command: PlayoutCommand): PlaydeckCommandV4 {
+	const cmd = playoutID(command)
+	cmd.version = '4.3b7'
+	cmd.deprecated = null
+	cmd.arg2 = 'POS'
+	return cmd
+}
+
+function playoutIDwithMarker(command: PlayoutCommand): PlaydeckCommandV4 {
+	const cmd = playoutID(command)
+	cmd.version = '4.3b7'
+	cmd.deprecated = null
+	cmd.arg2 = 'MARKER'
+	cmd.description += `, but also jumps to the MARKER NAME`
+	return cmd
 }
 
 function playoutFlex(command: PlayoutCommand): PlaydeckCommandV4 {
@@ -103,7 +152,8 @@ function playoutFlex(command: PlayoutCommand): PlaydeckCommandV4 {
 	}
 }
 
-function nextCommands(command: PlayoutCommand, isBlock: boolean): PlaydeckCommandV4 {
+function nextCommands(command: PlayoutCommand, opts: { isBlock: boolean }): PlaydeckCommandV4 {
+	const isBlock = opts.isBlock
 	return {
 		version: '4.1b11',
 		deprecated: null,
@@ -113,7 +163,11 @@ function nextCommands(command: PlayoutCommand, isBlock: boolean): PlaydeckComman
 		arg1: 'CHANNEL',
 	}
 }
-
+function fadeNextCommand(opts: { isBlock: boolean }): PlaydeckCommandV4 {
+	const cmd = nextCommands('fade', opts)
+	cmd.version = '4.3b7'
+	return cmd
+}
 const switchChannel: PlaydeckCommandV4 = {
 	version: '4.1b11',
 	deprecated: null,
@@ -328,5 +382,23 @@ const positionmarker: PlaydeckCommandV4 = {
 	description: `Jump to the designated Marker Name within the current playing Clip`,
 	arg1: 'CHANNEL',
 	arg2: 'MARKER',
+}
+
+const hold: PlaydeckCommandV4 = {
+	version: '4.3b7',
+	deprecated: null,
+	commandName: `CONTROL - HOLD`,
+	command: `hold`,
+	description: `HOLD will pause, if Clip is playing, otherwise ignored`,
+	arg1: 'CHANNEL',
+}
+
+const resume: PlaydeckCommandV4 = {
+	version: '4.3b7',
+	deprecated: null,
+	commandName: `CONTROL - RESUME`,
+	command: `resume`,
+	description: `RESUME will unpause, if Clip is paused, otherwise ignored`,
+	arg1: 'CHANNEL',
 }
 export const PlayoutCommands: PlaydeckCommandV4[] = [...playoutAll()]

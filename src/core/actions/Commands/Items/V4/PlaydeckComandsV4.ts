@@ -23,6 +23,8 @@ export type argNamesV4 =
 	| 'COMMAND'
 	| 'TIME'
 	| 'MARKER'
+	| 'POS'
+	| 'FOLDER'
 
 export type PlaydeckCommandV4 = Omit<PlaydeckCommand, `arg${number}`> & Partial<Record<`arg${number}`, argNamesV4>>
 export class PlaydeckCommandsV4 extends PlaydeckCommands {
@@ -104,7 +106,7 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 				`PATTERN is a flexible naming construction.\n- b#5 (Block 5)\n- b:myname (First Blockname containing "myname")\n- c#5 OR c:myname (Same for Clips)\n- p:HH:MM:SS:FF (Clip Position as Timestamp)\n- b#5 c:myname p:0:05:31:00 (Clip "*myname*" in Block 5 at Clip Pos 0:05:31:00)\nTip 1: Use "c:name1 c:name2 c:name3" for multisearch aka "Use name1 if exist, else ..."\nTip 2: Use negative Clip Position to jump to Clip Duration minus Position eg "p:-30:00"`,
 			)
 		}
-		if (arg.includes('TIMESTAMP')) {
+		if (arg.includes('TIMESTAMP') || arg === 'POS') {
 			return textInputField(`${Regex.SOMETHING}`, `TIMESTAMP format is HH:MM:SS:FF, but can be shortened to SS:FF`)
 		}
 
@@ -146,6 +148,13 @@ export class PlaydeckCommandsV4 extends PlaydeckCommands {
 			command: `wait`,
 			description: `Will halt execution of upcoming Commands for the duration of TIME`,
 			arg1: 'TIME',
+		},
+		{
+			version: '4.3b7',
+			deprecated: null,
+			commandName: `UTILS - RESTART PLAYDECK`,
+			command: `restartplaydeck`,
+			description: `Restarts PLAYDECK. Playlist is saved.`,
 		},
 		...PlayoutCommands,
 		...AssetsCommands,

@@ -79,6 +79,14 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 								text: '',
 							})
 							break
+						default:
+							this.#makeDescription({
+								id: `preset_${presetCategory}_${presetSubCategory}`,
+								category: `${PlaydeckUtils.capitalizeFirstLetter(presetCategory)}`,
+								name: 'Other',
+								text: '',
+							})
+							break
 					}
 					this.#makePreset({
 						id: `preset_${presetCategory}_${presetSubCategory}_${command}`,
@@ -319,7 +327,7 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 		return command.includes('id')
 	}
 	#isUtils(command: string): boolean {
-		return command === 'customcommand' || command === 'wait'
+		return command === 'customcommand' || command === 'wait' || command === 'restartplaydeck'
 	}
 	#isList(command: string): boolean {
 		const listStrings = ['list', 'switchchannel']
@@ -328,7 +336,7 @@ export class PlaydeckPresetsDefinitionsV416 implements PlaydeckPresetsDefinition
 
 	#isAssets(command: string): boolean {
 		const assets = Object.values(CommandAssetsSubCategory)
-
+		if (command === 'run') return true
 		return assets.some((value) => command.includes(value))
 	}
 	#makePreset(preset: PlaydeckPresetDefinitionItem) {

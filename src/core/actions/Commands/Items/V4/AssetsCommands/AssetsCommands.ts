@@ -21,6 +21,9 @@ function assetsAll(): PlaydeckCommandV4[] {
 		})
 	})
 	all.push(toggleoverlay)
+	// 4.3b7
+	all.push(loadnewestproject)
+	all.push(run)
 	return all
 }
 const commandsInternal = ['start', 'stop', 'stopall']
@@ -103,4 +106,21 @@ function audio(command: string, target: argNamesV4): PlaydeckCommandV4 {
 	}
 }
 
+const loadnewestproject: PlaydeckCommandV4 = {
+	version: '4.3b7',
+	deprecated: null,
+	commandName: `ASSETS - LOAD NEWEST PROJECT`,
+	command: `loadnewestproject`,
+	description: `Loads the newest valid project .xml from FOLDER (by file date). Skips the currently open file.`,
+	arg1: 'FOLDER',
+}
+
+const run: PlaydeckCommandV4 = {
+	version: '4.3b7',
+	deprecated: null,
+	commandName: `ASSETS - RUN SCRIPT`,
+	command: `run`,
+	description: `Starts a local .bat/.cmd/.ps1.. No Path, only File. Only works in Documents Dir "..\JoyEventMedia\Playdeck\Scripts\"`,
+	arg1: 'FILENAME',
+}
 export const AssetsCommands: PlaydeckCommandV4[] = [...assetsAll()]
