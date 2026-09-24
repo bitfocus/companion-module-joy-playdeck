@@ -72,9 +72,5 @@ export class PlaydeckActions {
 }
 
 export interface PlaydeckAction extends CompanionActionEvent {
-	options: {
-		arg1?: InputValue
-		arg2?: InputValue
-		arg3?: InputValue
-	}
+	options: Partial<Record<`arg${number}`, InputValue>>
 }

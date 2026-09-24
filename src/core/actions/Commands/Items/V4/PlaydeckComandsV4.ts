@@ -23,11 +23,8 @@ export type argNamesV4 =
 	| 'COMMAND'
 	| 'TIME'
 	| 'MARKER'
-export interface PlaydeckCommandV4 extends PlaydeckCommand {
-	arg1?: argNamesV4
-	arg2?: argNamesV4
-	arg3?: argNamesV4
-}
+
+export type PlaydeckCommandV4 = Omit<PlaydeckCommand, `arg${number}`> & Partial<Record<`arg${number}`, argNamesV4>>
 export class PlaydeckCommandsV4 extends PlaydeckCommands {
 	constructor(version: PlaydeckVersion) {
 		super(version, PlaydeckCommandsV4.commands)

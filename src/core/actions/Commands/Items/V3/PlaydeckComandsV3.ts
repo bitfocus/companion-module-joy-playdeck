@@ -22,11 +22,8 @@ type argNamesV3 =
 	| 'METHOD'
 	| 'COMMAND'
 
-interface PlaydeckCommandV3 extends PlaydeckCommand {
-	arg1?: argNamesV3
-	arg2?: argNamesV3
-	arg3?: argNamesV3
-}
+type PlaydeckCommandV3 = Omit<PlaydeckCommand, `arg${number}`> & Partial<Record<`arg${number}`, argNamesV3>>
+
 export class PlaydeckCommandsV3 extends PlaydeckCommands {
 	constructor(version: PlaydeckVersion) {
 		super(version, PlaydeckCommandsV3.commands)

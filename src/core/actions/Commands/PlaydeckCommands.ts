@@ -1,16 +1,13 @@
 import { SomeCompanionActionInputField } from '@companion-module/base'
 import { PlaydeckVersion, Version } from '../../../core/version/PlaydeckVersion.js'
 
-export interface PlaydeckCommand {
+export type PlaydeckCommand = {
 	version: Version | null
 	deprecated: Version | null
 	commandName: string
 	command: string
 	description?: string
-	arg1?: string
-	arg2?: string
-	arg3?: string
-}
+} & Partial<Record<`arg${number}`, string>>
 
 export abstract class PlaydeckCommands extends Array<PlaydeckCommand> {
 	constructor(version: PlaydeckVersion, commands: PlaydeckCommand[]) {
