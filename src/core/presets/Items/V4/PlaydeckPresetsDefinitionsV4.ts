@@ -392,11 +392,7 @@ type PlaydeckPresetDefinitionItem = {
 	text: string
 	action: {
 		actionId: string
-		options: {
-			arg1?: CompanionVariableValue
-			arg2?: CompanionVariableValue
-			arg3?: CompanionVariableValue
-		}
+		options: Partial<Record<`arg${number}`, CompanionVariableValue>>
 	}
 	feedback: CheckStateOptionValues | undefined
 }

@@ -1,15 +1,15 @@
-Supports all versions up to **4.3b3**.
+Supports all versions up to **4.3b7**.
 You can select the appropriate version, and the module will automatically adjust the set of commands according to your choice.
 
 ---
 
-**🔧 Available Commands (for Playdeck 4.3b3; version dependent)**
+**🔧 Available Commands (for Playdeck 4.3b7; version dependent)**
 
 - **CONTROL**:
-  CUE/PLAY/FADE-IN by number/list/UID/flex; CUE/PLAY Next; SWITCH CHANNEL; PAUSE/STOP; POSITION; POSITION SAVE/RECALL; FADE EDIT; SELECT Previous/Next Clip; MARK Next Clip; ACTIVATE/DISABLE Clip; LOOP/UNLOOP Clip; POSITION MARKER
+  CUE/PLAY/FADE-IN by number/list/UID/flex; CUE/PLAY Next; SWITCH CHANNEL; PAUSE/STOP; POSITION; POSITION SAVE/RECALL; FADE EDIT; SELECT Previous/Next Clip; MARK Next Clip; ACTIVATE/DISABLE Clip; LOOP/UNLOOP Clip; POSITION MARKER, HOLD, RESUME, CUE/PLAY MARKER ID, 
 
 - **ASSETS**:
-  LOAD, APPEND Project
+  LOAD, APPEND Project, LOAD NEWEST PROJECT, RUN SCRIPT
 
 - **AUDIO**:
   MUTE, UNMUTE
@@ -30,7 +30,7 @@ You can select the appropriate version, and the module will automatically adjust
   START, STOP
 
 - **UTILS**:
-  WAIT
+  WAIT, RESTART PLAYDECK
 
 - **Custom command** — sends a custom command.
   Format:
